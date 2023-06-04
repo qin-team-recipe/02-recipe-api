@@ -46,7 +46,7 @@ func NewConfig(path string) *Config {
 		log.Fatal("env file unmarshal: ", err)
 	}
 
-	if c.Environment == "devlopment" {
+	if c.Environment == "development" {
 		log.Print("\n==================================================\n")
 		log.Print("\n\nCurrently, it's a development environment!!!!!!\n\n")
 		log.Print("\n==================================================\n")
