@@ -1,3 +1,9 @@
 .vscode
 
 .env
+
+mysql/data
+
+main
+
+!.gitkeep

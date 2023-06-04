@@ -1,7 +1,14 @@
 package main
 
-import "fmt"
+import (
+	"github.com/qin-team-recipe/02-recipe-api/config"
+	"github.com/qin-team-recipe/02-recipe-api/internal/infrastructure"
+)
 
 func main() {
-	fmt.Println("Hello World!")
+	config := config.NewConfig("../.env")
+
+	r := infrastructure.NewRouting(config)
+
+	r.Run(config.ServerPort)
 }

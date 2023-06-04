@@ -1,0 +1,61 @@
+version: '3'
+
+services:
+  go:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: recipe-api
+    stdin_open: true
+    tty: true #コンテナの永続化
+    depends_on:
+      - mysql
+    volumes:
+      - .:/app
+    ports:
+      - 8080:${SERVER_PORT}
+    # networks:
+    #   - 02-recipe-api
+
+  mysql:
+    container_name: 02-recipe-mysql
+    image: mysql:latest
+    restart: unless-stopped
+    ports:
+      - 3306:${DB_PORT}
+    expose:
+      - ${DB_PORT}
+    volumes:
+      - ./mysql/migrations:/docker-entrypoint-initdb.d
+      - ./mysql/data:/var/lib/mysql
+      - ./mysql/sql:/sql
+      - ./mysql/config/my.conf:/etc/mysql/conf.d/my.cnf
+    # env_file:
+    #   - ./app/app.env
+    environment:
+      MYSQL_ROOT_PASSWORD: '${DB_PASS}'
+      MYSQL_ROOT_HOST: "%"
+      MYSQL_DATABASE: '${DB_NAME}'
+      # MYSQL_USER: '${DB_USER}'
+      # MYSQL_PASSWORD: '${DB_PASS}'
+      # MYSQL_DATABASE: '${DB_NAME}'
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+    # networks:
+    #   - 02-recipe-api
+
+  phpmyadmin:
+        image: phpmyadmin:5
+        restart: always
+        ports:
+          - 8181:80
+        environment:
+          # - PMA_ARBITRARY=1
+          - PMA_HOST=mysql
+          - PMA_USER='${DB_NAME}'
+          - PMA_PASSWORD='${DB_PASS}'
+        # networks:
+        #   - 02-recipe-api
+
+# networks:
+#   02-recipe-api-network:
+#     name: 02-recipe-api
