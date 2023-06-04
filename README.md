@@ -27,12 +27,12 @@
 ## Environment Building
 
 - .envを作成
-- .env.exampleを参照、またはコピペしてください。
+- .env.exampleを参照、またはコピペし入力してください。
 - ./config/config.goで.envを読み込まれ環境変数が参照されます。
 
 ```.env
 SERVER_PORT=使用の環境に合わせてください
-ENV=development, staging, production
+ENV=development
 
 DB_ROOT_PASS=任意のルートユーザーのパスワードを入力
 DB_NAME=任意のデータベース名を入力
@@ -71,6 +71,10 @@ Goファイルに更新があった場合は自動でビルドし再度立ち上
 | constants  | 定数ファイル（あまり使わないかも）  |
 | docs  | ドキュメント類  |
 | internal  | アプリケーションで使用するコードを配置(ここから外部へは参照しない)  |
+| mysql  | データベース関連のものを配置  |
+| mysql/config  | データベースの設定ファイル  |
+| mysql/migrations  | Docker起動時に初期化させたいファイルを配置  |
+| mysql/sql  | SQLファイルを配置し、mysqlにアクセスすると実行できるファイル  |
 | pkg  | 自作パッケージを配置(utilitiesのようなイメージ)  |
 
 ### /internal ディレクトリ内の構成
