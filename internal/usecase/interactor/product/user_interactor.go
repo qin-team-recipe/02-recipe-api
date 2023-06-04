@@ -1,6 +1,7 @@
 package product
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 
@@ -17,7 +18,7 @@ func (ui *UserInteractor) Get() (domain.Users, *usecase.ResultStatus) {
 
 	user, err := ui.User.GetUser()
 	if err != nil {
-		return domain.Users{}, usecase.NewResultStatus(http.StatusNotFound, fmt.Errorf("test error: %w", "sample error..."))
+		return domain.Users{}, usecase.NewResultStatus(http.StatusNotFound, fmt.Errorf("test error: %w, %v", errors.New("sample error"), err))
 	}
 	return user, usecase.NewResultStatus(http.StatusOK, nil)
 }
