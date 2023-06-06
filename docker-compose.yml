@@ -13,7 +13,7 @@ services:
     volumes:
       - .:/app
     ports:
-      - 8080:${SERVER_PORT}
+      - ${SERVER_PORT}:${CONTAINER_SERVER_PORT}
     # networks:
     #   - 02-recipe-api
 
@@ -22,7 +22,7 @@ services:
     image: mysql:latest
     restart: unless-stopped
     ports:
-      - 3306:${DB_PORT}
+      - ${DB_PORT}:3306
     expose:
       - ${DB_PORT}
     volumes:

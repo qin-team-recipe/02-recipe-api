@@ -10,5 +10,5 @@ func main() {
 
 	r := infrastructure.NewRouting(config)
 
-	r.Run(config.ServerPort)
+	r.Run(config.ContainerServerPort)
 }

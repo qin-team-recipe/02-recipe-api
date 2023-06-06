@@ -32,6 +32,7 @@
 
 ```.env
 SERVER_PORT=使用の環境に合わせてください
+CONTAINER_SERVER_PORT=8080
 ENV=development
 
 DB_ROOT_PASS=任意のルートユーザーのパスワードを入力
