@@ -1,3 +1,3 @@
 package constants
 
-const InContainerAPIPort = "8080"
+const InContainerServerPort = "8080"
