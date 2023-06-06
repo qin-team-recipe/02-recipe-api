@@ -9,7 +9,6 @@ import (
 type Config struct {
 	ApplicationName string
 
-	ServerPort  string `mapstructure:"SERVER_PORT"`
 	Environment string `mapstructure:"ENV"`
 	// database
 	DBUsername string `mapstructure:"DB_USER"`
