@@ -9,7 +9,9 @@ import (
 type Config struct {
 	ApplicationName string
 
-	Environment string `mapstructure:"ENV"`
+	ServerPort          string `mapstructure:"SERVER_PORT"`
+	ContainerServerPort string `mapstructure:"CONTAINER_SERVER_PORT"`
+	Environment         string `mapstructure:"ENV"`
 	// database
 	DBUsername string `mapstructure:"DB_USER"`
 	DBPassword string `mapstructure:"DB_PASS"`

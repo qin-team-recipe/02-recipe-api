@@ -13,7 +13,7 @@ services:
     volumes:
       - .:/app
     ports:
-      - ${SERVER_PORT}:8080
+      - ${SERVER_PORT}:${CONTAINER_SERVER_PORT}
     # networks:
     #   - 02-recipe-api
 
