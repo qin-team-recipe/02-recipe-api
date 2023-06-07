@@ -14,8 +14,8 @@ services:
       - .:/app
     ports:
       - ${SERVER_PORT}:${CONTAINER_SERVER_PORT}
-    # networks:
-    #   - 02-recipe-api
+    networks:
+      - 02-recipe-api-network
 
   mysql:
     container_name: 02-recipe-mysql
@@ -33,29 +33,28 @@ services:
     # env_file:
     #   - ./app/app.env
     environment:
-      MYSQL_ROOT_PASSWORD: '${DB_PASS}'
-      MYSQL_ROOT_HOST: "%"
+      # MYSQL_ROOT_PASSWORD: '${DB_PASS}'
+      # MYSQL_ROOT_HOST: "%"
       MYSQL_DATABASE: '${DB_NAME}'
-      # MYSQL_USER: '${DB_USER}'
-      # MYSQL_PASSWORD: '${DB_PASS}'
-      # MYSQL_DATABASE: '${DB_NAME}'
+      MYSQL_USER: '${DB_USER}'
+      MYSQL_PASSWORD: '${DB_PASS}'
       MYSQL_ALLOW_EMPTY_PASSWORD: 1
-    # networks:
-    #   - 02-recipe-api
+    networks:
+      - 02-recipe-api-network
 
   phpmyadmin:
-        image: phpmyadmin:5
-        restart: always
-        ports:
-          - 8181:80
-        environment:
-          # - PMA_ARBITRARY=1
-          - PMA_HOST=mysql
-          - PMA_USER='${DB_NAME}'
-          - PMA_PASSWORD='${DB_PASS}'
-        # networks:
-        #   - 02-recipe-api
+    image: phpmyadmin:5
+    restart: always
+    ports:
+      - 8181:80
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=mysql
+      - PMA_USER=${DB_USER}
+      - PMA_PASSWORD=${DB_PASS}
+    networks:
+      - 02-recipe-api-network
 
-# networks:
-#   02-recipe-api-network:
-#     name: 02-recipe-api
+networks:
+  02-recipe-api-network:
+    name: 02-recipe-api-network
