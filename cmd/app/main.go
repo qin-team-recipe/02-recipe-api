@@ -8,6 +8,7 @@ import (
 func main() {
 	config := config.NewConfig("../.env")
 
+	_ = infrastructure.NewDB(config)
 	r := infrastructure.NewRouting(config)
 
 	r.Run(config.ContainerServerPort)
