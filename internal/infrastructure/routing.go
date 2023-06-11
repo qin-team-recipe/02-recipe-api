@@ -11,10 +11,12 @@ import (
 
 type Routing struct {
 	Gin *gin.Engine
+	DB  *DB
 }
 
-func NewRouting(c *config.Config) *Routing {
+func NewRouting(c *config.Config, db *DB) *Routing {
 	r := &Routing{
+		DB:  db,
 		Gin: gin.Default(),
 	}
 
@@ -27,6 +29,7 @@ func NewRouting(c *config.Config) *Routing {
 
 func (r *Routing) setRouting() {
 
+	chefsController := product.NewChefsController(r.DB)
 	userController := product.NewUsersController()
 	// REST API用
 	v1 := r.Gin.Group("/v1")
@@ -35,6 +38,22 @@ func (r *Routing) setRouting() {
 		ctx.JSON(http.StatusOK, gin.H{"message": "Hello World!!"})
 	})
 
+	/*
+	 * chefs
+	 *
+	 */
+	v1.GET("/chefs", func(ctx *gin.Context) {
+		chefsController.GetList(ctx)
+	})
+
+	v1.GET("/chefs/:screenName", func(ctx *gin.Context) {
+		chefsController.Get(ctx)
+	})
+
+	/*
+	 * users
+	 *
+	 */
 	v1.GET("/users", func(ctx *gin.Context) {
 		userController.Get(ctx)
 	})
