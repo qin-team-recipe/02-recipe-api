@@ -14,7 +14,7 @@ type ChefInteractor struct {
 	Chef repository.ChefRepository
 }
 
-func (ci *ChefInteractor) GetList(q string) ([]*domain.Chefs, *usecase.ResultStatus) {
+func (ci *ChefInteractor) GetList(q string) ([]*domain.ChefsForGet, *usecase.ResultStatus) {
 
 	db := ci.DB.Connect()
 
@@ -23,28 +23,49 @@ func (ci *ChefInteractor) GetList(q string) ([]*domain.Chefs, *usecase.ResultSta
 	if q == "" {
 		foundChefs, err := ci.Chef.Find(db)
 		if err != nil {
-			return []*domain.Chefs{}, usecase.NewResultStatus(http.StatusNotFound, err)
+			return []*domain.ChefsForGet{}, usecase.NewResultStatus(http.StatusNotFound, err)
 		}
 		chefs = foundChefs
 	} else {
 		q = "%" + q + "%"
 		foundChefs, err := ci.Chef.FindByQuery(db, q)
 		if err != nil {
-			return []*domain.Chefs{}, usecase.NewResultStatus(http.StatusNotFound, err)
+			return []*domain.ChefsForGet{}, usecase.NewResultStatus(http.StatusNotFound, err)
 		}
 		chefs = foundChefs
 	}
 
-	return chefs, usecase.NewResultStatus(http.StatusOK, nil)
+	builtChefs, _ := ci.buildList(chefs)
+
+	return builtChefs, usecase.NewResultStatus(http.StatusOK, nil)
 }
 
-func (ci *ChefInteractor) Get(screenName string) (*domain.Chefs, *usecase.ResultStatus) {
+func (ci *ChefInteractor) Get(screenName string) (*domain.ChefsForGet, *usecase.ResultStatus) {
 
 	db := ci.DB.Connect()
 
 	chef, err := ci.Chef.FirstByScreenName(db, screenName)
 	if err != nil {
-		return &domain.Chefs{}, usecase.NewResultStatus(http.StatusNotFound, err)
+		return &domain.ChefsForGet{}, usecase.NewResultStatus(http.StatusNotFound, err)
 	}
-	return chef, usecase.NewResultStatus(http.StatusOK, nil)
+
+	builtChef, _ := ci.build(chef)
+
+	return builtChef, usecase.NewResultStatus(http.StatusOK, nil)
+}
+
+func (ci *ChefInteractor) buildList(chefs []*domain.Chefs) ([]*domain.ChefsForGet, error) {
+	builtChefs := []*domain.ChefsForGet{}
+
+	for _, chef := range chefs {
+		builtChef, _ := ci.build(chef)
+
+		builtChefs = append(builtChefs, builtChef)
+	}
+
+	return builtChefs, nil
+}
+
+func (ci *ChefInteractor) build(chef *domain.Chefs) (*domain.ChefsForGet, error) {
+	return chef.BuildForGet(), nil
 }
