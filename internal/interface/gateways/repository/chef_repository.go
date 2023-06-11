@@ -11,7 +11,15 @@ type ChefRepository struct{}
 
 func (cr *ChefRepository) Find(db *gorm.DB) ([]*domain.Chefs, error) {
 	chefs := []*domain.Chefs{}
-	if err := db.Find(chefs).Error; err != nil {
+	if err := db.Find(&chefs).Error; err != nil {
+		return []*domain.Chefs{}, fmt.Errorf("chef is not found: %w", err)
+	}
+	return chefs, nil
+}
+
+func (cr *ChefRepository) FindByQuery(db *gorm.DB, q string) ([]*domain.Chefs, error) {
+	chefs := []*domain.Chefs{}
+	if err := db.Where("display_name = ? or description = ?", q, q).Find(chefs).Error; err != nil {
 		return []*domain.Chefs{}, fmt.Errorf("chef is not found: %w", err)
 	}
 	return chefs, nil

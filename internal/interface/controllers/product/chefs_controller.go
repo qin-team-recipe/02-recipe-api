@@ -23,7 +23,8 @@ func NewChefsController(db gateways.DB) *ChefsController {
 }
 
 func (cc *ChefsController) GetList(ctx controllers.Context) {
-	chefs, res := cc.Interactor.GetList()
+	q := ctx.Query("q")
+	chefs, res := cc.Interactor.GetList(q)
 	if res.Error != nil {
 		ctx.JSON(res.Code, controllers.NewH(res.Error.Error(), nil))
 		return

@@ -14,13 +14,24 @@ type ChefInteractor struct {
 	Chef repository.ChefRepository
 }
 
-func (ci *ChefInteractor) GetList() ([]*domain.Chefs, *usecase.ResultStatus) {
+func (ci *ChefInteractor) GetList(q string) ([]*domain.Chefs, *usecase.ResultStatus) {
 
 	db := ci.DB.Connect()
 
-	chefs, err := ci.Chef.Find(db)
-	if err != nil {
-		return []*domain.Chefs{}, usecase.NewResultStatus(http.StatusNotFound, err)
+	chefs := []*domain.Chefs{}
+
+	if q == "" {
+		foundChefs, err := ci.Chef.Find(db)
+		if err != nil {
+			return []*domain.Chefs{}, usecase.NewResultStatus(http.StatusNotFound, err)
+		}
+		chefs = foundChefs
+	} else {
+		foundChefs, err := ci.Chef.FindByQuery(db, q)
+		if err != nil {
+			return []*domain.Chefs{}, usecase.NewResultStatus(http.StatusNotFound, err)
+		}
+		chefs = foundChefs
 	}
 
 	return chefs, usecase.NewResultStatus(http.StatusOK, nil)
