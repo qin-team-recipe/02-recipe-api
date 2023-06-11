@@ -22,6 +22,7 @@ func NewChefsController(db gateways.DB) *ChefsController {
 
 func (cc *ChefsController) GetList(ctx controllers.Context) {
 	q := ctx.Query("q")
+
 	chefs, res := cc.Interactor.GetList(q)
 	if res.Error != nil {
 		ctx.JSON(res.Code, controllers.NewH(res.Error.Error(), nil))
@@ -32,7 +33,7 @@ func (cc *ChefsController) GetList(ctx controllers.Context) {
 
 func (cc *ChefsController) Get(ctx controllers.Context) {
 	screenName := ctx.Param("screenName")
-	println(screenName)
+
 	chef, res := cc.Interactor.Get(screenName)
 	if res.Error != nil {
 		ctx.JSON(res.Code, controllers.NewH(res.Error.Error(), nil))

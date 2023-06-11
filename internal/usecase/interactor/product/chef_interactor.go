@@ -27,6 +27,7 @@ func (ci *ChefInteractor) GetList(q string) ([]*domain.Chefs, *usecase.ResultSta
 		}
 		chefs = foundChefs
 	} else {
+		q = "%" + q + "%"
 		foundChefs, err := ci.Chef.FindByQuery(db, q)
 		if err != nil {
 			return []*domain.Chefs{}, usecase.NewResultStatus(http.StatusNotFound, err)

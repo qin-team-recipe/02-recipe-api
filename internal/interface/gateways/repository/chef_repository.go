@@ -19,7 +19,7 @@ func (cr *ChefRepository) Find(db *gorm.DB) ([]*domain.Chefs, error) {
 
 func (cr *ChefRepository) FindByQuery(db *gorm.DB, q string) ([]*domain.Chefs, error) {
 	chefs := []*domain.Chefs{}
-	if err := db.Where("display_name = ? or description = ?", q, q).Find(chefs).Error; err != nil {
+	if err := db.Where("display_name like ? or description like ?", q, q).Find(&chefs).Error; err != nil {
 		return []*domain.Chefs{}, fmt.Errorf("chef is not found: %w", err)
 	}
 	return chefs, nil
