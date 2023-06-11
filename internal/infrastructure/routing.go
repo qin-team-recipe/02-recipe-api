@@ -46,8 +46,8 @@ func (r *Routing) setRouting() {
 		chefsController.GetList(ctx)
 	})
 
-	v1.GET("/chefs/:id", func(ctx *gin.Context) {
-		chefsController.GetList(ctx)
+	v1.GET("/chefs/:screenName", func(ctx *gin.Context) {
+		chefsController.Get(ctx)
 	})
 
 	/*

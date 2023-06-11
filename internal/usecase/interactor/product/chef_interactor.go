@@ -37,11 +37,11 @@ func (ci *ChefInteractor) GetList(q string) ([]*domain.Chefs, *usecase.ResultSta
 	return chefs, usecase.NewResultStatus(http.StatusOK, nil)
 }
 
-func (ci *ChefInteractor) Get(id int) (*domain.Chefs, *usecase.ResultStatus) {
+func (ci *ChefInteractor) Get(screenName string) (*domain.Chefs, *usecase.ResultStatus) {
 
 	db := ci.DB.Connect()
 
-	chef, err := ci.Chef.FirstByID(db, id)
+	chef, err := ci.Chef.FirstByScreenName(db, screenName)
 	if err != nil {
 		return &domain.Chefs{}, usecase.NewResultStatus(http.StatusNotFound, err)
 	}

@@ -35,7 +35,7 @@ func (cr *ChefRepository) FirstByID(db *gorm.DB, id int) (*domain.Chefs, error) 
 
 func (cr *ChefRepository) FirstByScreenName(db *gorm.DB, screenName string) (*domain.Chefs, error) {
 	chef := &domain.Chefs{}
-	if err := db.Where("sceen_name = ?", screenName).First(chef).Error; err != nil {
+	if err := db.Where("screen_name = ?", screenName).First(chef).Error; err != nil {
 		return &domain.Chefs{}, fmt.Errorf("chef is not found: %w", err)
 	}
 	return chef, nil

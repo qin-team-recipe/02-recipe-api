@@ -1,8 +1,6 @@
 package product
 
 import (
-	"strconv"
-
 	"github.com/qin-team-recipe/02-recipe-api/internal/interface/controllers"
 	"github.com/qin-team-recipe/02-recipe-api/internal/interface/gateways"
 	"github.com/qin-team-recipe/02-recipe-api/internal/interface/gateways/repository"
@@ -33,8 +31,9 @@ func (cc *ChefsController) GetList(ctx controllers.Context) {
 }
 
 func (cc *ChefsController) Get(ctx controllers.Context) {
-	id, _ := strconv.Atoi(ctx.Param("id"))
-	chef, res := cc.Interactor.Get(id)
+	screenName := ctx.Param("screenName")
+	println(screenName)
+	chef, res := cc.Interactor.Get(screenName)
 	if res.Error != nil {
 		ctx.JSON(res.Code, controllers.NewH(res.Error.Error(), nil))
 		return
