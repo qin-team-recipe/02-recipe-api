@@ -1,7 +1,11 @@
+
 # Build Stage
 FROM golang:1.20rc3-alpine3.17 as builder
+
 WORKDIR /app
-COPY . .
+
+COPY ./app .
+
 # RUN go build -o main cmd/main.go
 
 # Run Stage
@@ -12,7 +16,6 @@ RUN go install github.com/cosmtrek/air@latest
 
 # WORKDIR /app
 # COPY --from=builder /app/main .
-# COPY .env .
 # COPY start.sh .
 # COPY wait-for.sh .
 # COPY db/migration ./db/migration

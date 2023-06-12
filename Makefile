@@ -1,6 +1,6 @@
 
 server:
-	go run cmd/app/main.go
+	go run app/cmd/main.go
 
 air:
 	# mysql.server start; air -c .air.toml
@@ -14,3 +14,9 @@ up:
 
 build:
 	docker-compose build
+
+rm:
+	docker-compose rm
+
+down:
+	docker-compose down

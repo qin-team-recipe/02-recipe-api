@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	config := config.NewConfig("../.env")
+	config := config.NewConfig(".")
 
 	db := infrastructure.NewDB(config)
 	r := infrastructure.NewRouting(config, db)
