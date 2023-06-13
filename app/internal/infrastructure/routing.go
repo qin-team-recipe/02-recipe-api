@@ -82,10 +82,6 @@ func (r *Routing) setRouting() {
 		recipeFavoritesController.GetList(ctx)
 	})
 
-	// v1.GET("/recipes/:id", func(ctx *gin.Context) {
-	// 	recipesController.Get(ctx)
-	// })
-
 	/*
 	 * users
 	 *
