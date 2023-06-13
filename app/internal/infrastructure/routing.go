@@ -30,8 +30,11 @@ func NewRouting(c *config.Config, db *DB) *Routing {
 func (r *Routing) setRouting() {
 
 	chefsController := product.NewChefsController(r.DB)
+	chefFollowsController := product.NewChefFollowsController(r.DB)
 	recipesController := product.NewRecipesController(r.DB)
+	// recipeFavoritesController := product.NewRecipeFavoritesController(r.DB)
 	userController := product.NewUsersController()
+
 	// REST API用
 	v1 := r.Gin.Group("/v1")
 
@@ -52,10 +55,30 @@ func (r *Routing) setRouting() {
 	})
 
 	/*
+	 * chefs　follows
+	 *
+	 */
+	v1.GET("/chefFollows", func(ctx *gin.Context) {
+		chefFollowsController.GetList(ctx)
+	})
+
+	/*
 	 * recipes
 	 *
 	 */
 	v1.GET("/recipes", func(ctx *gin.Context) {
+		recipesController.GetList(ctx)
+	})
+
+	// v1.GET("/recipes/:id", func(ctx *gin.Context) {
+	// 	recipesController.Get(ctx)
+	// })
+
+	/*
+	 * recipes favorites
+	 *
+	 */
+	v1.GET("/recipeFavorites", func(ctx *gin.Context) {
 		recipesController.GetList(ctx)
 	})
 
