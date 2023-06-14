@@ -27,3 +27,11 @@ func (rr *RecipeRepository) FindByUserID(db *gorm.DB, userID int) ([]*domain.Rec
 	}
 	return recipes, nil
 }
+
+func (rr *RecipeRepository) FirstByID(db *gorm.DB, id int) (*domain.Recipes, error) {
+	recipe := &domain.Recipes{}
+	if err := db.First(recipe, id).Error; err != nil {
+		return &domain.Recipes{}, fmt.Errorf("not found: %w", err)
+	}
+	return recipe, nil
+}

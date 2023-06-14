@@ -8,4 +8,5 @@ import (
 type RecipeRepository interface {
 	Find(db *gorm.DB) ([]*domain.Recipes, error)
 	FindByUserID(db *gorm.DB, userID int) ([]*domain.Recipes, error)
+	FirstByID(db *gorm.DB, id int) (*domain.Recipes, error)
 }
