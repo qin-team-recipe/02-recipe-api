@@ -40,3 +40,10 @@ func (cr *ChefRepository) FirstByScreenName(db *gorm.DB, screenName string) (*do
 	}
 	return chef, nil
 }
+
+func (cr *ChefRepository) Create(db *gorm.DB, chef *domain.Chefs) (*domain.Chefs, error) {
+	if err := db.Create(chef).Error; err != nil {
+		return &domain.Chefs{}, fmt.Errorf("failed chef create: %w", err)
+	}
+	return chef, nil
+}
