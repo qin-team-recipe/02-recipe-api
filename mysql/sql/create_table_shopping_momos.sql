@@ -1,8 +1,8 @@
 CREATE TABLE IF NOT EXISTS `shopping_momos` (
 	`id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-	`user_id` INT(10) NOT NULL,
-	`recipe_ingredient_id` INT(10) NOT NULL,
-	`description` text NOT NULL,
+	`user_id` INT(10) UNSIGNED NOT NULL,
+	`recipe_ingredient_id` INT(10) UNSIGNED NOT NULL,
+	`description` text NULL,
 	`is_done` tinyint UNSIGNED NOT NULL,
 	`created_at` int UNSIGNED NOT NULL,
 	`updated_at` int UNSIGNED NOT NULL,

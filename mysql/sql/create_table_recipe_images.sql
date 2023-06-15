@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS `recipe_images` (
 	`id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-	`recipe_id` INT(10) NOT NULL,
+	`recipe_id` INT(10) UNSIGNED NOT NULL,
 	`file_key` varchar(255) NULL,
 	`file_name` varchar(255) NOT NULL,
 	`created_at` int UNSIGNED NOT NULL,
