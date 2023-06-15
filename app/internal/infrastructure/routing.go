@@ -60,9 +60,9 @@ func (r *Routing) setRouting() {
 	userController := product.NewUsersController()
 
 	// REST API用
-	v1 := r.Gin.Group("/v1")
+	v1 := r.Gin.Group("/api/v1")
 	// swagger用
-	docs.SwaggerInfo.BasePath = "/v1"
+	docs.SwaggerInfo.BasePath = "/api/v1"
 	{
 		v1.GET("/", func(ctx *gin.Context) {
 			ctx.JSON(http.StatusOK, gin.H{"message": "Hello World!!"})
@@ -122,7 +122,7 @@ func (r *Routing) setRouting() {
 	consoleChefsController := console.NewChefsController(r.DB)
 	consoleRecipesController := console.NewRecipesController(r.DB)
 
-	v1Console := r.Gin.Group("/v1/console")
+	v1Console := r.Gin.Group("/api/v1/console")
 	{
 
 		/*
