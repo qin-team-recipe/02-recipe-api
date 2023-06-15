@@ -2,6 +2,7 @@ package console
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/qin-team-recipe/02-recipe-api/internal/domain"
 	"github.com/qin-team-recipe/02-recipe-api/internal/usecase"
@@ -16,6 +17,10 @@ type ChefInteractor struct {
 
 func (ci *ChefInteractor) Create(chef *domain.Chefs) (*domain.Chefs, *usecase.ResultStatus) {
 	db := ci.DB.Connect()
+
+	currentTime := time.Now().Unix()
+	chef.CreatedAt = currentTime
+	chef.UpdatedAt = currentTime
 
 	newChef, err := ci.Chef.Create(db, chef)
 	if err != nil {

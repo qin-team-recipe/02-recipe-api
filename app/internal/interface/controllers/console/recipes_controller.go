@@ -2,7 +2,6 @@ package console
 
 import (
 	"net/http"
-	"strconv"
 
 	"github.com/qin-team-recipe/02-recipe-api/internal/domain"
 	"github.com/qin-team-recipe/02-recipe-api/internal/interface/controllers"
@@ -27,7 +26,7 @@ func NewRecipesController(db gateways.DB) *RecipesController {
 
 func (rc *RecipesController) Post(ctx controllers.Context) {
 
-	chefID, _ := strconv.Atoi(ctx.Query("chef_id"))
+	chefID := 1 // テストデータ
 	r := &domain.Recipes{}
 	if err := ctx.BindJSON(r); err != nil {
 		ctx.JSON(http.StatusBadRequest, controllers.NewH(err.Error(), nil))
