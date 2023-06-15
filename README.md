@@ -26,9 +26,9 @@
 
 ## Environment Building
 
-- .envを作成
+- .envをルートディレクトリに作成
 - .env.exampleを参照、またはコピペし入力してください。
-- ./config/config.goで.envを読み込まれ環境変数が参照されます。
+- ./app/config/config.goで.envを読み込まれ環境変数が参照されます。
 
 ```.env
 SERVER_PORT=使用の環境に合わせてください
@@ -63,19 +63,25 @@ Goファイルに更新があった場合は自動でビルドし再度立ち上
 
 ## Directory Structure
 
-### 主な構成
+### 主なディレクトリ構成
 
 | ディレクトリ名  | 内容 |
 | ------------- | ------------- |
-| cmd/app  | main.goのみを配置  |
-| config  | 環境変数ファイル  |
-| constants  | 定数ファイル（あまり使わないかも）  |
-| docs  | ドキュメント類  |
-| internal  | アプリケーションで使用するコードを配置(ここから外部へは参照しない)  |
+| app  | Golangで記述しているファイルを配置  |
 | mysql  | データベース関連のものを配置  |
 | mysql/config  | データベースの設定ファイル  |
 | mysql/migrations  | Docker起動時に初期化させたいファイルを配置  |
 | mysql/sql  | SQLファイルを配置し、mysqlにアクセスすると実行できるファイル  |
+
+### /app ディレクトリ内の構成
+
+| ディレクトリ名  | 内容 |
+| ------------- | ------------- |
+| cmd  | main.goのみを配置  |
+| config  | 環境変数ファイル  |
+| constants  | 定数ファイル（あまり使わないかも）  |
+| docs  | ドキュメント類  |
+| internal  | アプリケーションで使用するコードを配置(ここから外部へは参照しない)  |
 | pkg  | 自作パッケージを配置(utilitiesのようなイメージ)  |
 
 ### /internal ディレクトリ内の構成
@@ -84,11 +90,11 @@ Goファイルに更新があった場合は自動でビルドし再度立ち上
 | ------------- | ------------- |
 | domain  | データを永続化する層  |
 | infrastructure  | インフラ層  |
-| interface  | インターファイス層  |
+| interface  | インターフェイス層  |
 | interface/controllers  | パラメータを受け取りusecaseへ接続する  |
 | interface/gateways  | usecaseとインフラ層を繋ぐ  |
 | interface/gateways/repository  | Gormのメソッドの記述などをここに配置  |
-| interface/presenters  | レスポンスをフロントの扱いやすいように整生する  |
+| interface/presenters  | レスポンスをフロントの扱いやすいように整形する  |
 | usecase  | ユースケース配置  |
 | usecase/repository  | interfaceの役割（DI）  |
 | usecase/interactor  | ビジネスロジックを配置  |
