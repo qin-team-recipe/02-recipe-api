@@ -7,6 +7,10 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/qin-team-recipe/02-recipe-api/config"
 	"github.com/qin-team-recipe/02-recipe-api/internal/interface/controllers/product"
+
+	docs "github.com/qin-team-recipe/02-recipe-api/docs"
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 type Routing struct {
@@ -37,6 +41,8 @@ func (r *Routing) setRouting() {
 
 	// REST API用
 	v1 := r.Gin.Group("/v1")
+	// swagger用
+	docs.SwaggerInfo.BasePath = "/v1"
 
 	v1.GET("/", func(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, gin.H{"message": "Hello World!!"})
@@ -89,6 +95,12 @@ func (r *Routing) setRouting() {
 	v1.GET("/users", func(ctx *gin.Context) {
 		userController.Get(ctx)
 	})
+
+	/*
+	 * swagger
+	 *
+	 */
+	v1.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 }
 
 func (r *Routing) Run(port string) {
