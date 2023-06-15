@@ -2,6 +2,7 @@ package console
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/qin-team-recipe/02-recipe-api/internal/domain"
 	"github.com/qin-team-recipe/02-recipe-api/internal/interface/controllers"
@@ -17,20 +18,23 @@ type RecipesController struct {
 func NewRecipesController(db gateways.DB) *RecipesController {
 	return &RecipesController{
 		Interactor: console.RecipeInteractor{
-			DB:     &gateways.DBRepository{DB: db},
-			Recipe: &repository.RecipeRepository{},
+			DB:         &gateways.DBRepository{DB: db},
+			ChefRecipe: &repository.ChefRecipeRepository{},
+			Recipe:     &repository.RecipeRepository{},
 		},
 	}
 }
 
 func (rc *RecipesController) Post(ctx controllers.Context) {
+
+	chefID, _ := strconv.Atoi(ctx.Query("chef_id"))
 	r := &domain.Recipes{}
 	if err := ctx.BindJSON(r); err != nil {
 		ctx.JSON(http.StatusBadRequest, controllers.NewH(err.Error(), nil))
 		return
 	}
 
-	recipe, res := rc.Interactor.Create(r)
+	recipe, res := rc.Interactor.Create(chefID, r)
 	if res.Error != nil {
 		ctx.JSON(res.Code, controllers.NewH(res.Error.Error(), nil))
 		return
