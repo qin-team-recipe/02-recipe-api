@@ -45,7 +45,7 @@ func NewRouting(c *config.Config, db *DB) *Routing {
 // @license.url   http://www.apache.org/licenses/LICENSE-2.0.html
 
 // @host      localhost:8080
-// @BasePath  /api/v1
+// @BasePath  /v1
 
 // @securityDefinitions.basic  BasicAuth
 
@@ -108,11 +108,6 @@ func (r *Routing) setRouting() {
 			recipeFavoritesController.GetList(ctx)
 		})
 
-		// @Summary product users
-		// @Description get user info
-		// @Tags users,product
-		// @Accept application/x-json-stream
-		// @Success 200 {object} domain.Users
 		v1.GET("/users", func(ctx *gin.Context) {
 			userController.Get(ctx)
 		})
