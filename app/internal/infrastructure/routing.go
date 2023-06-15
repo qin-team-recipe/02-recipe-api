@@ -8,6 +8,10 @@ import (
 	"github.com/qin-team-recipe/02-recipe-api/config"
 	"github.com/qin-team-recipe/02-recipe-api/internal/interface/controllers/console"
 	"github.com/qin-team-recipe/02-recipe-api/internal/interface/controllers/product"
+
+	docs "github.com/qin-team-recipe/02-recipe-api/docs"
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 type Routing struct {
@@ -28,6 +32,25 @@ func NewRouting(c *config.Config, db *DB) *Routing {
 	return r
 }
 
+// @title           Swagger Example API
+// @version         1.0
+// @description     This is a sample server celler server.
+// @termsOfService  http://swagger.io/terms/
+
+// @contact.name   API Support
+// @contact.url    http://www.swagger.io/support
+// @contact.email  support@swagger.io
+
+// @license.name  Apache 2.0
+// @license.url   http://www.apache.org/licenses/LICENSE-2.0.html
+
+// @host      localhost:8080
+// @BasePath  /api/v1
+
+// @securityDefinitions.basic  BasicAuth
+
+// @externalDocs.description  OpenAPI
+// @externalDocs.url          https://swagger.io/resources/open-api/
 func (r *Routing) setRouting() {
 
 	chefsController := product.NewChefsController(r.DB)
@@ -38,6 +61,8 @@ func (r *Routing) setRouting() {
 
 	// REST API用
 	v1 := r.Gin.Group("/v1")
+	// swagger用
+	docs.SwaggerInfo.BasePath = "/v1"
 	{
 		v1.GET("/", func(ctx *gin.Context) {
 			ctx.JSON(http.StatusOK, gin.H{"message": "Hello World!!"})
@@ -83,13 +108,20 @@ func (r *Routing) setRouting() {
 			recipeFavoritesController.GetList(ctx)
 		})
 
-		/*
-		 * users
-		 *
-		 */
+		// @Summary product users
+		// @Description get user info
+		// @Tags users,product
+		// @Accept application/x-json-stream
+		// @Success 200 {object} domain.Users
 		v1.GET("/users", func(ctx *gin.Context) {
 			userController.Get(ctx)
 		})
+
+		/*
+		* swagger
+		*
+		 */
+		v1.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	}
 
 	consoleChefsController := console.NewChefsController(r.DB)
