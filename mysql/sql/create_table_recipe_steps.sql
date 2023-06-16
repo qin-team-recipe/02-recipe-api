@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS `cooking_processes` (
+CREATE TABLE IF NOT EXISTS `recipe_steps` (
 	`id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
 	`recipe_id` INT(10) UNSIGNED NOT NULL,
 	`title` varchar(255) NOT NULL,
