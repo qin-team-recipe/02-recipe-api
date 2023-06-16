@@ -10,4 +10,5 @@ type ChefRepository interface {
 	FindByQuery(db *gorm.DB, q string) ([]*domain.Chefs, error)
 	FirstByID(db *gorm.DB, id int) (*domain.Chefs, error)
 	FirstByScreenName(db *gorm.DB, screenName string) (*domain.Chefs, error)
+	Create(db *gorm.DB, chef *domain.Chefs) (*domain.Chefs, error)
 }

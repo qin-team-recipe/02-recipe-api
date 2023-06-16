@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/qin-team-recipe/02-recipe-api/config"
+	"github.com/qin-team-recipe/02-recipe-api/internal/interface/controllers/console"
 	"github.com/qin-team-recipe/02-recipe-api/internal/interface/controllers/product"
 
 	docs "github.com/qin-team-recipe/02-recipe-api/docs"
@@ -31,6 +32,25 @@ func NewRouting(c *config.Config, db *DB) *Routing {
 	return r
 }
 
+// @title           Swagger Example API
+// @version         1.0
+// @description     This is a sample server celler server.
+// @termsOfService  http://swagger.io/terms/
+
+// @contact.name   API Support
+// @contact.url    http://www.swagger.io/support
+// @contact.email  support@swagger.io
+
+// @license.name  Apache 2.0
+// @license.url   http://www.apache.org/licenses/LICENSE-2.0.html
+
+// @host      localhost:8080
+// @BasePath  /v1
+
+// @securityDefinitions.basic  BasicAuth
+
+// @externalDocs.description  OpenAPI
+// @externalDocs.url          https://swagger.io/resources/open-api/
 func (r *Routing) setRouting() {
 
 	chefsController := product.NewChefsController(r.DB)
@@ -40,67 +60,87 @@ func (r *Routing) setRouting() {
 	userController := product.NewUsersController()
 
 	// REST API用
-	v1 := r.Gin.Group("/v1")
+	v1 := r.Gin.Group("/api/v1")
 	// swagger用
-	docs.SwaggerInfo.BasePath = "/v1"
+	docs.SwaggerInfo.BasePath = "/api/v1"
+	{
+		v1.GET("/", func(ctx *gin.Context) {
+			ctx.JSON(http.StatusOK, gin.H{"message": "Hello World!!"})
+		})
 
-	v1.GET("/", func(ctx *gin.Context) {
-		ctx.JSON(http.StatusOK, gin.H{"message": "Hello World!!"})
-	})
+		/*
+		 * chefs
+		 *
+		 */
+		v1.GET("/chefs", func(ctx *gin.Context) {
+			chefsController.GetList(ctx)
+		})
 
-	/*
-	 * chefs
-	 *
-	 */
-	v1.GET("/chefs", func(ctx *gin.Context) {
-		chefsController.GetList(ctx)
-	})
+		v1.GET("/chefs/:screenName", func(ctx *gin.Context) {
+			chefsController.Get(ctx)
+		})
 
-	v1.GET("/chefs/:screenName", func(ctx *gin.Context) {
-		chefsController.Get(ctx)
-	})
+		/*
+		 * chefs　follows
+		 *
+		 */
+		v1.GET("/chefFollows", func(ctx *gin.Context) {
+			chefFollowsController.GetList(ctx)
+		})
 
-	/*
-	 * chefs　follows
-	 *
-	 */
-	v1.GET("/chefFollows", func(ctx *gin.Context) {
-		chefFollowsController.GetList(ctx)
-	})
+		/*
+		 * recipes
+		 *
+		 */
+		v1.GET("/recipes", func(ctx *gin.Context) {
+			recipesController.GetList(ctx)
+		})
 
-	/*
-	 * recipes
-	 *
-	 */
-	v1.GET("/recipes", func(ctx *gin.Context) {
-		recipesController.GetList(ctx)
-	})
+		// v1.GET("/recipes/:id", func(ctx *gin.Context) {
+		// 	recipesController.Get(ctx)
+		// })
 
-	// v1.GET("/recipes/:id", func(ctx *gin.Context) {
-	// 	recipesController.Get(ctx)
-	// })
+		/*
+		 * recipes favorites
+		 *
+		 */
+		v1.GET("/recipeFavorites", func(ctx *gin.Context) {
+			recipeFavoritesController.GetList(ctx)
+		})
 
-	/*
-	 * recipes favorites
-	 *
-	 */
-	v1.GET("/recipeFavorites", func(ctx *gin.Context) {
-		recipeFavoritesController.GetList(ctx)
-	})
+		v1.GET("/users", func(ctx *gin.Context) {
+			userController.Get(ctx)
+		})
 
-	/*
-	 * users
-	 *
-	 */
-	v1.GET("/users", func(ctx *gin.Context) {
-		userController.Get(ctx)
-	})
+		/*
+		* swagger
+		*
+		 */
+		v1.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+	}
 
-	/*
-	 * swagger
-	 *
-	 */
-	v1.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+	consoleChefsController := console.NewChefsController(r.DB)
+	consoleRecipesController := console.NewRecipesController(r.DB)
+
+	v1Console := r.Gin.Group("/api/v1/console")
+	{
+
+		/*
+		 * console chefs
+		 *
+		 */
+		v1Console.POST("/chefs", func(ctx *gin.Context) {
+			consoleChefsController.Post(ctx)
+		})
+
+		/*
+		 * console recipes
+		 *
+		 */
+		v1Console.POST("/recipes", func(ctx *gin.Context) {
+			consoleRecipesController.Post(ctx)
+		})
+	}
 }
 
 func (r *Routing) Run(port string) {

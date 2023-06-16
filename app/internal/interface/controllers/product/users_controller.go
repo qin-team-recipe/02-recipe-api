@@ -18,6 +18,12 @@ func NewUsersController() *UsersController {
 	}
 }
 
+// @Summary product users
+// @Description get user info
+// @Tags users,product
+// @Accept application/x-json-stream
+// @Success 200 {object} domain.Users
+// @Router       /users/{id} [get]
 func (uc *UsersController) Get(ctx controllers.Context) {
 	user, res := uc.Interactor.Get()
 	if res.Error != nil {
