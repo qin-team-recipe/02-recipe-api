@@ -35,3 +35,10 @@ func (rr *RecipeRepository) FirstByID(db *gorm.DB, id int) (*domain.Recipes, err
 	}
 	return recipe, nil
 }
+
+func (rr *RecipeRepository) Create(db *gorm.DB, recipe *domain.Recipes) (*domain.Recipes, error) {
+	if err := db.Create(recipe).Error; err != nil {
+		return &domain.Recipes{}, fmt.Errorf("failed recipe create: %w", err)
+	}
+	return recipe, nil
+}
