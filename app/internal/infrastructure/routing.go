@@ -55,9 +55,10 @@ func (r *Routing) setRouting() {
 
 	chefsController := product.NewChefsController(r.DB)
 	chefFollowsController := product.NewChefFollowsController(r.DB)
-	recipesController := product.NewRecipesController(r.DB)
+	chefRecipesController := product.NewChefRecipesController(r.DB)
 	recipeFavoritesController := product.NewRecipeFavoritesController(r.DB)
 	userController := product.NewUsersController()
+	userRecipesController := product.NewUserRecipesController(r.DB)
 
 	// REST API用
 	v1 := r.Gin.Group("/api/v1")
@@ -89,11 +90,11 @@ func (r *Routing) setRouting() {
 		})
 
 		/*
-		 * recipes
+		 * chef recipes
 		 *
 		 */
-		v1.GET("/recipes", func(ctx *gin.Context) {
-			recipesController.GetList(ctx)
+		v1.GET("/chefRecipes", func(ctx *gin.Context) {
+			chefRecipesController.GetList(ctx)
 		})
 
 		// v1.GET("/recipes/:id", func(ctx *gin.Context) {
@@ -110,6 +111,18 @@ func (r *Routing) setRouting() {
 
 		v1.GET("/users", func(ctx *gin.Context) {
 			userController.Get(ctx)
+		})
+
+		/*
+		 * user recipes
+		 *
+		 */
+		v1.GET("/userRecipes", func(ctx *gin.Context) {
+			userRecipesController.GetList(ctx)
+		})
+
+		v1.POST("userRecipes", func(ctx *gin.Context) {
+			userRecipesController.Post(ctx)
 		})
 
 		/*
@@ -134,10 +147,10 @@ func (r *Routing) setRouting() {
 		})
 
 		/*
-		 * console recipes
+		 * console chef recipes
 		 *
 		 */
-		v1Console.POST("/recipes", func(ctx *gin.Context) {
+		v1Console.POST("/chefRecipes", func(ctx *gin.Context) {
 			consoleRecipesController.Post(ctx)
 		})
 	}
