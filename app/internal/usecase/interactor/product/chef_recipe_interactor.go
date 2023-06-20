@@ -31,7 +31,10 @@ func (ri *ChefRecipeInteractor) GetList() ([]*domain.ChefRecipesForGet, *usecase
 func (ri *ChefRecipeInteractor) buildList(db *gorm.DB, resipes []*domain.Recipes) ([]*domain.ChefRecipesForGet, error) {
 	builtRecipes := []*domain.ChefRecipesForGet{}
 	for _, reresipe := range resipes {
-		builtRecipe, _ := ri.build(db, reresipe)
+		builtRecipe, err := ri.build(db, reresipe)
+		if err != nil {
+			continue
+		}
 
 		builtRecipes = append(builtRecipes, builtRecipe)
 	}

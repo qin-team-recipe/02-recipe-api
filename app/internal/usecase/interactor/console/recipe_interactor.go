@@ -33,7 +33,6 @@ func (ri *RecipeInteractor) Create(chefID int, recipe *domain.Recipes) (*domain.
 		ChefID:    chefID,
 		RecipeID:  newRecipe.ID,
 		CreatedAt: currentTime,
-		UpdatedAt: currentTime,
 	}
 
 	_, err = ri.ChefRecipe.Create(db, chefRecipe)
