@@ -3,7 +3,6 @@ CREATE TABLE IF NOT EXISTS `chef_recipes` (
 	`chef_id` INT(10) UNSIGNED NOT NULL,
 	`recipe_id` INT(10) UNSIGNED NOT NULL,
 	`created_at` int UNSIGNED NOT NULL,
-	`updated_at` int UNSIGNED NOT NULL,
 	`deleted_at` int UNSIGNED NULL,
 	FOREIGN KEY (chef_id) REFERENCES chefs(id),
 	FOREIGN KEY (recipe_id) REFERENCES recipes(id),
