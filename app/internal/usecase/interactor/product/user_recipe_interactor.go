@@ -1,6 +1,7 @@
 package product
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 
@@ -21,6 +22,10 @@ func (ri *UserRecipeInteractor) Create(userID int, r *domain.Recipes) (*domain.U
 	db := ri.DB.Begin()
 
 	currentTime := time.Now().Unix()
+
+	if r.Title == "" {
+		return &domain.UserRecipesForGet{}, usecase.NewResultStatus(http.StatusBadRequest, fmt.Errorf("validation error: %s", "タイトルが未定です"))
+	}
 
 	r.CreatedAt = currentTime
 	r.UpdatedAt = currentTime
