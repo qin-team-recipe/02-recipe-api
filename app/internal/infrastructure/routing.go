@@ -57,6 +57,7 @@ func (r *Routing) setRouting() {
 	chefFollowsController := product.NewChefFollowsController(r.DB)
 	chefRecipesController := product.NewChefRecipesController(r.DB)
 	recipeFavoritesController := product.NewRecipeFavoritesController(r.DB)
+	recipeIngredientsController := product.NewRecipeIngretientsController(r.DB)
 	userController := product.NewUsersController()
 	userRecipesController := product.NewUserRecipesController(r.DB)
 
@@ -111,6 +112,14 @@ func (r *Routing) setRouting() {
 
 		v1.GET("/users", func(ctx *gin.Context) {
 			userController.Get(ctx)
+		})
+
+		/*
+		 * recipes ingredients
+		 *
+		 */
+		v1.POST("/recipeIngredients", func(ctx *gin.Context) {
+			recipeIngredientsController.Post(ctx)
 		})
 
 		/*
