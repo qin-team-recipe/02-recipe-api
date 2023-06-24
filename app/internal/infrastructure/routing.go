@@ -60,6 +60,7 @@ func (r *Routing) setRouting() {
 	recipeIngredientsController := product.NewRecipeIngretientsController(r.DB)
 	recipeLinksController := product.NewRecipeLinksController(r.DB)
 	recipeStepsController := product.NewRecipeStepsController(r.DB)
+	shoppingMemosController := product.NewShoppingMemosController(r.DB)
 	userController := product.NewUsersController()
 	userRecipesController := product.NewUserRecipesController(r.DB)
 
@@ -141,6 +142,14 @@ func (r *Routing) setRouting() {
 		})
 
 		/*
+		 * shopping memos
+		 *
+		 */
+		v1.POST("/shoppingMemos", func(ctx *gin.Context) {
+			shoppingMemosController.Post(ctx)
+		})
+
+		/*
 		 * user recipes
 		 *
 		 */
@@ -152,8 +161,8 @@ func (r *Routing) setRouting() {
 		})
 
 		/*
-		* swagger
-		*
+		 * swagger
+		 *
 		 */
 		v1.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	}
