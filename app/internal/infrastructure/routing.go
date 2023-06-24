@@ -147,8 +147,7 @@ func (r *Routing) setRouting() {
 		v1.GET("/userRecipes", func(ctx *gin.Context) {
 			userRecipesController.GetList(ctx)
 		})
-
-		v1.POST("userRecipes", func(ctx *gin.Context) {
+		v1.POST("/userRecipes", func(ctx *gin.Context) {
 			userRecipesController.Post(ctx)
 		})
 
