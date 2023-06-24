@@ -2,6 +2,7 @@ CREATE TABLE IF NOT EXISTS `recipes` (
 	`id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
 	`title` varchar(255) NOT NULL,
 	`description` text NULL,
+	`servings` int UNSIGNED NOT NULL,
 	`is_draft` tinyint UNSIGNED NOT NULL,
 	`created_at` int UNSIGNED NOT NULL,
 	`updated_at` int UNSIGNED NOT NULL,
