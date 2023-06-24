@@ -58,6 +58,7 @@ func (r *Routing) setRouting() {
 	chefRecipesController := product.NewChefRecipesController(r.DB)
 	recipeFavoritesController := product.NewRecipeFavoritesController(r.DB)
 	recipeIngredientsController := product.NewRecipeIngretientsController(r.DB)
+	recipeStepsController := product.NewRecipeStepsController(r.DB)
 	userController := product.NewUsersController()
 	userRecipesController := product.NewUserRecipesController(r.DB)
 
@@ -120,6 +121,14 @@ func (r *Routing) setRouting() {
 		 */
 		v1.POST("/recipeIngredients", func(ctx *gin.Context) {
 			recipeIngredientsController.Post(ctx)
+		})
+
+		/*
+		 * recipes steps
+		 *
+		 */
+		v1.POST("/recipeSteps", func(ctx *gin.Context) {
+			recipeStepsController.Post(ctx)
 		})
 
 		/*
