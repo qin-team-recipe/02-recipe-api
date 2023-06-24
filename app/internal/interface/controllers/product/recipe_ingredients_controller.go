@@ -34,7 +34,7 @@ func (rc *RecipeIngredientsController) Post(ctx controllers.Context) {
 
 	recipeIngredient, res := rc.Interactor.Create(r)
 	if res.Error != nil {
-		ctx.JSON(res.Code, controllers.NewH(fmt.Sprintf("failed bind json: %s", res.Error.Error()), nil))
+		ctx.JSON(res.Code, controllers.NewH(res.Error.Error(), nil))
 		return
 	}
 	ctx.JSON(res.Code, controllers.NewH("success", recipeIngredient))
