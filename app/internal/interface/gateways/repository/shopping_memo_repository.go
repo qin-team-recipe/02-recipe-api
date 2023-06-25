@@ -10,6 +10,14 @@ import (
 
 type ShoppingMemoRepository struct{}
 
+func (sr *ShoppingMemoRepository) FirstByID(db *gorm.DB, id int) (*domain.ShoppingMemos, error) {
+	s := &domain.ShoppingMemos{}
+	if err := db.First(s, id).Error; err != nil {
+		return &domain.ShoppingMemos{}, fmt.Errorf("not found: %w", err)
+	}
+	return s, nil
+}
+
 func (sr *ShoppingMemoRepository) FindByRecipeID(db *gorm.DB, recipeID int) ([]*domain.ShoppingMemos, error) {
 	s := []*domain.ShoppingMemos{}
 	db.Joins("join recipe_ingredients on recipe_ingredients.id = shopping_memos.recipe_ingredient_id").Where("recipe_ingredients.recipe_id = ?", recipeID).Find(&s)
@@ -24,4 +32,8 @@ func (sr *ShoppingMemoRepository) Create(db *gorm.DB, s *domain.ShoppingMemos) (
 		return &domain.ShoppingMemos{}, fmt.Errorf("failed shoppingMemo create: %w", err)
 	}
 	return s, nil
+}
+
+func (sr *ShoppingMemoRepository) Delete(db *gorm.DB, id int) error {
+	return db.Delete(&domain.ShoppingMemos{}, id).Error
 }

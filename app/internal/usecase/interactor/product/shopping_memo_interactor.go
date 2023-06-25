@@ -50,6 +50,20 @@ func (si *ShoppingMemoInteractor) Create(s *domain.ShoppingMemos) (*domain.Shopp
 	return builtShoppingMemo, usecase.NewResultStatus(http.StatusOK, nil)
 }
 
+func (si *ShoppingMemoInteractor) Delete(id int) *usecase.ResultStatus {
+
+	db := si.DB.Connect()
+
+	if _, err := si.ShoppingMemo.FirstByID(db, id); err != nil {
+		return usecase.NewResultStatus(http.StatusNotFound, err)
+	}
+
+	if err := si.ShoppingMemo.Delete(db, id); err != nil {
+		return usecase.NewResultStatus(http.StatusBadRequest, err)
+	}
+	return usecase.NewResultStatus(http.StatusOK, nil)
+}
+
 func (si *ShoppingMemoInteractor) buildList(db *gorm.DB, shoppingMemos []*domain.ShoppingMemos) ([]*domain.ShoppingMemosForGet, error) {
 	builtShoppingMemos := []*domain.ShoppingMemosForGet{}
 

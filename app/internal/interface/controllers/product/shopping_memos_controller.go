@@ -54,3 +54,15 @@ func (sc *ShoppingMemosController) Post(ctx controllers.Context) {
 	}
 	ctx.JSON(res.Code, controllers.NewH("success", shoppingMemo))
 }
+
+func (sc *ShoppingMemosController) Delete(ctx controllers.Context) {
+
+	id, _ := strconv.Atoi(ctx.Param("id"))
+
+	res := sc.Interactor.Delete(id)
+	if res.Error != nil {
+		ctx.JSON(res.Code, controllers.NewH(res.Error.Error(), nil))
+		return
+	}
+	ctx.JSON(res.Code, controllers.NewH("success", nil))
+}
