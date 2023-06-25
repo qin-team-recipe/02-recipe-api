@@ -2,6 +2,7 @@ package product
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/qin-team-recipe/02-recipe-api/internal/domain"
 	"github.com/qin-team-recipe/02-recipe-api/internal/usecase"
@@ -47,7 +48,22 @@ func (si *ShoppingMemoInteractor) Create(s *domain.ShoppingMemos) (*domain.Shopp
 	builtShoppingMemo := newShoppingMemo.BuildForGet()
 	builtShoppingMemo.RecipeIngredient = recipeIngredient.BuildForGet()
 
-	return builtShoppingMemo, usecase.NewResultStatus(http.StatusOK, nil)
+	return builtShoppingMemo, usecase.NewResultStatus(http.StatusAccepted, nil)
+}
+
+func (si *ShoppingMemoInteractor) Save(s *domain.ShoppingMemos) (*domain.ShoppingMemosForGet, *usecase.ResultStatus) {
+	db := si.DB.Connect()
+
+	foundShoppingMemo, err := si.ShoppingMemo.FirstByID(db, s.ID)
+
+	foundShoppingMemo.IsDone = s.IsDone
+	foundShoppingMemo.UpdatedAt = time.Now().Unix()
+
+	updatedShoppingMemo, err := si.ShoppingMemo.Save(db, foundShoppingMemo)
+	if err != nil {
+
+	}
+	return updatedShoppingMemo.BuildForGet(), usecase.NewResultStatus(http.StatusOK, nil)
 }
 
 func (si *ShoppingMemoInteractor) Delete(id int) *usecase.ResultStatus {

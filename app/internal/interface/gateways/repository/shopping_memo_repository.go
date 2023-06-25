@@ -34,6 +34,13 @@ func (sr *ShoppingMemoRepository) Create(db *gorm.DB, s *domain.ShoppingMemos) (
 	return s, nil
 }
 
+func (sr *ShoppingMemoRepository) Save(db *gorm.DB, s *domain.ShoppingMemos) (*domain.ShoppingMemos, error) {
+	if err := db.Save(s).Error; err != nil {
+		return &domain.ShoppingMemos{}, fmt.Errorf("failed shoppingMemo save: %w", err)
+	}
+	return s, nil
+}
+
 func (sr *ShoppingMemoRepository) Delete(db *gorm.DB, id int) error {
 	return db.Delete(&domain.ShoppingMemos{}, id).Error
 }

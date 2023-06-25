@@ -55,6 +55,28 @@ func (sc *ShoppingMemosController) Post(ctx controllers.Context) {
 	ctx.JSON(res.Code, controllers.NewH("success", shoppingMemo))
 }
 
+func (sc *ShoppingMemosController) Patch(ctx controllers.Context) {
+
+	id, _ := strconv.Atoi(ctx.Param("id"))
+
+	s := &domain.ShoppingMemos{}
+
+	if err := ctx.BindJSON(s); err != nil {
+		ctx.JSON(http.StatusBadRequest, controllers.NewH(fmt.Sprintf("failed bind json: %s", err.Error()), nil))
+		return
+	}
+
+	s.ID = id
+
+	shoppingMemo, res := sc.Interactor.Save(s)
+	if res.Error != nil {
+		ctx.JSON(res.Code, controllers.NewH(res.Error.Error(), nil))
+		return
+	}
+	ctx.JSON(res.Code, controllers.NewH("success", shoppingMemo))
+
+}
+
 func (sc *ShoppingMemosController) Delete(ctx controllers.Context) {
 
 	id, _ := strconv.Atoi(ctx.Param("id"))
