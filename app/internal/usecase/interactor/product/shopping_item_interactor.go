@@ -77,7 +77,7 @@ func (si *ShoppingItemInteractor) Delete(id int) *usecase.ResultStatus {
 	if err := si.ShoppingItem.Delete(db, id); err != nil {
 		return usecase.NewResultStatus(http.StatusBadRequest, err)
 	}
-	return usecase.NewResultStatus(http.StatusOK, nil)
+	return usecase.NewResultStatus(http.StatusNoContent, nil)
 }
 
 func (si *ShoppingItemInteractor) buildList(db *gorm.DB, shoppingItems []*domain.ShoppingItems) ([]*domain.ShoppingItemsForGet, error) {

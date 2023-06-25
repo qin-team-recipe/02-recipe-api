@@ -63,6 +63,7 @@ func (r *Routing) setRouting() {
 	shoppingItemsController := product.NewShoppingItemsController(r.DB)
 	userController := product.NewUsersController()
 	userRecipesController := product.NewUserRecipesController(r.DB)
+	userShoppingItemsController := product.NewUserShoppingItemsController(r.DB)
 
 	// REST API用
 	v1 := r.Gin.Group("/api/v1")
@@ -168,6 +169,24 @@ func (r *Routing) setRouting() {
 		})
 		v1.POST("/userRecipes", func(ctx *gin.Context) {
 			userRecipesController.Post(ctx)
+		})
+
+		/*
+		 * user shopping Items
+		 *
+		 */
+		v1.GET("/userShoppingItems", func(ctx *gin.Context) {
+			userShoppingItemsController.GetList(ctx)
+		})
+		v1.POST("/userShoppingItems", func(ctx *gin.Context) {
+			userShoppingItemsController.Post(ctx)
+		})
+
+		v1.PATCH("/userShoppingItems/:id", func(ctx *gin.Context) {
+			userShoppingItemsController.Patch(ctx)
+		})
+		v1.DELETE("/userShoppingItems/:id", func(ctx *gin.Context) {
+			userShoppingItemsController.Delete(ctx)
 		})
 
 		/*
