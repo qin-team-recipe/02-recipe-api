@@ -1,6 +1,6 @@
 package domain
 
-type ShoppingMemos struct {
+type ShoppingItems struct {
 	ID                 int   `json:"id"`
 	UserID             int   `json:"user_id" binding:"required"`
 	RecipeIngredientID int   `json:"recipe_ingredient_id" binding:"required"`
@@ -9,7 +9,7 @@ type ShoppingMemos struct {
 	UpdatedAt          int64 `json:"updated_at"`
 }
 
-type ShoppingMemosForGet struct {
+type ShoppingItemsForGet struct {
 	ID                 int  `json:"id"`
 	UserID             int  `json:"user_id"`
 	RecipeIngredientID int  `json:"recipe_ingredient_id"`
@@ -18,8 +18,8 @@ type ShoppingMemosForGet struct {
 	RecipeIngredient *RecipeIngredientsForGet `json:"recipe_ingredient"`
 }
 
-func (s *ShoppingMemos) BuildForGet() *ShoppingMemosForGet {
-	return &ShoppingMemosForGet{
+func (s *ShoppingItems) BuildForGet() *ShoppingItemsForGet {
+	return &ShoppingItemsForGet{
 		ID:                 s.ID,
 		UserID:             s.UserID,
 		RecipeIngredientID: s.RecipeIngredientID,

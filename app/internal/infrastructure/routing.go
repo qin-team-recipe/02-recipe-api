@@ -60,7 +60,7 @@ func (r *Routing) setRouting() {
 	recipeIngredientsController := product.NewRecipeIngretientsController(r.DB)
 	recipeLinksController := product.NewRecipeLinksController(r.DB)
 	recipeStepsController := product.NewRecipeStepsController(r.DB)
-	shoppingMemosController := product.NewShoppingMemosController(r.DB)
+	shoppingItemsController := product.NewShoppingItemsController(r.DB)
 	userController := product.NewUsersController()
 	userRecipesController := product.NewUserRecipesController(r.DB)
 
@@ -142,21 +142,21 @@ func (r *Routing) setRouting() {
 		})
 
 		/*
-		 * shopping memos
+		 * shopping Items
 		 *
 		 */
-		v1.GET("/shoppingMemos", func(ctx *gin.Context) {
-			shoppingMemosController.GetList(ctx)
+		v1.GET("/shoppingItems", func(ctx *gin.Context) {
+			shoppingItemsController.GetList(ctx)
 		})
-		v1.POST("/shoppingMemos", func(ctx *gin.Context) {
-			shoppingMemosController.Post(ctx)
+		v1.POST("/shoppingItems", func(ctx *gin.Context) {
+			shoppingItemsController.Post(ctx)
 		})
 
-		v1.PATCH("/shoppingMemos/:id", func(ctx *gin.Context) {
-			shoppingMemosController.Patch(ctx)
+		v1.PATCH("/shoppingItems/:id", func(ctx *gin.Context) {
+			shoppingItemsController.Patch(ctx)
 		})
-		v1.DELETE("/shoppingMemos/:id", func(ctx *gin.Context) {
-			shoppingMemosController.Delete(ctx)
+		v1.DELETE("/shoppingItems/:id", func(ctx *gin.Context) {
+			shoppingItemsController.Delete(ctx)
 		})
 
 		/*

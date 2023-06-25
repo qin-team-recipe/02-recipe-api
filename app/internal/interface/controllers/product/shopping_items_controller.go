@@ -12,54 +12,54 @@ import (
 	"github.com/qin-team-recipe/02-recipe-api/internal/usecase/interactor/product"
 )
 
-type ShoppingMemosController struct {
-	Interactor product.ShoppingMemoInteractor
+type ShoppingItemsController struct {
+	Interactor product.ShoppingItemInteractor
 }
 
-func NewShoppingMemosController(db gateways.DB) *ShoppingMemosController {
-	return &ShoppingMemosController{
-		Interactor: product.ShoppingMemoInteractor{
+func NewShoppingItemsController(db gateways.DB) *ShoppingItemsController {
+	return &ShoppingItemsController{
+		Interactor: product.ShoppingItemInteractor{
 			DB:               &gateways.DBRepository{DB: db},
 			RecipeIngredient: &repository.RecipeIngredientRepository{},
-			ShoppingMemo:     &repository.ShoppingMemoRepository{},
+			ShoppingItem:     &repository.ShoppingItemRepository{},
 		},
 	}
 }
 
-func (sc *ShoppingMemosController) GetList(ctx controllers.Context) {
+func (sc *ShoppingItemsController) GetList(ctx controllers.Context) {
 	recipeID, _ := strconv.Atoi(ctx.Query("recipe_id"))
 
-	memos, res := sc.Interactor.GetList(recipeID)
+	Items, res := sc.Interactor.GetList(recipeID)
 	if res.Error != nil {
 		ctx.JSON(res.Code, controllers.NewH(res.Error.Error(), nil))
 		return
 	}
-	ctx.JSON(res.Code, controllers.NewH("success", memos))
+	ctx.JSON(res.Code, controllers.NewH("success", Items))
 
 }
 
-func (sc *ShoppingMemosController) Post(ctx controllers.Context) {
+func (sc *ShoppingItemsController) Post(ctx controllers.Context) {
 
-	s := &domain.ShoppingMemos{}
+	s := &domain.ShoppingItems{}
 
 	if err := ctx.BindJSON(s); err != nil {
 		ctx.JSON(http.StatusBadRequest, controllers.NewH(fmt.Sprintf("failed bind json: %s", err.Error()), nil))
 		return
 	}
 
-	shoppingMemo, res := sc.Interactor.Create(s)
+	shoppingItem, res := sc.Interactor.Create(s)
 	if res.Error != nil {
 		ctx.JSON(res.Code, controllers.NewH(res.Error.Error(), nil))
 		return
 	}
-	ctx.JSON(res.Code, controllers.NewH("success", shoppingMemo))
+	ctx.JSON(res.Code, controllers.NewH("success", shoppingItem))
 }
 
-func (sc *ShoppingMemosController) Patch(ctx controllers.Context) {
+func (sc *ShoppingItemsController) Patch(ctx controllers.Context) {
 
 	id, _ := strconv.Atoi(ctx.Param("id"))
 
-	s := &domain.ShoppingMemos{}
+	s := &domain.ShoppingItems{}
 
 	if err := ctx.BindJSON(s); err != nil {
 		ctx.JSON(http.StatusBadRequest, controllers.NewH(fmt.Sprintf("failed bind json: %s", err.Error()), nil))
@@ -68,16 +68,16 @@ func (sc *ShoppingMemosController) Patch(ctx controllers.Context) {
 
 	s.ID = id
 
-	shoppingMemo, res := sc.Interactor.Save(s)
+	shoppingItem, res := sc.Interactor.Save(s)
 	if res.Error != nil {
 		ctx.JSON(res.Code, controllers.NewH(res.Error.Error(), nil))
 		return
 	}
-	ctx.JSON(res.Code, controllers.NewH("success", shoppingMemo))
+	ctx.JSON(res.Code, controllers.NewH("success", shoppingItem))
 
 }
 
-func (sc *ShoppingMemosController) Delete(ctx controllers.Context) {
+func (sc *ShoppingItemsController) Delete(ctx controllers.Context) {
 
 	id, _ := strconv.Atoi(ctx.Param("id"))
 
