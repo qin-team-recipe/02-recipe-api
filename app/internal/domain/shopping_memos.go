@@ -23,5 +23,6 @@ func (s *ShoppingMemos) BuildForGet() *ShoppingMemosForGet {
 		ID:                 s.ID,
 		UserID:             s.UserID,
 		RecipeIngredientID: s.RecipeIngredientID,
+		IsDone:             s.IsDone,
 	}
 }
