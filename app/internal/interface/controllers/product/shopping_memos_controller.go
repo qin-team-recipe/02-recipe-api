@@ -3,6 +3,7 @@ package product
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/qin-team-recipe/02-recipe-api/internal/domain"
 	"github.com/qin-team-recipe/02-recipe-api/internal/interface/controllers"
@@ -23,6 +24,18 @@ func NewShoppingMemosController(db gateways.DB) *ShoppingMemosController {
 			ShoppingMemo:     &repository.ShoppingMemoRepository{},
 		},
 	}
+}
+
+func (sc *ShoppingMemosController) GetList(ctx controllers.Context) {
+	recipeID, _ := strconv.Atoi(ctx.Query("recipe_id"))
+
+	memos, res := sc.Interactor.GetList(recipeID)
+	if res.Error != nil {
+		ctx.JSON(res.Code, controllers.NewH(res.Error.Error(), nil))
+		return
+	}
+	ctx.JSON(res.Code, controllers.NewH("success", memos))
+
 }
 
 func (sc *ShoppingMemosController) Post(ctx controllers.Context) {

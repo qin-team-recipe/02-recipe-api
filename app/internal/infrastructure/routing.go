@@ -145,6 +145,9 @@ func (r *Routing) setRouting() {
 		 * shopping memos
 		 *
 		 */
+		v1.GET("/shoppingMemos", func(ctx *gin.Context) {
+			shoppingMemosController.GetList(ctx)
+		})
 		v1.POST("/shoppingMemos", func(ctx *gin.Context) {
 			shoppingMemosController.Post(ctx)
 		})
