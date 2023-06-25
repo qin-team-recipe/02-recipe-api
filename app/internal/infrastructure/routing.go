@@ -60,8 +60,10 @@ func (r *Routing) setRouting() {
 	recipeIngredientsController := product.NewRecipeIngretientsController(r.DB)
 	recipeLinksController := product.NewRecipeLinksController(r.DB)
 	recipeStepsController := product.NewRecipeStepsController(r.DB)
+	shoppingItemsController := product.NewShoppingItemsController(r.DB)
 	userController := product.NewUsersController()
 	userRecipesController := product.NewUserRecipesController(r.DB)
+	userShoppingItemsController := product.NewUserShoppingItemsController(r.DB)
 
 	// REST API用
 	v1 := r.Gin.Group("/api/v1")
@@ -141,6 +143,24 @@ func (r *Routing) setRouting() {
 		})
 
 		/*
+		 * shopping Items
+		 *
+		 */
+		v1.GET("/shoppingItems", func(ctx *gin.Context) {
+			shoppingItemsController.GetList(ctx)
+		})
+		v1.POST("/shoppingItems", func(ctx *gin.Context) {
+			shoppingItemsController.Post(ctx)
+		})
+
+		v1.PATCH("/shoppingItems/:id", func(ctx *gin.Context) {
+			shoppingItemsController.Patch(ctx)
+		})
+		v1.DELETE("/shoppingItems/:id", func(ctx *gin.Context) {
+			shoppingItemsController.Delete(ctx)
+		})
+
+		/*
 		 * user recipes
 		 *
 		 */
@@ -152,8 +172,26 @@ func (r *Routing) setRouting() {
 		})
 
 		/*
-		* swagger
-		*
+		 * user shopping Items
+		 *
+		 */
+		v1.GET("/userShoppingItems", func(ctx *gin.Context) {
+			userShoppingItemsController.GetList(ctx)
+		})
+		v1.POST("/userShoppingItems", func(ctx *gin.Context) {
+			userShoppingItemsController.Post(ctx)
+		})
+
+		v1.PATCH("/userShoppingItems/:id", func(ctx *gin.Context) {
+			userShoppingItemsController.Patch(ctx)
+		})
+		v1.DELETE("/userShoppingItems/:id", func(ctx *gin.Context) {
+			userShoppingItemsController.Delete(ctx)
+		})
+
+		/*
+		 * swagger
+		 *
 		 */
 		v1.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	}
