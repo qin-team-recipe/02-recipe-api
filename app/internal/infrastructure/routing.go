@@ -152,7 +152,7 @@ func (r *Routing) setRouting() {
 			shoppingMemosController.Post(ctx)
 		})
 
-		v1.DELETE("/shoppingMemos", func(ctx *gin.Context) {
+		v1.DELETE("/shoppingMemo/:id", func(ctx *gin.Context) {
 			shoppingMemosController.Delete(ctx)
 		})
 
