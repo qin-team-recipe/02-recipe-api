@@ -1,23 +1,192 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "This is a sample server celler server.",
-        "title": "Swagger Example API",
+        "description": "This is a Team02's API Docs at Qin.",
+        "title": "Team02's API",
         "termsOfService": "http://swagger.io/terms/",
-        "contact": {
-            "name": "API Support",
-            "url": "http://www.swagger.io/support",
-            "email": "support@swagger.io"
-        },
-        "license": {
-            "name": "Apache 2.0",
-            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
-        },
+        "contact": {},
         "version": "1.0"
     },
     "host": "localhost:8080",
-    "basePath": "/v1",
+    "basePath": "/api/v1",
     "paths": {
+        "/chefFollows": {
+            "get": {
+                "description": "This API return the list of following chefs by user.",
+                "consumes": [
+                    "application/x-json-stream"
+                ],
+                "tags": [
+                    "chefFollows"
+                ],
+                "summary": "Get following chef list.",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/domain.ChefFollowsForGet"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.ResultStatus"
+                        }
+                    }
+                }
+            }
+        },
+        "/chefs": {
+            "get": {
+                "description": "This API return all chef list.",
+                "consumes": [
+                    "application/x-json-stream"
+                ],
+                "tags": [
+                    "chef"
+                ],
+                "summary": "Get chef list.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Query",
+                        "name": "q",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/domain.ChefsForGet"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.ResultStatus"
+                        }
+                    }
+                }
+            }
+        },
+        "/chefs/{screenName}": {
+            "get": {
+                "description": "This API return unique chef by screenName.",
+                "consumes": [
+                    "application/x-json-stream"
+                ],
+                "tags": [
+                    "chef"
+                ],
+                "summary": "Get unique chef.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "screenName",
+                        "name": "screenName",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/domain.ChefsForGet"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.ResultStatus"
+                        }
+                    }
+                }
+            }
+        },
+        "/recipeFavorites": {
+            "get": {
+                "description": "This API return list of recipes of favorite.",
+                "consumes": [
+                    "application/x-json-stream"
+                ],
+                "tags": [
+                    "recipeFavorites"
+                ],
+                "summary": "Get list of recipes of favorite.",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/domain.RecipeFavoritesForGet"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.ResultStatus"
+                        }
+                    }
+                }
+            }
+        },
+        "/recipes": {
+            "get": {
+                "description": "This API return all recipe list.",
+                "consumes": [
+                    "application/x-json-stream"
+                ],
+                "tags": [
+                    "recipes"
+                ],
+                "summary": "Get recipe list.",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/domain.RecipesForGet"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.ResultStatus"
+                        }
+                    }
+                }
+            }
+        },
         "/users/{id}": {
             "get": {
                 "description": "get user info",
@@ -25,8 +194,7 @@
                     "application/x-json-stream"
                 ],
                 "tags": [
-                    "users",
-                    "product"
+                    "users"
                 ],
                 "summary": "product users",
                 "responses": {
@@ -35,12 +203,86 @@
                         "schema": {
                             "$ref": "#/definitions/domain.Users"
                         }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.ResultStatus"
+                        }
                     }
                 }
             }
         }
     },
     "definitions": {
+        "domain.ChefFollowsForGet": {
+            "type": "object",
+            "properties": {
+                "chef": {
+                    "$ref": "#/definitions/domain.ChefsForGet"
+                },
+                "chef_id": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "domain.ChefsForGet": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "display_name": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "screen_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.RecipeFavoritesForGet": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "recipe": {
+                    "$ref": "#/definitions/domain.RecipesForGet"
+                },
+                "recipe_id": {
+                    "type": "integer"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "domain.RecipesForGet": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "is_draft": {
+                    "type": "boolean"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
         "domain.Users": {
             "type": "object",
             "properties": {
@@ -54,15 +296,15 @@
                     "type": "string"
                 }
             }
+        },
+        "usecase.ResultStatus": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "error": {}
+            }
         }
-    },
-    "securityDefinitions": {
-        "BasicAuth": {
-            "type": "basic"
-        }
-    },
-    "externalDocs": {
-        "description": "OpenAPI",
-        "url": "https://swagger.io/resources/open-api/"
     }
 }

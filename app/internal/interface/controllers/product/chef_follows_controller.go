@@ -23,6 +23,14 @@ func NewChefFollowsController(db gateways.DB) *ChefFollowsController {
 	}
 }
 
+//	@summary		Get following chef list.
+//	@description	This API return the list of following chefs by user.
+//	@tags			chefFollows
+//	@accept			application/x-json-stream
+//	@param			user_id	query		int	false	"User ID"
+//	@Success		200		{array}		domain.ChefFollowsForGet
+//	@Failure		404		{object}	usecase.ResultStatus
+//	@router			/chefFollows [get]
 func (cc *ChefFollowsController) GetList(ctx controllers.Context) {
 
 	userID, _ := strconv.Atoi(ctx.Query("user_id"))

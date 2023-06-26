@@ -20,6 +20,13 @@ func NewRecipesController(db gateways.DB) *RecipesController {
 	}
 }
 
+//	@summary		Get recipe list.
+//	@description	This API return all recipe list.
+//	@tags			recipes
+//	@accept			application/x-json-stream
+//	@Success		200	{array}		domain.RecipesForGet
+//	@Failure		404	{object}	usecase.ResultStatus
+//	@router			/recipes [get]
 func (rc *RecipesController) GetList(ctx controllers.Context) {
 	recipes, res := rc.Interactor.GetList()
 	if res.Error != nil {
