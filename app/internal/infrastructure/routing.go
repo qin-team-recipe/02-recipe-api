@@ -55,9 +55,15 @@ func (r *Routing) setRouting() {
 
 	chefsController := product.NewChefsController(r.DB)
 	chefFollowsController := product.NewChefFollowsController(r.DB)
-	recipesController := product.NewRecipesController(r.DB)
+	chefRecipesController := product.NewChefRecipesController(r.DB)
 	recipeFavoritesController := product.NewRecipeFavoritesController(r.DB)
+	recipeIngredientsController := product.NewRecipeIngretientsController(r.DB)
+	recipeLinksController := product.NewRecipeLinksController(r.DB)
+	recipeStepsController := product.NewRecipeStepsController(r.DB)
+	shoppingItemsController := product.NewShoppingItemsController(r.DB)
 	userController := product.NewUsersController()
+	userRecipesController := product.NewUserRecipesController(r.DB)
+	userShoppingItemsController := product.NewUserShoppingItemsController(r.DB)
 
 	// REST API用
 	v1 := r.Gin.Group("/api/v1")
@@ -89,11 +95,11 @@ func (r *Routing) setRouting() {
 		})
 
 		/*
-		 * recipes
+		 * chef recipes
 		 *
 		 */
-		v1.GET("/recipes", func(ctx *gin.Context) {
-			recipesController.GetList(ctx)
+		v1.GET("/chefRecipes", func(ctx *gin.Context) {
+			chefRecipesController.GetList(ctx)
 		})
 
 		// v1.GET("/recipes/:id", func(ctx *gin.Context) {
@@ -121,8 +127,79 @@ func (r *Routing) setRouting() {
 		})
 
 		/*
-		* swagger
-		*
+		 * recipes ingredients
+		 *
+		 */
+		v1.POST("/recipeIngredients", func(ctx *gin.Context) {
+			recipeIngredientsController.Post(ctx)
+		})
+
+		/*
+		 * recipes links
+		 *
+		 */
+		v1.POST("/recipeLinks", func(ctx *gin.Context) {
+			recipeLinksController.Post(ctx)
+		})
+
+		/*
+		 * recipes steps
+		 *
+		 */
+		v1.POST("/recipeSteps", func(ctx *gin.Context) {
+			recipeStepsController.Post(ctx)
+		})
+
+		/*
+		 * shopping Items
+		 *
+		 */
+		v1.GET("/shoppingItems", func(ctx *gin.Context) {
+			shoppingItemsController.GetList(ctx)
+		})
+		v1.POST("/shoppingItems", func(ctx *gin.Context) {
+			shoppingItemsController.Post(ctx)
+		})
+
+		v1.PATCH("/shoppingItems/:id", func(ctx *gin.Context) {
+			shoppingItemsController.Patch(ctx)
+		})
+		v1.DELETE("/shoppingItems/:id", func(ctx *gin.Context) {
+			shoppingItemsController.Delete(ctx)
+		})
+
+		/*
+		 * user recipes
+		 *
+		 */
+		v1.GET("/userRecipes", func(ctx *gin.Context) {
+			userRecipesController.GetList(ctx)
+		})
+		v1.POST("/userRecipes", func(ctx *gin.Context) {
+			userRecipesController.Post(ctx)
+		})
+
+		/*
+		 * user shopping Items
+		 *
+		 */
+		v1.GET("/userShoppingItems", func(ctx *gin.Context) {
+			userShoppingItemsController.GetList(ctx)
+		})
+		v1.POST("/userShoppingItems", func(ctx *gin.Context) {
+			userShoppingItemsController.Post(ctx)
+		})
+
+		v1.PATCH("/userShoppingItems/:id", func(ctx *gin.Context) {
+			userShoppingItemsController.Patch(ctx)
+		})
+		v1.DELETE("/userShoppingItems/:id", func(ctx *gin.Context) {
+			userShoppingItemsController.Delete(ctx)
+		})
+
+		/*
+		 * swagger
+		 *
 		 */
 		v1.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	}
@@ -142,10 +219,10 @@ func (r *Routing) setRouting() {
 		})
 
 		/*
-		 * console recipes
+		 * console chef recipes
 		 *
 		 */
-		v1Console.POST("/recipes", func(ctx *gin.Context) {
+		v1Console.POST("/chefRecipes", func(ctx *gin.Context) {
 			consoleRecipesController.Post(ctx)
 		})
 	}
