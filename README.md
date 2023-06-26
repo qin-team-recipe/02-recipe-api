@@ -98,3 +98,24 @@ Goファイルに更新があった場合は自動でビルドし再度立ち上
 | usecase  | ユースケース配置  |
 | usecase/repository  | interfaceの役割（DI）  |
 | usecase/interactor  | ビジネスロジックを配置  |
+
+## How to use swagger
+
+### ドキュメントを参照する
+
+- `localhost:[ポート]/api/v1/swagger/index.html`
+
+### ドキュメントを更新する
+
+- `cd 02-recipe-api/`
+- `swag fmt`
+- `cd 02-recipe-api/app/cmd/`
+- `swag init --pd --parseInternal -o ../docs -g ../internal/infrastructure/routing.go -d ./,../internal/infrastructure/,../internal/interface/controllers/product/`
+
+| ディレクトリ名         | 内容 |
+| ---------------------- | -------------------------------------------------------------------------------------------------------- |
+| --parseDependency --pd | 依存関係フォルダー内の go ファイルを解析する |
+| --parseInternal        | 内部パッケージ内の go ファイルを解析する |
+| --output -o            | 生成されたファイル(swagger.json, swagger.yaml, docs.go)の出力ディレクトリ |
+| --generalInfo -g       | 'swagger general API Info' が記述された go ファイルのパス |
+| --dir -d               | 解析対象のディレクトリ(カンマ区切り) ※'swagger general API Info'の記載されているディレクトリを先頭とする |
