@@ -1,30 +1,29 @@
 package domain
 
-type Recipes struct {
+type RecipeSteps struct {
 	ID          int     `json:"id"`
+	RecipeID    int     `json:"recipe_id" binding:"required"`
 	Title       string  `json:"title" binding:"required"`
 	Description *string `json:"description"`
-	Servings    int     `json:"servings" binding:"required,min=1"`
-	IsDraft     bool    `json:"is_draft"`
+	StepNumber  int     `json:"step_number"`
 	CreatedAt   int64   `json:"created_at"`
 	UpdatedAt   int64   `json:"updated_at"`
-	DeletedAt   *int64  `json:"deleted_at"`
 }
 
-type RecipesForGet struct {
+type RecipeStepsForGet struct {
 	ID          int     `json:"id"`
+	RecipeID    int     `json:"recipe_id"`
 	Title       string  `json:"title"`
 	Description *string `json:"description"`
-	Servings    int     `json:"servings"`
-	IsDraft     bool    `json:"is_draft"`
+	StepNumber  int     `json:"step_number"`
 }
 
-func (r *Recipes) BuildForGet() *RecipesForGet {
-	return &RecipesForGet{
+func (r *RecipeSteps) BuildForGet() *RecipeStepsForGet {
+	return &RecipeStepsForGet{
 		ID:          r.ID,
+		RecipeID:    r.RecipeID,
 		Title:       r.Title,
 		Description: r.Description,
-		Servings:    r.Servings,
-		IsDraft:     r.IsDraft,
+		StepNumber:  r.StepNumber,
 	}
 }
