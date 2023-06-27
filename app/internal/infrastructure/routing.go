@@ -15,14 +15,16 @@ import (
 )
 
 type Routing struct {
-	Gin *gin.Engine
-	DB  *DB
+	Gin    *gin.Engine
+	DB     *DB
+	Google *Google
 }
 
-func NewRouting(c *config.Config, db *DB) *Routing {
+func NewRouting(c *config.Config, db *DB, google *Google) *Routing {
 	r := &Routing{
-		DB:  db,
-		Gin: gin.Default(),
+		DB:     db,
+		Gin:    gin.Default(),
+		Google: google,
 	}
 
 	// r.setCors()
@@ -53,6 +55,7 @@ func NewRouting(c *config.Config, db *DB) *Routing {
 // @externalDocs.url          https://swagger.io/resources/open-api/
 func (r *Routing) setRouting() {
 
+	authenticatesController := product.NewAuthenticatesController(r.Google)
 	chefsController := product.NewChefsController(r.DB)
 	chefFollowsController := product.NewChefFollowsController(r.DB)
 	chefRecipesController := product.NewChefRecipesController(r.DB)
@@ -61,7 +64,7 @@ func (r *Routing) setRouting() {
 	recipeLinksController := product.NewRecipeLinksController(r.DB)
 	recipeStepsController := product.NewRecipeStepsController(r.DB)
 	shoppingItemsController := product.NewShoppingItemsController(r.DB)
-	userController := product.NewUsersController()
+	userController := product.NewUsersController(&product.UsersControllerProvider{DB: r.DB, Google: r.Google})
 	userRecipesController := product.NewUserRecipesController(r.DB)
 	userShoppingItemsController := product.NewUserShoppingItemsController(r.DB)
 
@@ -72,6 +75,14 @@ func (r *Routing) setRouting() {
 	{
 		v1.GET("/", func(ctx *gin.Context) {
 			ctx.JSON(http.StatusOK, gin.H{"message": "Hello World!!"})
+		})
+
+		/*
+		 * authorization
+		 *
+		 */
+		v1.GET("/authenticates/google", func(ctx *gin.Context) {
+			authenticatesController.GetGoogle(ctx)
 		})
 
 		/*

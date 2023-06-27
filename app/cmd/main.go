@@ -9,7 +9,9 @@ func main() {
 	config := config.NewConfig(".")
 
 	db := infrastructure.NewDB(config)
-	r := infrastructure.NewRouting(config, db)
+	google := infrastructure.NewGoogle(config)
+
+	r := infrastructure.NewRouting(config, db, google)
 
 	r.Run(config.ContainerServerPort)
 }

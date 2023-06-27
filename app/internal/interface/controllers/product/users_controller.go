@@ -2,6 +2,7 @@ package product
 
 import (
 	"github.com/qin-team-recipe/02-recipe-api/internal/interface/controllers"
+	"github.com/qin-team-recipe/02-recipe-api/internal/interface/gateways"
 	"github.com/qin-team-recipe/02-recipe-api/internal/interface/gateways/repository"
 	"github.com/qin-team-recipe/02-recipe-api/internal/usecase/interactor/product"
 )
@@ -10,10 +11,16 @@ type UsersController struct {
 	Interactor product.UserInteractor
 }
 
-func NewUsersController() *UsersController {
+type UsersControllerProvider struct {
+	DB     gateways.DB
+	Google gateways.Google
+}
+
+func NewUsersController(p *UsersControllerProvider) *UsersController {
 	return &UsersController{
 		Interactor: product.UserInteractor{
-			User: &repository.UserRepository{},
+			Google: &gateways.GoogleGateway{Google: p.Google},
+			User:   &repository.UserRepository{},
 		},
 	}
 }
