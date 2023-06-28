@@ -26,3 +26,15 @@ func (ac *AuthenticatesController) GetGoogle(ctx controllers.Context) {
 	}
 	ctx.JSON(res.Code, controllers.NewH("success", googleUrl))
 }
+
+func (ac *AuthenticatesController) GetGoogleUserInfo(ctx controllers.Context) {
+
+	code := ctx.Query("code")
+
+	userinfo, res := ac.Interactor.GetGoogleUserInfo(code)
+	if res.Error != nil {
+		ctx.JSON(res.Code, controllers.NewH(res.Error.Error(), nil))
+		return
+	}
+	ctx.JSON(res.Code, controllers.NewH("success", userinfo))
+}

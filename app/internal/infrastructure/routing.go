@@ -8,6 +8,7 @@ import (
 	"github.com/qin-team-recipe/02-recipe-api/config"
 	"github.com/qin-team-recipe/02-recipe-api/internal/interface/controllers/console"
 	"github.com/qin-team-recipe/02-recipe-api/internal/interface/controllers/product"
+	"github.com/qin-team-recipe/02-recipe-api/pkg/token"
 
 	docs "github.com/qin-team-recipe/02-recipe-api/docs"
 	swaggerfiles "github.com/swaggo/files"
@@ -18,13 +19,15 @@ type Routing struct {
 	Gin    *gin.Engine
 	DB     *DB
 	Google *Google
+	Jwt    token.Maker
 }
 
-func NewRouting(c *config.Config, db *DB, google *Google) *Routing {
+func NewRouting(c *config.Config, db *DB, google *Google, jwt token.Maker) *Routing {
 	r := &Routing{
 		DB:     db,
 		Gin:    gin.Default(),
 		Google: google,
+		Jwt:    jwt,
 	}
 
 	// r.setCors()
@@ -59,6 +62,7 @@ func (r *Routing) setRouting() {
 	chefsController := product.NewChefsController(r.DB)
 	chefFollowsController := product.NewChefFollowsController(r.DB)
 	chefRecipesController := product.NewChefRecipesController(r.DB)
+	meController := product.NewMeController(product.MeControllerProvider{DB: r.DB})
 	recipeFavoritesController := product.NewRecipeFavoritesController(r.DB)
 	recipeIngredientsController := product.NewRecipeIngretientsController(r.DB)
 	recipeLinksController := product.NewRecipeLinksController(r.DB)
@@ -78,11 +82,14 @@ func (r *Routing) setRouting() {
 		})
 
 		/*
-		 * authorization
+		 * authenticates
 		 *
 		 */
 		v1.GET("/authenticates/google", func(ctx *gin.Context) {
 			authenticatesController.GetGoogle(ctx)
+		})
+		v1.GET("/authenticates/google/userinfo", func(ctx *gin.Context) {
+			authenticatesController.GetGoogleUserInfo(ctx)
 		})
 
 		/*
@@ -116,6 +123,17 @@ func (r *Routing) setRouting() {
 		// v1.GET("/recipes/:id", func(ctx *gin.Context) {
 		// 	recipesController.Get(ctx)
 		// })
+
+		/*
+		 * me
+		 *
+		 */
+		v1.GET("/me", func(ctx *gin.Context) {
+			meController.Get(ctx)
+		})
+		v1.POST("/me", func(ctx *gin.Context) {
+			meController.Post(ctx)
+		})
 
 		/*
 		 * recipes favorites

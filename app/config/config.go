@@ -2,6 +2,7 @@ package config
 
 import (
 	"log"
+	"time"
 
 	"github.com/spf13/viper"
 )
@@ -19,8 +20,8 @@ type Config struct {
 	DBPort     string `mapstructure:"DB_PORT"`
 	DBName     string `mapstructure:"DB_NAME"`
 
-	TokenExpireAt int    `mapstructure:"JWT_TOKEN_EXPIRE_AT"`
-	SecretKey     string `mapstructure:"JWT_SECRET_KEY"`
+	TokenExpireAt time.Duration `mapstructure:"JWT_TOKEN_EXPIRE_AT"`
+	SecretKey     string        `mapstructure:"JWT_SECRET_KEY"`
 
 	GoogleClientID  string `mapstructure:"GOOGLE_CLIENT_ID"`
 	GoogleSecretKey string `mapstructure:"GOOGLE_SECRET_KEY"`

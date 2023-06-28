@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/qin-team-recipe/02-recipe-api/config"
+	"github.com/qin-team-recipe/02-recipe-api/internal/domain"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 	v2 "google.golang.org/api/oauth2/v2"
@@ -46,26 +47,38 @@ func (g *Google) AuthCodeURL(state string) string {
 
 func (g *Google) GetUserInfo(code string) (string, error) {
 
-	cxt := context.Background()
+	ctx := context.Background()
 
-	httpClient, err := g.Config.Exchange(cxt, code)
+	httpClient, err := g.Config.Exchange(ctx, code)
 	if err != nil {
 		return "", err
 	}
 
-	client := g.Config.Client(cxt, httpClient)
+	client := g.Config.Client(ctx, httpClient)
 
 	service, err := v2.New(client)
 	if err != nil {
 		return "", err
 	}
 
-	userInfo, err := service.Tokeninfo().AccessToken(httpClient.AccessToken).Context(cxt).Do()
+	token, err := service.Tokeninfo().AccessToken(httpClient.AccessToken).Context(ctx).Do()
+	if err != nil {
+		return "", err
+	}
+	// Debug
+	log.Println("token:", token)
+
+	userinfo, err := service.Userinfo.Get().Do()
 	if err != nil {
 		return "", err
 	}
 
-	log.Println("userInfo:", userInfo)
+	user := &domain.Users{
+		DisplayName: userinfo.Name,
+		Email:       userinfo.Email,
+	}
+	// Debug
+	log.Println("user:", user)
 
 	return "", nil
 }
