@@ -1,5 +1,123 @@
-basePath: /v1
+basePath: /api/v1
 definitions:
+  domain.ChefFollowsForGet:
+    properties:
+      chef:
+        $ref: '#/definitions/domain.ChefsForGet'
+      chef_id:
+        type: integer
+      id:
+        type: integer
+      user_id:
+        type: integer
+    type: object
+  domain.ChefsForGet:
+    properties:
+      description:
+        type: string
+      display_name:
+        type: string
+      id:
+        type: integer
+      screen_name:
+        type: string
+    type: object
+  domain.RecipeFavoritesForGet:
+    properties:
+      id:
+        type: integer
+      recipe:
+        $ref: '#/definitions/domain.RecipesForGet'
+      recipe_id:
+        type: integer
+      user_id:
+        type: integer
+    type: object
+  domain.RecipeIngredientsForGet:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      recipe_id:
+        type: integer
+    type: object
+  domain.RecipeLinksForGet:
+    properties:
+      id:
+        type: integer
+      recipe_id:
+        type: integer
+      url:
+        type: string
+    type: object
+  domain.RecipeStepsForGet:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+      recipe_id:
+        type: integer
+      step_number:
+        type: integer
+      title:
+        type: string
+    type: object
+  domain.RecipesForGet:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+      is_draft:
+        type: boolean
+      servings:
+        type: integer
+      title:
+        type: string
+    type: object
+  domain.ShoppingItemsForGet:
+    properties:
+      id:
+        type: integer
+      is_done:
+        type: boolean
+      recipe_ingredient:
+        $ref: '#/definitions/domain.RecipeIngredientsForGet'
+      recipe_ingredient_id:
+        type: integer
+      user_id:
+        type: integer
+    type: object
+  domain.UserRecipesForGet:
+    properties:
+      id:
+        type: integer
+      recipe:
+        $ref: '#/definitions/domain.RecipesForGet'
+      recipe_id:
+        type: integer
+      user_id:
+        type: integer
+    type: object
+  domain.UserShoppingItemsForGet:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+      is_done:
+        type: boolean
+      title:
+        type: string
+      user_id:
+        type: integer
+    required:
+    - title
+    type: object
   domain.Users:
     properties:
       display_name:
@@ -9,38 +127,530 @@ definitions:
       screen_name:
         type: string
     type: object
-externalDocs:
-  description: OpenAPI
-  url: https://swagger.io/resources/open-api/
+  usecase.ResultStatus:
+    properties:
+      code:
+        type: integer
+      error: {}
+    type: object
 host: localhost:8080
 info:
-  contact:
-    email: support@swagger.io
-    name: API Support
-    url: http://www.swagger.io/support
-  description: This is a sample server celler server.
-  license:
-    name: Apache 2.0
-    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  contact: {}
+  description: This is a Team02's API Docs at Qin.
   termsOfService: http://swagger.io/terms/
-  title: Swagger Example API
+  title: Team02's API
   version: "1.0"
 paths:
+  /chefFollows:
+    get:
+      consumes:
+      - application/x-json-stream
+      description: This API return the list of following chefs by user.
+      parameters:
+      - description: User ID
+        in: query
+        name: user_id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/domain.ChefFollowsForGet'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/usecase.ResultStatus'
+      summary: Get following chef list.
+      tags:
+      - chefFollows
+  /chefs:
+    get:
+      consumes:
+      - application/x-json-stream
+      description: This API return all chef list.
+      parameters:
+      - description: Query
+        in: query
+        name: q
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/domain.ChefsForGet'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/usecase.ResultStatus'
+      summary: Get chef list.
+      tags:
+      - chef
+  /chefs/{screenName}:
+    get:
+      consumes:
+      - application/x-json-stream
+      description: This API return unique chef by screenName.
+      parameters:
+      - description: screenName
+        in: path
+        name: screenName
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.ChefsForGet'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/usecase.ResultStatus'
+      summary: Get unique chef.
+      tags:
+      - chef
+  /recipeFavorites:
+    get:
+      consumes:
+      - application/x-json-stream
+      description: This API return list of recipes of favorite.
+      parameters:
+      - description: User ID
+        in: query
+        name: user_id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/domain.RecipeFavoritesForGet'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/usecase.ResultStatus'
+      summary: Get list of recipes of favorite.
+      tags:
+      - recipeFavorites
+  /recipeIngredients:
+    post:
+      consumes:
+      - application/x-json-stream
+      description: This API regist recipe ingredients and return this results data.
+      parameters:
+      - description: RecipeID
+        in: formData
+        name: recipe_id
+        required: true
+        type: integer
+      - description: Name
+        in: formData
+        name: name
+        required: true
+        type: string
+      - description: Description
+        in: formData
+        name: description
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.RecipeIngredientsForGet'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/usecase.ResultStatus'
+      summary: Regist recipe ingredients.
+      tags:
+      - recipeIngredients
+  /recipeLinks:
+    post:
+      consumes:
+      - application/x-json-stream
+      description: This API regist recipe links and return this results data.
+      parameters:
+      - description: Recipe ID
+        in: formData
+        name: recipe_id
+        required: true
+        type: integer
+      - description: URL
+        in: formData
+        name: url
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.RecipeLinksForGet'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/usecase.ResultStatus'
+      summary: Regist recipe links.
+      tags:
+      - recipeLinks
+  /recipeSteps:
+    post:
+      consumes:
+      - application/x-json-stream
+      description: This API regist recipe steps and return this results data.
+      parameters:
+      - description: Recipe ID
+        in: formData
+        name: recipe_id
+        required: true
+        type: integer
+      - description: Title
+        in: formData
+        name: title
+        required: true
+        type: string
+      - description: Description
+        in: formData
+        name: description
+        type: string
+      - description: Step Number
+        in: formData
+        name: step_number
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.RecipeStepsForGet'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/usecase.ResultStatus'
+      summary: Regist recipe steps.
+      tags:
+      - recipeSteps
+  /recipes:
+    get:
+      consumes:
+      - application/x-json-stream
+      description: This API return all recipe list.
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/domain.RecipesForGet'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/usecase.ResultStatus'
+      summary: Get recipe list.
+      tags:
+      - recipes
+  /shoppingItems:
+    get:
+      consumes:
+      - application/x-json-stream
+      description: This API return list of recipes shopping items by Recipe ID.
+      parameters:
+      - description: Recipe ID
+        in: query
+        name: recipe_id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/domain.ShoppingItemsForGet'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/usecase.ResultStatus'
+      summary: Get recipes shopping items.
+      tags:
+      - shoppingItems
+    post:
+      consumes:
+      - application/x-json-stream
+      description: This API regist shopping items at recipe and return this results
+        data.
+      parameters:
+      - description: User ID
+        in: formData
+        name: user_id
+        type: integer
+      - description: Recipe Ingredient ID
+        in: formData
+        name: recipe_ingredient_id
+        type: integer
+      - description: IsDone
+        in: formData
+        name: id_done
+        type: boolean
+      responses:
+        "202":
+          description: Accepted
+          schema:
+            $ref: '#/definitions/domain.ShoppingItemsForGet'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/usecase.ResultStatus'
+      summary: Regist recipes shopping items.
+      tags:
+      - shoppingItems
+  /shoppingItems/{id}:
+    delete:
+      consumes:
+      - application/x-json-stream
+      description: This API delete shopping items.
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: nil
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/usecase.ResultStatus'
+      summary: Delete shopping items.
+      tags:
+      - shoppingItems
+    patch:
+      consumes:
+      - application/x-json-stream
+      description: This API update state of done at shopping items and return this
+        results data.
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: User ID
+        in: formData
+        name: user_id
+        required: true
+        type: integer
+      - description: Recipe Ingredient ID
+        in: formData
+        name: recipe_ingredient_id
+        required: true
+        type: integer
+      - description: IsDone
+        in: formData
+        name: id_done
+        type: boolean
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.ShoppingItemsForGet'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/usecase.ResultStatus'
+      summary: Update state of done.
+      tags:
+      - shoppingItems
+  /userRecipes:
+    post:
+      consumes:
+      - application/x-json-stream
+      description: This API regist user recipes and return this results data.
+      parameters:
+      - description: Title
+        in: formData
+        name: title
+        required: true
+        type: string
+      - description: Description
+        in: formData
+        name: description
+        type: string
+      - description: Servings
+        in: formData
+        name: servings
+        required: true
+        type: integer
+      - description: isDraft
+        in: formData
+        name: is_draft
+        type: boolean
+      responses:
+        "202":
+          description: Accepted
+          schema:
+            $ref: '#/definitions/domain.UserRecipesForGet'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/usecase.ResultStatus'
+      summary: Regist user recipes.
+      tags:
+      - userRecipes
+  /userShoppingItems:
+    get:
+      consumes:
+      - application/x-json-stream
+      description: This API return list of users shopping items by User ID.
+      parameters:
+      - description: User ID
+        in: query
+        name: user_id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/domain.UserShoppingItemsForGet'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/usecase.ResultStatus'
+      summary: Get users shopping items.
+      tags:
+      - userShoppingItems
+    post:
+      consumes:
+      - application/x-json-stream
+      description: This API regist shopping items yourself and return this results
+        data.
+      parameters:
+      - description: User ID
+        in: formData
+        name: user_id
+        required: true
+        type: integer
+      - description: Title
+        in: formData
+        name: title
+        required: true
+        type: string
+      - description: Description
+        in: formData
+        name: description
+        type: string
+      - description: isDone
+        in: formData
+        name: is_done
+        type: boolean
+      responses:
+        "202":
+          description: Accepted
+          schema:
+            $ref: '#/definitions/domain.UserShoppingItemsForGet'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/usecase.ResultStatus'
+      summary: Regist users shopping items.
+      tags:
+      - userShoppingItems
+  /userShoppingItems/{id}:
+    delete:
+      consumes:
+      - application/x-json-stream
+      description: This API delete user shopping items.
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: nil
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/usecase.ResultStatus'
+      summary: Delete shopping items.
+      tags:
+      - userShoppingItems
+    patch:
+      consumes:
+      - application/x-json-stream
+      description: This API update state of done at user shopping items and return
+        this results data.
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: User ID
+        in: formData
+        name: user_id
+        required: true
+        type: integer
+      - description: Title
+        in: formData
+        name: title
+        required: true
+        type: string
+      - description: Description
+        in: formData
+        name: description
+        type: string
+      - description: isDone
+        in: formData
+        name: is_done
+        type: boolean
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.UserShoppingItemsForGet'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/usecase.ResultStatus'
+      summary: Update state of done.
+      tags:
+      - userShoppingItems
   /users/{id}:
     get:
       consumes:
       - application/x-json-stream
       description: get user info
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
       responses:
         "200":
           description: OK
           schema:
             $ref: '#/definitions/domain.Users'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/usecase.ResultStatus'
       summary: product users
       tags:
       - users
-      - product
-securityDefinitions:
-  BasicAuth:
-    type: basic
 swagger: "2.0"
