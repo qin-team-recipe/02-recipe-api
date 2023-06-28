@@ -32,7 +32,7 @@ func NewJwtMaker(c *config.Config) Maker {
 
 // Create json web token
 func (j *JwtMaker) CreateToken(userID int) string {
-	payload, _ := NewPayload(userID, j.TokenExpireAt)
+	payload, _ := NewPayload(j.ApplicationName, userID, j.TokenExpireAt)
 	// ES256 には公開鍵と秘密鍵のペアが必要で、HS256 には秘密鍵のみが必要
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, payload)
 

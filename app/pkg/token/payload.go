@@ -12,11 +12,13 @@ var ErrExpiredToken = errors.New("")
 type Payload struct {
 	ID        uuid.UUID `json:"id"`
 	Audience  int       `json:"audience"`
+	Issuer    string    `json:"issuer"`
+	Subject   string    `json:"subject"`
 	IssuedAt  int64     `json:"issued_at"`
 	ExpiredAt int64     `json:"expired_at"`
 }
 
-func NewPayload(username int, duration time.Duration) (*Payload, error) {
+func NewPayload(applicationName string, username int, duration time.Duration) (*Payload, error) {
 	tokenID, err := uuid.NewRandom()
 	if err != nil {
 		return nil, err
@@ -25,6 +27,8 @@ func NewPayload(username int, duration time.Duration) (*Payload, error) {
 	payload := &Payload{
 		ID:        tokenID,
 		Audience:  username,
+		Issuer:    applicationName,
+		Subject:   "http://localhost:3000",
 		IssuedAt:  time.Now().Unix(),
 		ExpiredAt: time.Now().Add(duration).Unix(),
 	}

@@ -2,6 +2,7 @@ package infrastructure
 
 import (
 	"context"
+	"fmt"
 	"log"
 
 	"github.com/qin-team-recipe/02-recipe-api/config"
@@ -29,6 +30,7 @@ func newGoogle(c *config.Config) *Google {
 			Scopes: []string{
 				"openid",
 				"email",
+				"profile",
 			},
 			RedirectURL: "http://localhost:3000/auth/callback/google",
 		},
@@ -45,32 +47,33 @@ func (g *Google) AuthCodeURL(state string) string {
 	return g.Config.AuthCodeURL(state)
 }
 
-func (g *Google) GetUserInfo(code string) (string, error) {
+func (g *Google) GetUserInfo(code string) (string, string, string, error) {
 
 	ctx := context.Background()
 
 	httpClient, err := g.Config.Exchange(ctx, code)
 	if err != nil {
-		return "", err
+		return "", "", "", err
 	}
 
 	client := g.Config.Client(ctx, httpClient)
 
 	service, err := v2.New(client)
 	if err != nil {
-		return "", err
+		return "", "", "", err
 	}
 
 	token, err := service.Tokeninfo().AccessToken(httpClient.AccessToken).Context(ctx).Do()
 	if err != nil {
-		return "", err
+		return "", "", "", err
 	}
 	// Debug
 	log.Println("token:", token)
+	fmt.Printf("%+v\n", token)
 
 	userinfo, err := service.Userinfo.Get().Do()
 	if err != nil {
-		return "", err
+		return "", "", "", err
 	}
 
 	user := &domain.Users{
@@ -79,6 +82,7 @@ func (g *Google) GetUserInfo(code string) (string, error) {
 	}
 	// Debug
 	log.Println("user:", user)
+	fmt.Printf("%+v\n", user)
 
-	return "", nil
+	return userinfo.Id, userinfo.Name, userinfo.Email, nil
 }
