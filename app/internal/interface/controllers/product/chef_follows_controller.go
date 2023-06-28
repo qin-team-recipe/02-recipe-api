@@ -27,7 +27,7 @@ func NewChefFollowsController(db gateways.DB) *ChefFollowsController {
 //	@description	This API return the list of following chefs by user.
 //	@tags			chefFollows
 //	@accept			application/x-json-stream
-//	@param			user_id	query		int	false	"User ID"
+//	@param			user_id	query		int	true	"User ID"
 //	@Success		200		{array}		domain.ChefFollowsForGet
 //	@Failure		404		{object}	usecase.ResultStatus
 //	@router			/chefFollows [get]

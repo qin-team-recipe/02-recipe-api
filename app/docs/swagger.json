@@ -25,7 +25,8 @@
                         "type": "integer",
                         "description": "User ID",
                         "name": "user_id",
-                        "in": "query"
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -62,7 +63,8 @@
                         "type": "string",
                         "description": "Query",
                         "name": "q",
-                        "in": "query"
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -99,17 +101,15 @@
                         "type": "string",
                         "description": "screenName",
                         "name": "screenName",
-                        "in": "path"
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/domain.ChefsForGet"
-                            }
+                            "$ref": "#/definitions/domain.ChefsForGet"
                         }
                     },
                     "404": {
@@ -136,7 +136,8 @@
                         "type": "integer",
                         "description": "User ID",
                         "name": "user_id",
-                        "in": "query"
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -151,6 +152,150 @@
                     },
                     "404": {
                         "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.ResultStatus"
+                        }
+                    }
+                }
+            }
+        },
+        "/recipeIngredients": {
+            "post": {
+                "description": "This API regist recipe ingredients and return this results data.",
+                "consumes": [
+                    "application/x-json-stream"
+                ],
+                "tags": [
+                    "recipeIngredients"
+                ],
+                "summary": "Regist recipe ingredients.",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "RecipeID",
+                        "name": "recipe_id",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Name",
+                        "name": "name",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Description",
+                        "name": "description",
+                        "in": "formData"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/domain.RecipeIngredientsForGet"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.ResultStatus"
+                        }
+                    }
+                }
+            }
+        },
+        "/recipeLinks": {
+            "post": {
+                "description": "This API regist recipe links and return this results data.",
+                "consumes": [
+                    "application/x-json-stream"
+                ],
+                "tags": [
+                    "recipeLinks"
+                ],
+                "summary": "Regist recipe links.",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Recipe ID",
+                        "name": "recipe_id",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "URL",
+                        "name": "url",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/domain.RecipeLinksForGet"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.ResultStatus"
+                        }
+                    }
+                }
+            }
+        },
+        "/recipeSteps": {
+            "post": {
+                "description": "This API regist recipe steps and return this results data.",
+                "consumes": [
+                    "application/x-json-stream"
+                ],
+                "tags": [
+                    "recipeSteps"
+                ],
+                "summary": "Regist recipe steps.",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Recipe ID",
+                        "name": "recipe_id",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Title",
+                        "name": "title",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Description",
+                        "name": "description",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Step Number",
+                        "name": "step_number",
+                        "in": "formData"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/domain.RecipeStepsForGet"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
                             "$ref": "#/definitions/usecase.ResultStatus"
                         }
@@ -187,6 +332,414 @@
                 }
             }
         },
+        "/shoppingItems": {
+            "get": {
+                "description": "This API return list of recipes shopping items by Recipe ID.",
+                "consumes": [
+                    "application/x-json-stream"
+                ],
+                "tags": [
+                    "shoppingItems"
+                ],
+                "summary": "Get recipes shopping items.",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Recipe ID",
+                        "name": "recipe_id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/domain.ShoppingItemsForGet"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.ResultStatus"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "This API regist shopping items at recipe and return this results data.",
+                "consumes": [
+                    "application/x-json-stream"
+                ],
+                "tags": [
+                    "shoppingItems"
+                ],
+                "summary": "Regist recipes shopping items.",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Recipe Ingredient ID",
+                        "name": "recipe_ingredient_id",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "IsDone",
+                        "name": "id_done",
+                        "in": "formData"
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "Accepted",
+                        "schema": {
+                            "$ref": "#/definitions/domain.ShoppingItemsForGet"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.ResultStatus"
+                        }
+                    }
+                }
+            }
+        },
+        "/shoppingItems/{id}": {
+            "delete": {
+                "description": "This API delete shopping items.",
+                "consumes": [
+                    "application/x-json-stream"
+                ],
+                "tags": [
+                    "shoppingItems"
+                ],
+                "summary": "Delete shopping items.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "nil"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.ResultStatus"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "This API update state of done at shopping items and return this results data.",
+                "consumes": [
+                    "application/x-json-stream"
+                ],
+                "tags": [
+                    "shoppingItems"
+                ],
+                "summary": "Update state of done.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Recipe Ingredient ID",
+                        "name": "recipe_ingredient_id",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "IsDone",
+                        "name": "id_done",
+                        "in": "formData"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/domain.ShoppingItemsForGet"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.ResultStatus"
+                        }
+                    }
+                }
+            }
+        },
+        "/userRecipes": {
+            "post": {
+                "description": "This API regist user recipes and return this results data.",
+                "consumes": [
+                    "application/x-json-stream"
+                ],
+                "tags": [
+                    "userRecipes"
+                ],
+                "summary": "Regist user recipes.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Title",
+                        "name": "title",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Description",
+                        "name": "description",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Servings",
+                        "name": "servings",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "isDraft",
+                        "name": "is_draft",
+                        "in": "formData"
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "Accepted",
+                        "schema": {
+                            "$ref": "#/definitions/domain.UserRecipesForGet"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.ResultStatus"
+                        }
+                    }
+                }
+            }
+        },
+        "/userShoppingItems": {
+            "get": {
+                "description": "This API return list of users shopping items by User ID.",
+                "consumes": [
+                    "application/x-json-stream"
+                ],
+                "tags": [
+                    "userShoppingItems"
+                ],
+                "summary": "Get users shopping items.",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/domain.UserShoppingItemsForGet"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.ResultStatus"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "This API regist shopping items yourself and return this results data.",
+                "consumes": [
+                    "application/x-json-stream"
+                ],
+                "tags": [
+                    "userShoppingItems"
+                ],
+                "summary": "Regist users shopping items.",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Title",
+                        "name": "title",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Description",
+                        "name": "description",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "isDone",
+                        "name": "is_done",
+                        "in": "formData"
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "Accepted",
+                        "schema": {
+                            "$ref": "#/definitions/domain.UserShoppingItemsForGet"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.ResultStatus"
+                        }
+                    }
+                }
+            }
+        },
+        "/userShoppingItems/{id}": {
+            "delete": {
+                "description": "This API delete user shopping items.",
+                "consumes": [
+                    "application/x-json-stream"
+                ],
+                "tags": [
+                    "userShoppingItems"
+                ],
+                "summary": "Delete shopping items.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "nil"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.ResultStatus"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "This API update state of done at user shopping items and return this results data.",
+                "consumes": [
+                    "application/x-json-stream"
+                ],
+                "tags": [
+                    "userShoppingItems"
+                ],
+                "summary": "Update state of done.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Title",
+                        "name": "title",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Description",
+                        "name": "description",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "isDone",
+                        "name": "is_done",
+                        "in": "formData"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/domain.UserShoppingItemsForGet"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.ResultStatus"
+                        }
+                    }
+                }
+            }
+        },
         "/users/{id}": {
             "get": {
                 "description": "get user info",
@@ -197,6 +750,15 @@
                     "users"
                 ],
                 "summary": "product users",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -266,6 +828,57 @@
                 }
             }
         },
+        "domain.RecipeIngredientsForGet": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "recipe_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "domain.RecipeLinksForGet": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "recipe_id": {
+                    "type": "integer"
+                },
+                "url": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.RecipeStepsForGet": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "recipe_id": {
+                    "type": "integer"
+                },
+                "step_number": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
         "domain.RecipesForGet": {
             "type": "object",
             "properties": {
@@ -278,8 +891,71 @@
                 "is_draft": {
                     "type": "boolean"
                 },
+                "servings": {
+                    "type": "integer"
+                },
                 "title": {
                     "type": "string"
+                }
+            }
+        },
+        "domain.ShoppingItemsForGet": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "is_done": {
+                    "type": "boolean"
+                },
+                "recipe_ingredient": {
+                    "$ref": "#/definitions/domain.RecipeIngredientsForGet"
+                },
+                "recipe_ingredient_id": {
+                    "type": "integer"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "domain.UserRecipesForGet": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "recipe": {
+                    "$ref": "#/definitions/domain.RecipesForGet"
+                },
+                "recipe_id": {
+                    "type": "integer"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "domain.UserShoppingItemsForGet": {
+            "type": "object",
+            "required": [
+                "title"
+            ],
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "is_done": {
+                    "type": "boolean"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
                 }
             }
         },

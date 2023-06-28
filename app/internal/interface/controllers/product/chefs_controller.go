@@ -24,9 +24,9 @@ func NewChefsController(db gateways.DB) *ChefsController {
 //	@description	This API return all chef list.
 //	@tags			chef
 //	@accept			application/x-json-stream
-//	@param			q	query	string	false	"Query"
-//	@Success		200	{array}	domain.ChefsForGet
-//	@Failure 		404 {object} usecase.ResultStatus
+//	@param			q	query		string	true	"Query"
+//	@Success		200	{array}		domain.ChefsForGet
+//	@Failure		404	{object}	usecase.ResultStatus
 //	@router			/chefs [get]
 func (cc *ChefsController) GetList(ctx controllers.Context) {
 	q := ctx.Query("q")
@@ -43,9 +43,9 @@ func (cc *ChefsController) GetList(ctx controllers.Context) {
 //	@description	This API return unique chef by screenName.
 //	@tags			chef
 //	@accept			application/x-json-stream
-//  @param			screenName	path	string	false	"screenName"
-//	@Success		200	{array}	domain.ChefsForGet
-//	@Failure 		404 {object} usecase.ResultStatus
+//	@param			screenName	path		string	true	"screenName"
+//	@Success		200			{object}	domain.ChefsForGet
+//	@Failure		404			{object}	usecase.ResultStatus
 //	@router			/chefs/{screenName} [get]
 func (cc *ChefsController) Get(ctx controllers.Context) {
 	screenName := ctx.Param("screenName")
