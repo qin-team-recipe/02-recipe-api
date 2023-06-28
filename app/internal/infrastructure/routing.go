@@ -37,25 +37,13 @@ func NewRouting(c *config.Config, db *DB, google *Google, jwt token.Maker) *Rout
 	return r
 }
 
-// @title           Swagger Example API
-// @version         1.0
-// @description     This is a sample server celler server.
-// @termsOfService  http://swagger.io/terms/
+//	@title			Team02's API
+//	@version		1.0
+//	@description	This is a Team02's API Docs at Qin.
+//	@termsOfService	http://swagger.io/terms/
 
-// @contact.name   API Support
-// @contact.url    http://www.swagger.io/support
-// @contact.email  support@swagger.io
-
-// @license.name  Apache 2.0
-// @license.url   http://www.apache.org/licenses/LICENSE-2.0.html
-
-// @host      localhost:8080
-// @BasePath  /v1
-
-// @securityDefinitions.basic  BasicAuth
-
-// @externalDocs.description  OpenAPI
-// @externalDocs.url          https://swagger.io/resources/open-api/
+// @host		localhost:8080
+// @BasePath	/api/v1
 func (r *Routing) setRouting() {
 
 	authenticatesController := product.NewAuthenticatesController(r.Google)
@@ -77,6 +65,12 @@ func (r *Routing) setRouting() {
 	// swagger用
 	docs.SwaggerInfo.BasePath = "/api/v1"
 	{
+		//	@summary		Test API.
+		//	@description	This API return 'Hello World!!'.
+		//	@tags			mock
+		//	@accept			application/x-json-stream
+		//	@Success		200	{object}	json
+		//	@router			/ [get]
 		v1.GET("/", func(ctx *gin.Context) {
 			ctx.JSON(http.StatusOK, gin.H{"message": "Hello World!!"})
 		})
@@ -147,7 +141,6 @@ func (r *Routing) setRouting() {
 		 * users
 		 *
 		 */
-
 		v1.GET("/users", func(ctx *gin.Context) {
 			userController.Get(ctx)
 		})
