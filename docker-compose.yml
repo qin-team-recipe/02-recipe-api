@@ -10,6 +10,7 @@ services:
     tty: true #コンテナの永続化
     depends_on:
       - mysql
+      - redis
     volumes:
       - ./app:/app
       - ./.env:/app/.env
@@ -53,6 +54,15 @@ services:
       - PMA_HOST=mysql
       - PMA_USER=${DB_USER}
       - PMA_PASSWORD=${DB_PASS}
+    networks:
+      - 02-recipe-api-network
+  
+  redis:
+    image: redis:latest
+    container_name: 02-recipe-redis
+    ports:
+      - 6379:6379
+    restart: always
     networks:
       - 02-recipe-api-network
 
