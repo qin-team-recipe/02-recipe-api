@@ -27,7 +27,7 @@ func main() {
 	/*
 		ここに模擬データを読み込ませる処理を書く
 	*/
-	j, err := ioutil.ReadFile("./example/tasks/example_chef_data.json")
+	j, err := ioutil.ReadFile("./example/example_chef_data.json")
 	if err != nil {
 		log.Println(err)
 		benchmark.Finish()
@@ -37,7 +37,7 @@ func main() {
 	c := &domain.Chefs{}
 
 	json.Unmarshal(j, c)
-	fmt.Printf("%+v", c)
+	fmt.Printf("%+v\n", c)
 
 	_, res := interactor.Create(c)
 	if res.Error != nil {
