@@ -4,6 +4,7 @@ import (
 	"errors"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/qin-team-recipe/02-recipe-api/pkg/token"
@@ -32,15 +33,26 @@ func JwtAuthMiddleware(tokenMaker token.Maker) gin.HandlerFunc {
 		}
 
 		fields := strings.Fields(authHandler)
-		if len(fields) < 2 {
-			err := errors.New("invalid authorization header format")
+		// if len(fields) < 2 {
+		// 	err := errors.New("invalid authorization header format")
+		// 	ctx.AbortWithStatusJSON(http.StatusUnauthorized, errorResponse(err))
+		// 	return
+		// }
+
+		accessToken := fields[0]
+		payload, err := tokenMaker.VerifyJwtToken(accessToken)
+		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, errorResponse(err))
 			return
 		}
 
-		accessToken := fields[1]
-		_, err := tokenMaker.VerifyJwtToken(accessToken)
-		if err != nil {
+		/*
+			ここにRedisに保存したPayloadの各情報を比較して整合していく予定
+		*/
+
+		// 有効期限の確認
+		if payload.ExpiredAt < time.Now().Unix() {
+			err := errors.New("authorization header is expired at")
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, errorResponse(err))
 			return
 		}

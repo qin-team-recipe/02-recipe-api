@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/qin-team-recipe/02-recipe-api/config"
+	"github.com/qin-team-recipe/02-recipe-api/internal/infrastructure/middleware"
 	"github.com/qin-team-recipe/02-recipe-api/internal/interface/controllers/console"
 	"github.com/qin-team-recipe/02-recipe-api/internal/interface/controllers/product"
 	"github.com/qin-team-recipe/02-recipe-api/pkg/token"
@@ -14,6 +15,8 @@ import (
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
+
+const basePath = "/api/v1"
 
 type Routing struct {
 	Gin    *gin.Engine
@@ -61,9 +64,11 @@ func (r *Routing) setRouting() {
 	userShoppingItemsController := product.NewUserShoppingItemsController(r.DB)
 
 	// REST API用
-	v1 := r.Gin.Group("/api/v1")
+	v1 := r.Gin.Group(basePath)
+
+	v1Auth := v1.Use(middleware.JwtAuthMiddleware(r.Jwt))
 	// swagger用
-	docs.SwaggerInfo.BasePath = "/api/v1"
+	docs.SwaggerInfo.BasePath = basePath
 	{
 		//	@summary		Test API.
 		//	@description	This API return 'Hello World!!'.
@@ -122,7 +127,7 @@ func (r *Routing) setRouting() {
 		 * me
 		 *
 		 */
-		v1.GET("/me", func(ctx *gin.Context) {
+		v1Auth.GET("/me", func(ctx *gin.Context) {
 			meController.Get(ctx)
 		})
 		v1.GET("/me/login", func(ctx *gin.Context) {
@@ -137,7 +142,7 @@ func (r *Routing) setRouting() {
 		 * recipes favorites
 		 *
 		 */
-		v1.GET("/recipeFavorites", func(ctx *gin.Context) {
+		v1Auth.GET("/recipeFavorites", func(ctx *gin.Context) {
 			recipeFavoritesController.GetList(ctx)
 		})
 
