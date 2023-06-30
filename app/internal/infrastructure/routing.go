@@ -6,7 +6,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/qin-team-recipe/02-recipe-api/config"
-	"github.com/qin-team-recipe/02-recipe-api/internal/infrastructure/middleware"
 	"github.com/qin-team-recipe/02-recipe-api/internal/interface/controllers/console"
 	"github.com/qin-team-recipe/02-recipe-api/internal/interface/controllers/product"
 	"github.com/qin-team-recipe/02-recipe-api/pkg/token"
@@ -66,7 +65,7 @@ func (r *Routing) setRouting() {
 	// REST API用
 	v1 := r.Gin.Group(basePath)
 
-	v1Auth := v1.Use(middleware.JwtAuthMiddleware(r.Jwt))
+	// v1Auth := v1.Use(middleware.JwtAuthMiddleware(r.Jwt))
 	// swagger用
 	docs.SwaggerInfo.BasePath = basePath
 	{
@@ -127,7 +126,7 @@ func (r *Routing) setRouting() {
 		 * me
 		 *
 		 */
-		v1Auth.GET("/me", func(ctx *gin.Context) {
+		v1.GET("/me", func(ctx *gin.Context) {
 			meController.Get(ctx)
 		})
 		v1.GET("/me/login", func(ctx *gin.Context) {
@@ -142,7 +141,7 @@ func (r *Routing) setRouting() {
 		 * recipes favorites
 		 *
 		 */
-		v1Auth.GET("/recipeFavorites", func(ctx *gin.Context) {
+		v1.GET("/recipeFavorites", func(ctx *gin.Context) {
 			recipeFavoritesController.GetList(ctx)
 		})
 

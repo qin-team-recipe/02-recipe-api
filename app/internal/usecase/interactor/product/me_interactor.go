@@ -1,8 +1,10 @@
 package product
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/qin-team-recipe/02-recipe-api/internal/domain"
@@ -70,6 +72,15 @@ func (mi *MeInteractor) Get(authToken string) (*domain.Users, *usecase.ResultSta
 
 func (mi *MeInteractor) Create(a *domain.SocialUserAccount) (UserResponse, *usecase.ResultStatus) {
 	db := mi.DB.Begin()
+
+	serviceUserID, _ := strconv.Atoi(a.ServiceUserID)
+
+	// 既存するユーザーか確認
+	_, err := mi.UserOauthCertification.FirstByServiceUserID(db, serviceUserID)
+	if err != nil {
+		db.Rollback()
+		return UserResponse{}, usecase.NewResultStatus(http.StatusBadRequest, errors.New("既に存在するアカウントです。ログインしてください"))
+	}
 
 	u := mi.setRegisterUser(a)
 
