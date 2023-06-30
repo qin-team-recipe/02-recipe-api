@@ -8,21 +8,28 @@ import (
 	"github.com/qin-team-recipe/02-recipe-api/config"
 	"github.com/qin-team-recipe/02-recipe-api/internal/interface/controllers/console"
 	"github.com/qin-team-recipe/02-recipe-api/internal/interface/controllers/product"
+	"github.com/qin-team-recipe/02-recipe-api/pkg/token"
 
 	docs "github.com/qin-team-recipe/02-recipe-api/docs"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
+const basePath = "/api/v1"
+
 type Routing struct {
-	Gin *gin.Engine
-	DB  *DB
+	Gin    *gin.Engine
+	DB     *DB
+	Google *Google
+	Jwt    token.Maker
 }
 
-func NewRouting(c *config.Config, db *DB) *Routing {
+func NewRouting(c *config.Config, db *DB, google *Google, jwt token.Maker) *Routing {
 	r := &Routing{
-		DB:  db,
-		Gin: gin.Default(),
+		DB:     db,
+		Gin:    gin.Default(),
+		Google: google,
+		Jwt:    jwt,
 	}
 
 	// r.setCors()
@@ -37,26 +44,30 @@ func NewRouting(c *config.Config, db *DB) *Routing {
 //	@description	This is a Team02's API Docs at Qin.
 //	@termsOfService	http://swagger.io/terms/
 
-//	@host		localhost:8080
-//	@BasePath	/api/v1
+// @host		localhost:8080
+// @BasePath	/api/v1
 func (r *Routing) setRouting() {
 
+	authenticatesController := product.NewAuthenticatesController(r.Google)
 	chefsController := product.NewChefsController(r.DB)
 	chefFollowsController := product.NewChefFollowsController(r.DB)
 	chefRecipesController := product.NewChefRecipesController(r.DB)
+	meController := product.NewMeController(product.MeControllerProvider{DB: r.DB, Google: r.Google, Jwt: r.Jwt})
 	recipeFavoritesController := product.NewRecipeFavoritesController(r.DB)
 	recipeIngredientsController := product.NewRecipeIngretientsController(r.DB)
 	recipeLinksController := product.NewRecipeLinksController(r.DB)
 	recipeStepsController := product.NewRecipeStepsController(r.DB)
 	shoppingItemsController := product.NewShoppingItemsController(r.DB)
-	userController := product.NewUsersController()
+	userController := product.NewUsersController(&product.UsersControllerProvider{DB: r.DB, Google: r.Google})
 	userRecipesController := product.NewUserRecipesController(r.DB)
 	userShoppingItemsController := product.NewUserShoppingItemsController(r.DB)
 
 	// REST API用
-	v1 := r.Gin.Group("/api/v1")
+	v1 := r.Gin.Group(basePath)
+
+	// v1Auth := v1.Use(middleware.JwtAuthMiddleware(r.Jwt))
 	// swagger用
-	docs.SwaggerInfo.BasePath = "/api/v1"
+	docs.SwaggerInfo.BasePath = basePath
 	{
 		//	@summary		Test API.
 		//	@description	This API return 'Hello World!!'.
@@ -66,6 +77,17 @@ func (r *Routing) setRouting() {
 		//	@router			/ [get]
 		v1.GET("/", func(ctx *gin.Context) {
 			ctx.JSON(http.StatusOK, gin.H{"message": "Hello World!!"})
+		})
+
+		/*
+		 * authenticates
+		 *
+		 */
+		v1.GET("/authenticates/google", func(ctx *gin.Context) {
+			authenticatesController.GetGoogle(ctx)
+		})
+		v1.GET("/authenticates/google/userinfo", func(ctx *gin.Context) {
+			authenticatesController.GetGoogleUserInfo(ctx)
 		})
 
 		/*
@@ -101,6 +123,21 @@ func (r *Routing) setRouting() {
 		// })
 
 		/*
+		 * me
+		 *
+		 */
+		v1.GET("/me", func(ctx *gin.Context) {
+			meController.Get(ctx)
+		})
+		v1.GET("/me/login", func(ctx *gin.Context) {
+			meController.LoginUser(ctx)
+		})
+
+		v1.POST("/me/register", func(ctx *gin.Context) {
+			meController.Post(ctx)
+		})
+
+		/*
 		 * recipes favorites
 		 *
 		 */
@@ -114,6 +151,9 @@ func (r *Routing) setRouting() {
 		 */
 		v1.GET("/users", func(ctx *gin.Context) {
 			userController.Get(ctx)
+		})
+
+		v1.POST("/users", func(ctx *gin.Context) {
 		})
 
 		/*
@@ -141,7 +181,7 @@ func (r *Routing) setRouting() {
 		})
 
 		/*
-		 * shopping Items
+		 * shopping items
 		 *
 		 */
 		v1.GET("/shoppingItems", func(ctx *gin.Context) {
