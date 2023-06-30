@@ -68,7 +68,7 @@ func (mi *MeInteractor) Get(authToken string) (*domain.Users, *usecase.ResultSta
 	return user, usecase.NewResultStatus(http.StatusOK, nil)
 }
 
-func (mi *MeInteractor) Create(a *domain.GoogleUserAccount) (UserResponse, *usecase.ResultStatus) {
+func (mi *MeInteractor) Create(a *domain.SocialUserAccount) (UserResponse, *usecase.ResultStatus) {
 	db := mi.DB.Begin()
 
 	u := mi.setRegisterUser(a)
@@ -87,8 +87,8 @@ func (mi *MeInteractor) Create(a *domain.GoogleUserAccount) (UserResponse, *usec
 	// SNSアカウントとの連携
 	_, err = mi.UserOauthCertification.Create(db, &domain.UserOauthCertifications{
 		UserID:        user.ID,
-		ServiceUserID: a.GoogleUserID,
-		ServiceName:   "google",
+		ServiceUserID: a.ServiceUserID,
+		ServiceName:   a.ServiceName,
 		CreatedAt:     currentTime,
 	})
 	if err != nil {
@@ -114,7 +114,7 @@ func (mi *MeInteractor) Create(a *domain.GoogleUserAccount) (UserResponse, *usec
 	}, usecase.NewResultStatus(http.StatusAccepted, nil)
 }
 
-func (mi *MeInteractor) setRegisterUser(a *domain.GoogleUserAccount) *domain.Users {
+func (mi *MeInteractor) setRegisterUser(a *domain.SocialUserAccount) *domain.Users {
 	return &domain.Users{
 		DisplayName: a.DisplayName,
 		ScreenName:  random.RandomScreenName(),

@@ -27,15 +27,18 @@ func (ai *AuthenticateInteractor) GetAuthCodeURL() (*AuthenticateResponse, *usec
 	return &AuthenticateResponse{LoginURL: loginURL}, usecase.NewResultStatus(http.StatusOK, nil)
 }
 
-func (ai *AuthenticateInteractor) GetGoogleUserInfo(code string) (*domain.GoogleUserAccount, *usecase.ResultStatus) {
+func (ai *AuthenticateInteractor) GetGoogleUserInfo(code string) (*domain.SocialUserAccount, *usecase.ResultStatus) {
 	googleUserID, name, email, err := ai.Google.GetUserInfo(code)
 	if err != nil {
-		return &domain.GoogleUserAccount{}, usecase.NewResultStatus(http.StatusBadRequest, err)
+		return &domain.SocialUserAccount{}, usecase.NewResultStatus(http.StatusBadRequest, err)
 	}
 
-	return &domain.GoogleUserAccount{
-		GoogleUserID: googleUserID,
-		DisplayName:  name,
-		Email:        email,
+	socialType := domain.NewSocialServiceType()
+
+	return &domain.SocialUserAccount{
+		ServiceName:   socialType.Google,
+		ServiceUserID: googleUserID,
+		DisplayName:   name,
+		Email:         email,
 	}, usecase.NewResultStatus(http.StatusOK, err)
 }

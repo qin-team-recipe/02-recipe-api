@@ -65,7 +65,7 @@ func (mc *MeController) Get(ctx controllers.Context) {
 
 func (mc *MeController) Post(ctx controllers.Context) {
 
-	u := &domain.GoogleUserAccount{}
+	u := &domain.SocialUserAccount{}
 	if err := ctx.BindJSON(u); err != nil {
 		ctx.JSON(http.StatusBadRequest, controllers.NewH(fmt.Sprintf("failed bind json: %s", err.Error()), nil))
 		return

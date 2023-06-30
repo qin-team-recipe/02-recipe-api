@@ -129,7 +129,7 @@ func (r *Routing) setRouting() {
 			meController.LoginUser(ctx)
 		})
 
-		v1.POST("/me", func(ctx *gin.Context) {
+		v1.POST("/me/register", func(ctx *gin.Context) {
 			meController.Post(ctx)
 		})
 
