@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"strconv"
 	"time"
 
 	"github.com/qin-team-recipe/02-recipe-api/internal/domain"
@@ -27,10 +26,10 @@ type UserResponse struct {
 	Token string              `json:"token"`
 }
 
-func (mi *MeInteractor) LoginUser(serviceUserID int) (UserResponse, *usecase.ResultStatus) {
+func (mi *MeInteractor) LoginUser(serviceUserID string) (UserResponse, *usecase.ResultStatus) {
 	db := mi.DB.Connect()
 
-	userOauthCretificate, err := mi.UserOauthCertification.FirstByUserID(db, serviceUserID)
+	userOauthCretificate, err := mi.UserOauthCertification.FirstByServiceUserID(db, serviceUserID)
 	if err != nil {
 		return UserResponse{}, usecase.NewResultStatus(http.StatusNotFound, err)
 	}
@@ -73,11 +72,9 @@ func (mi *MeInteractor) Get(userID int) (*domain.Users, *usecase.ResultStatus) {
 func (mi *MeInteractor) Create(a *domain.SocialUserAccount) (UserResponse, *usecase.ResultStatus) {
 	db := mi.DB.Begin()
 
-	serviceUserID, _ := strconv.Atoi(a.ServiceUserID)
-
 	// 既存するユーザーか確認
-	_, err := mi.UserOauthCertification.FirstByServiceUserID(db, serviceUserID)
-	if err != nil {
+	_, err := mi.UserOauthCertification.FirstByServiceUserID(db, a.ServiceUserID)
+	if err == nil {
 		db.Rollback()
 		return UserResponse{}, usecase.NewResultStatus(http.StatusBadRequest, errors.New("既に存在するアカウントです。ログインしてください"))
 	}
@@ -85,6 +82,15 @@ func (mi *MeInteractor) Create(a *domain.SocialUserAccount) (UserResponse, *usec
 	// アカウント削除しているが間もなし（３０日間以内）のユーザーはどうするか
 
 	u := mi.setRegisterUser(a)
+
+	if u.DisplayName == "" {
+		db.Rollback()
+		return UserResponse{}, usecase.NewResultStatus(http.StatusBadRequest, errors.New("表示名が空です。"))
+	}
+	if u.Email == "" {
+		db.Rollback()
+		return UserResponse{}, usecase.NewResultStatus(http.StatusBadRequest, errors.New("メールアドレスが空です。"))
+	}
 
 	currentTime := time.Now().Unix()
 	u.CreatedAt = currentTime

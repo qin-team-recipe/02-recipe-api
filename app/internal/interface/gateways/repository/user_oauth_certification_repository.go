@@ -15,7 +15,7 @@ func (ur *UserOauthCertificationRepository) FirstByUserID(db *gorm.DB, userID in
 	return u, nil
 }
 
-func (ur *UserOauthCertificationRepository) FirstByServiceUserID(db *gorm.DB, serviceUserID int) (*domain.UserOauthCertifications, error) {
+func (ur *UserOauthCertificationRepository) FirstByServiceUserID(db *gorm.DB, serviceUserID string) (*domain.UserOauthCertifications, error) {
 	u := &domain.UserOauthCertifications{}
 	if err := db.Where("service_user_id = ?", serviceUserID).First(u).Error; err != nil {
 		return &domain.UserOauthCertifications{}, err

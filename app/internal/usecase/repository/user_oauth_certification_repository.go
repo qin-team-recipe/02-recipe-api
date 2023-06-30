@@ -7,6 +7,6 @@ import (
 
 type UserOauthCertificationRepository interface {
 	FirstByUserID(db *gorm.DB, userID int) (*domain.UserOauthCertifications, error)
-	FirstByServiceUserID(db *gorm.DB, serviceUserID int) (*domain.UserOauthCertifications, error)
+	FirstByServiceUserID(db *gorm.DB, serviceUserID string) (*domain.UserOauthCertifications, error)
 	Create(db *gorm.DB, u *domain.UserOauthCertifications) (*domain.UserOauthCertifications, error)
 }

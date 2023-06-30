@@ -3,7 +3,6 @@ package product
 import (
 	"fmt"
 	"net/http"
-	"strconv"
 
 	"github.com/qin-team-recipe/02-recipe-api/internal/domain"
 	"github.com/qin-team-recipe/02-recipe-api/internal/interface/controllers"
@@ -40,7 +39,7 @@ func NewMeController(p MeControllerProvider) *MeController {
 
 func (mc *MeController) LoginUser(ctx controllers.Context) {
 
-	serviceUserID, _ := strconv.Atoi(ctx.Query("service_user_id"))
+	serviceUserID := ctx.Query("service_user_id")
 
 	user, res := mc.Interactor.LoginUser(serviceUserID)
 	if res.Error != nil {

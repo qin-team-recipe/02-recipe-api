@@ -130,7 +130,7 @@ func (r *Routing) setRouting() {
 		// v1.GET("/me", func(ctx *gin.Context) {
 		// 	meController.Get(ctx)
 		// })
-		v1.GET("/me/login", func(ctx *gin.Context) {
+		v1.GET("/self/login", func(ctx *gin.Context) {
 			meController.LoginUser(ctx)
 		})
 		v1.POST("/me/register", func(ctx *gin.Context) {
@@ -290,6 +290,10 @@ func (r *Routing) setRouting() {
 		})
 		v1Auth.POST("/userRecipes", func(ctx *gin.Context) {
 			userRecipesController.Post(ctx)
+		})
+
+		v1Auth.GET("/userRecipes/:id", func(ctx *gin.Context) {
+			userRecipesController.Get(ctx)
 		})
 	}
 

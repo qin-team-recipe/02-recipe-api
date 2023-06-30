@@ -27,15 +27,32 @@ type userRecipeRequest struct {
 func NewUserRecipesController(db gateways.DB) *UserRecipesController {
 	return &UserRecipesController{
 		Interactor: product.UserRecipeInteractor{
-			DB:         &gateways.DBRepository{DB: db},
-			Recipe:     &repository.RecipeRepository{},
-			UserRecipe: &repository.UserRecipeRepository{},
+			DB:               &gateways.DBRepository{DB: db},
+			Recipe:           &repository.RecipeRepository{},
+			RecipeIngredient: &repository.RecipeIngredientRepository{},
+			RecipeLink:       &repository.RecipeLinkRepository{},
+			RecipeStep:       &repository.RecipeStepRepository{},
+			UserRecipe:       &repository.UserRecipeRepository{},
 		},
 	}
 }
 
 func (uc *UserRecipesController) GetList(ctx controllers.Context) {
 	// userRecipes, res :=
+}
+
+func (uc *UserRecipesController) Get(ctx controllers.Context) {
+
+	// authPayload := ctx.MustGet(constants.AuthorizationPayloadKey).(*token.Payload)
+
+	// id, _ := strconv.Atoi(ctx.Param("id"))
+
+	// userRecipe, res := uc.Interactor.Get(id)
+	// if res.Error != nil {
+	// 	ctx.JSON(res.Code, controllers.NewH(res.Error.Error(), nil))
+	// 	return
+	// }
+	// ctx.JSON(res.Code, controllers.NewH("success", userRecipe))
 }
 
 // @summary		Regist user recipes.

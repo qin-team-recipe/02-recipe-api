@@ -2,6 +2,7 @@ package repository
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/qin-team-recipe/02-recipe-api/internal/domain"
 	"gorm.io/gorm"
@@ -40,7 +41,10 @@ func (ur *UserRepository) Save(db *gorm.DB, u *domain.Users) (*domain.Users, err
 }
 
 func (ur *UserRepository) Delete(db *gorm.DB, u *domain.Users) error {
-	if err := db.Delete(u).Error; err != nil {
+
+	u.DeletedAt = time.Now().Unix()
+
+	if err := db.Save(u).Error; err != nil {
 		return err
 	}
 	return nil

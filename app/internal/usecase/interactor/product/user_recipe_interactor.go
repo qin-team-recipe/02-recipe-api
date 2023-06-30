@@ -21,6 +21,18 @@ type UserRecipeInteractor struct {
 	UserRecipe       repository.UserRecipeRepository
 }
 
+// func (ri *UserRecipeInteractor) Get(id int) (*domain.UserRecipesForGet, *usecase.ResultStatus) {
+
+// db := ri.DB.Connect()
+
+// recipe, err := ri.Recipe.FirstByID(db, id)
+// if err != nil {
+// 	return &domain.UserRecipesForGet{}, usecase.NewResultStatus(http.StatusNotFound, err)
+// }
+
+// userRecipe, err := ri.UserRecipe.FirstByRecipeID()
+// }
+
 func (ri *UserRecipeInteractor) Create(
 	userID int,
 	recipe *domain.Recipes,
