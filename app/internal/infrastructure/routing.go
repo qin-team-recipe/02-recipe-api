@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/qin-team-recipe/02-recipe-api/config"
+	"github.com/qin-team-recipe/02-recipe-api/internal/infrastructure/middleware"
 	"github.com/qin-team-recipe/02-recipe-api/internal/interface/controllers/console"
 	"github.com/qin-team-recipe/02-recipe-api/internal/interface/controllers/product"
 	"github.com/qin-team-recipe/02-recipe-api/pkg/token"
@@ -122,26 +123,26 @@ func (r *Routing) setRouting() {
 		// 	recipesController.Get(ctx)
 		// })
 
-		/*
-		 * me
-		 *
-		 */
-		v1.GET("/me", func(ctx *gin.Context) {
-			meController.Get(ctx)
-		})
-		v1.GET("/me/login", func(ctx *gin.Context) {
+		// /*
+		//  * me
+		//  *
+		//  */
+		// v1.GET("/me", func(ctx *gin.Context) {
+		// 	meController.Get(ctx)
+		// })
+		v1.GET("/self/login", func(ctx *gin.Context) {
 			meController.LoginUser(ctx)
 		})
 		v1.POST("/me/register", func(ctx *gin.Context) {
 			meController.Post(ctx)
 		})
 
-		v1.PATCH("/me", func(ctx *gin.Context) {
-			meController.Patch(ctx)
-		})
-		v1.DELETE("/me", func(ctx *gin.Context) {
-			meController.Delete(ctx)
-		})
+		// v1.PATCH("/me", func(ctx *gin.Context) {
+		// 	meController.Patch(ctx)
+		// })
+		// v1.DELETE("/me", func(ctx *gin.Context) {
+		// 	meController.Delete(ctx)
+		// })
 
 		/*
 		 * recipes favorites
@@ -162,29 +163,29 @@ func (r *Routing) setRouting() {
 		v1.POST("/users", func(ctx *gin.Context) {
 		})
 
-		/*
-		 * recipes ingredients
-		 *
-		 */
-		v1.POST("/recipeIngredients", func(ctx *gin.Context) {
-			recipeIngredientsController.Post(ctx)
-		})
+		// /*
+		//  * recipes ingredients
+		//  *
+		//  */
+		// v1.POST("/recipeIngredients", func(ctx *gin.Context) {
+		// 	recipeIngredientsController.Post(ctx)
+		// })
 
-		/*
-		 * recipes links
-		 *
-		 */
-		v1.POST("/recipeLinks", func(ctx *gin.Context) {
-			recipeLinksController.Post(ctx)
-		})
+		// /*
+		//  * recipes links
+		//  *
+		//  */
+		// v1.POST("/recipeLinks", func(ctx *gin.Context) {
+		// 	recipeLinksController.Post(ctx)
+		// })
 
-		/*
-		 * recipes steps
-		 *
-		 */
-		v1.POST("/recipeSteps", func(ctx *gin.Context) {
-			recipeStepsController.Post(ctx)
-		})
+		// /*
+		//  * recipes steps
+		//  *
+		//  */
+		// v1.POST("/recipeSteps", func(ctx *gin.Context) {
+		// 	recipeStepsController.Post(ctx)
+		// })
 
 		/*
 		 * shopping items
@@ -204,16 +205,16 @@ func (r *Routing) setRouting() {
 			shoppingItemsController.Delete(ctx)
 		})
 
-		/*
-		 * user recipes
-		 *
-		 */
-		v1.GET("/userRecipes", func(ctx *gin.Context) {
-			userRecipesController.GetList(ctx)
-		})
-		v1.POST("/userRecipes", func(ctx *gin.Context) {
-			userRecipesController.Post(ctx)
-		})
+		// /*
+		//  * user recipes
+		//  *
+		//  */
+		// v1.GET("/userRecipes", func(ctx *gin.Context) {
+		// 	userRecipesController.GetList(ctx)
+		// })
+		// v1.POST("/userRecipes", func(ctx *gin.Context) {
+		// 	userRecipesController.Post(ctx)
+		// })
 
 		/*
 		 * user shopping Items
@@ -238,6 +239,62 @@ func (r *Routing) setRouting() {
 		 *
 		 */
 		v1.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+	}
+
+	v1Auth := v1.Use(middleware.JwtAuthMiddleware(r.Jwt))
+	{
+		/*
+		 * me
+		 *
+		 */
+		v1Auth.GET("/me", func(ctx *gin.Context) {
+			meController.Get(ctx)
+		})
+		v1Auth.PATCH("/me", func(ctx *gin.Context) {
+			meController.Patch(ctx)
+		})
+		v1Auth.DELETE("/me", func(ctx *gin.Context) {
+			meController.Delete(ctx)
+		})
+
+		/*
+		 * recipes ingredients
+		 *
+		 */
+		v1Auth.POST("/recipeIngredients", func(ctx *gin.Context) {
+			recipeIngredientsController.Post(ctx)
+		})
+
+		/*
+		 * recipes links
+		 *
+		 */
+		v1Auth.POST("/recipeLinks", func(ctx *gin.Context) {
+			recipeLinksController.Post(ctx)
+		})
+
+		/*
+		 * recipes steps
+		 *
+		 */
+		v1Auth.POST("/recipeSteps", func(ctx *gin.Context) {
+			recipeStepsController.Post(ctx)
+		})
+
+		/*
+		 * user recipes
+		 *
+		 */
+		v1Auth.GET("/userRecipes", func(ctx *gin.Context) {
+			userRecipesController.GetList(ctx)
+		})
+		v1Auth.POST("/userRecipes", func(ctx *gin.Context) {
+			userRecipesController.Post(ctx)
+		})
+
+		v1Auth.GET("/userRecipes/:id", func(ctx *gin.Context) {
+			userRecipesController.Get(ctx)
+		})
 	}
 
 	consoleChefsController := console.NewChefsController(r.DB)

@@ -20,8 +20,8 @@ type Config struct {
 	DBPort     string `mapstructure:"DB_PORT"`
 	DBName     string `mapstructure:"DB_NAME"`
 
-	TokenExpireAt time.Duration `mapstructure:"JWT_TOKEN_EXPIRE_AT"`
-	SecretKey     string        `mapstructure:"JWT_SECRET_KEY"`
+	TokenExpireAt time.Duration `mapstructure:"ACCESS_TOKEN_DURATION"`
+	SecretKey     string        `mapstructure:"TOKEN_SYMMETRIC_KEY"`
 
 	GoogleClientID  string `mapstructure:"GOOGLE_CLIENT_ID"`
 	GoogleSecretKey string `mapstructure:"GOOGLE_SECRET_KEY"`
@@ -30,10 +30,10 @@ type Config struct {
 		AllowOringins []string
 	}
 
-	Jwt struct {
-		// TokenExpireAt int    `mapstructure:"JWT_TOKEN_EXPIRE_AT"`
-		// SecretKey     string `mapstructure:"JWT_SECRET_KEY"`
-	}
+	// Jwt struct {
+	// TokenExpireAt int    `mapstructure:"JWT_TOKEN_EXPIRE_AT"`
+	// SecretKey     string `mapstructure:"JWT_SECRET_KEY"`
+	// }
 }
 
 func NewConfig(path string) *Config {
