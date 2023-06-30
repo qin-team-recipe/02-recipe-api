@@ -147,7 +147,7 @@ func (mi *MeInteractor) Delete(authToken string) *usecase.ResultStatus {
 
 	user, err := mi.User.FirstByID(db, payload.Audience)
 	if err != nil {
-		return usecase.NewResultStatus(http.StatusBadRequest, err)
+		return usecase.NewResultStatus(http.StatusNotFound, err)
 	}
 
 	if err := mi.User.Delete(db, user); err != nil {
