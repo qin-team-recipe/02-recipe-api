@@ -41,6 +41,13 @@ DB_USER=任意のユーザー名を入力
 DB_PASS=任意のパスワードを入力
 DB_HOST=mysql  #<-docker-composeでコンテナ起動させるので固定
 DB_PORT=3306
+
+GOOGLE_CLIENT_ID=Google Cloudで設定された値
+GOOGLE_SECRET_KEY=Google Cloudで設定された値
+
+APPLICATION_NAME=qin_recipe02
+TOKEN_SYMMETRIC_KEY=12345678901234567890123456789012
+ACCESS_TOKEN_DURATION=15m
 ```
 
 ## Running
