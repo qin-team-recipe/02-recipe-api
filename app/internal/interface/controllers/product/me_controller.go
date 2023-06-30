@@ -10,6 +10,7 @@ import (
 	"github.com/qin-team-recipe/02-recipe-api/internal/interface/gateways"
 	"github.com/qin-team-recipe/02-recipe-api/internal/interface/gateways/repository"
 	"github.com/qin-team-recipe/02-recipe-api/internal/usecase/interactor/product"
+	"github.com/qin-team-recipe/02-recipe-api/pkg/token"
 )
 
 type MeController struct {
@@ -50,12 +51,12 @@ func (mc *MeController) LoginUser(ctx controllers.Context) {
 }
 
 func (mc *MeController) Get(ctx controllers.Context) {
-	// authPayload := ctx.MustGet("authorization_payload").(*token.Payload)
-	authToken := ctx.GetHeader("authorization")
+	authPayload := ctx.MustGet("authorization_payload").(*token.Payload)
+	// authToken := ctx.GetHeader("authorization")
 
 	// userID := authPayload.Audience
 
-	me, res := mc.Interactor.Get(authToken)
+	me, res := mc.Interactor.Get(authPayload.Audience)
 	if res.Error != nil {
 		ctx.JSON(res.Code, controllers.NewH(res.Error.Error(), nil))
 		return

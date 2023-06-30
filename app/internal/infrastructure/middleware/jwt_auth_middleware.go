@@ -57,6 +57,8 @@ func JwtAuthMiddleware(tokenMaker token.Maker) gin.HandlerFunc {
 			return
 		}
 
+		ctx.Set(authorizationPayloadKey, payload)
+
 		ctx.Next()
 	}
 }

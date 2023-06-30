@@ -2,7 +2,7 @@ package domain
 
 type RecipeSteps struct {
 	ID          int     `json:"id"`
-	RecipeID    int     `json:"recipe_id" binding:"required"`
+	RecipeID    int     `json:"recipe_id"`
 	Title       string  `json:"title" binding:"required"`
 	Description *string `json:"description"`
 	StepNumber  int     `json:"step_number"`

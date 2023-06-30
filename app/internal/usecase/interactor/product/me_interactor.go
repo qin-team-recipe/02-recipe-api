@@ -57,12 +57,12 @@ func (mi *MeInteractor) LoginUser(serviceUserID int) (UserResponse, *usecase.Res
 	}, usecase.NewResultStatus(http.StatusOK, nil)
 }
 
-func (mi *MeInteractor) Get(authToken string) (*domain.Users, *usecase.ResultStatus) {
+func (mi *MeInteractor) Get(userID int) (*domain.Users, *usecase.ResultStatus) {
 	db := mi.DB.Connect()
 
-	payload, err := mi.Jwt.VerifyJwtToken(authToken)
+	// payload, err := mi.Jwt.VerifyJwtToken(authToken)
 
-	user, err := mi.User.FirstByID(db, payload.Audience)
+	user, err := mi.User.FirstByID(db, userID)
 	if err != nil {
 		return &domain.Users{}, usecase.NewResultStatus(http.StatusNotFound, err)
 	}
