@@ -31,3 +31,14 @@ func (ur *UserRepository) Create(db *gorm.DB, u *domain.Users) (*domain.Users, e
 	}
 	return u, nil
 }
+
+func (ur *UserRepository) Save(db *gorm.DB, u *domain.Users) (*domain.Users, error) {
+	if err := db.Save(u).Error; err != nil {
+		return &domain.Users{}, err
+	}
+	return u, nil
+}
+
+func (ur *UserRepository) Delete(db *gorm.DB, u *domain.Users) error {
+	return nil
+}

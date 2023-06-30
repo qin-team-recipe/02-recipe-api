@@ -132,9 +132,15 @@ func (r *Routing) setRouting() {
 		v1.GET("/me/login", func(ctx *gin.Context) {
 			meController.LoginUser(ctx)
 		})
-
 		v1.POST("/me/register", func(ctx *gin.Context) {
 			meController.Post(ctx)
+		})
+
+		v1.PATCH("/me", func(ctx *gin.Context) {
+			meController.Patch(ctx)
+		})
+		v1.DELETE("/me", func(ctx *gin.Context) {
+			meController.Delete(ctx)
 		})
 
 		/*

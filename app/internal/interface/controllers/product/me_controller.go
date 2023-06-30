@@ -79,4 +79,21 @@ func (mc *MeController) Post(ctx controllers.Context) {
 	ctx.JSON(res.Code, controllers.NewH("success", me))
 }
 
-func (mc *MeController) Patch(ctx controllers.Context) {}
+func (mc *MeController) Patch(ctx controllers.Context) {
+
+	u := &domain.Users{}
+
+	if err := ctx.BindJSON(u); err != nil {
+		ctx.JSON(http.StatusBadRequest, controllers.NewH(fmt.Sprintf("failed bind json: %s", err.Error()), nil))
+		return
+	}
+
+	me, res := mc.Interactor.Save(u)
+	if res.Error != nil {
+		ctx.JSON(res.Code, controllers.NewH(res.Error.Error(), nil))
+		return
+	}
+	ctx.JSON(res.Code, controllers.NewH("success", me))
+}
+
+func (mc *MeController) Delete(ctx controllers.Context) {}

@@ -125,6 +125,32 @@ func (mi *MeInteractor) Create(a *domain.SocialUserAccount) (UserResponse, *usec
 	}, usecase.NewResultStatus(http.StatusAccepted, nil)
 }
 
+func (mi *MeInteractor) Save(me *domain.Users) (*domain.UsersForGet, *usecase.ResultStatus) {
+
+	db := mi.DB.Connect()
+
+	updatedMe, err := mi.User.Save(db, me)
+	if err != nil {
+		return &domain.UsersForGet{}, usecase.NewResultStatus(http.StatusBadRequest, err)
+	}
+
+	return updatedMe.BuildForGet(), usecase.NewResultStatus(http.StatusOK, nil)
+}
+
+func (mi *MeInteractor) Delete(userID int) *usecase.ResultStatus {
+	db := mi.DB.Connect()
+
+	user, err := mi.User.FirstByID(db, userID)
+	if err != nil {
+		return usecase.NewResultStatus(http.StatusBadRequest, err)
+	}
+
+	if err := mi.User.Delete(db, user); err != nil {
+		return usecase.NewResultStatus(http.StatusBadRequest, err)
+	}
+	return usecase.NewResultStatus(http.StatusOK, nil)
+}
+
 func (mi *MeInteractor) setRegisterUser(a *domain.SocialUserAccount) *domain.Users {
 	return &domain.Users{
 		DisplayName: a.DisplayName,
