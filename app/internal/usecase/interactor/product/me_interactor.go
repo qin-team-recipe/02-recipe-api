@@ -82,6 +82,8 @@ func (mi *MeInteractor) Create(a *domain.SocialUserAccount) (UserResponse, *usec
 		return UserResponse{}, usecase.NewResultStatus(http.StatusBadRequest, errors.New("既に存在するアカウントです。ログインしてください"))
 	}
 
+	// アカウント削除しているが間もなし（３０日間以内）のユーザーはどうするか
+
 	u := mi.setRegisterUser(a)
 
 	currentTime := time.Now().Unix()
@@ -137,12 +139,15 @@ func (mi *MeInteractor) Save(me *domain.Users) (*domain.UsersForGet, *usecase.Re
 	return updatedMe.BuildForGet(), usecase.NewResultStatus(http.StatusOK, nil)
 }
 
-func (mi *MeInteractor) Delete(userID int) *usecase.ResultStatus {
+func (mi *MeInteractor) Delete(authToken string) *usecase.ResultStatus {
+
 	db := mi.DB.Connect()
 
-	user, err := mi.User.FirstByID(db, userID)
+	payload, _ := mi.Jwt.VerifyJwtToken(authToken)
+
+	user, err := mi.User.FirstByID(db, payload.Audience)
 	if err != nil {
-		return usecase.NewResultStatus(http.StatusBadRequest, err)
+		return usecase.NewResultStatus(http.StatusNotFound, err)
 	}
 
 	if err := mi.User.Delete(db, user); err != nil {
