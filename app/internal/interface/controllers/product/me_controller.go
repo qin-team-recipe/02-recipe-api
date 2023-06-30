@@ -96,4 +96,14 @@ func (mc *MeController) Patch(ctx controllers.Context) {
 	ctx.JSON(res.Code, controllers.NewH("success", me))
 }
 
-func (mc *MeController) Delete(ctx controllers.Context) {}
+func (mc *MeController) Delete(ctx controllers.Context) {
+
+	authToken := ctx.GetHeader("authorization")
+
+	res := mc.Interactor.Delete(authToken)
+	if res.Error != nil {
+		ctx.JSON(res.Code, controllers.NewH(res.Error.Error(), nil))
+		return
+	}
+	ctx.JSON(res.Code, controllers.NewH("success", nil))
+}
