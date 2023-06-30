@@ -10,12 +10,12 @@ import (
 var ErrExpiredToken = errors.New("")
 
 type Payload struct {
-	ID        uuid.UUID `json:"id"`
-	Audience  int       `json:"audience"`
-	Issuer    string    `json:"issuer"`
-	Subject   string    `json:"subject"`
-	IssuedAt  int64     `json:"issued_at"`
-	ExpiredAt int64     `json:"expired_at"`
+	ID        string `json:"id"`
+	Audience  int    `json:"audience"`
+	Issuer    string `json:"issuer"`
+	Subject   string `json:"subject"`
+	IssuedAt  int64  `json:"issued_at"`
+	ExpiredAt int64  `json:"expired_at"`
 }
 
 func NewPayload(applicationName string, username int, duration time.Duration) (*Payload, error) {
@@ -25,7 +25,7 @@ func NewPayload(applicationName string, username int, duration time.Duration) (*
 	}
 
 	payload := &Payload{
-		ID:        tokenID,
+		ID:        tokenID.String(),
 		Audience:  username,
 		Issuer:    applicationName,
 		Subject:   "http://localhost:3000",

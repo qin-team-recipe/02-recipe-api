@@ -2,7 +2,6 @@ package product
 
 import (
 	"errors"
-	"fmt"
 	"net/http"
 
 	"github.com/qin-team-recipe/02-recipe-api/internal/domain"
@@ -33,7 +32,7 @@ func (ai *AuthenticateInteractor) GetGoogleUserInfo(code string) (*domain.Google
 	if err != nil {
 		return &domain.GoogleUserAccount{}, usecase.NewResultStatus(http.StatusBadRequest, err)
 	}
-	fmt.Println(googleUserID, name, email)
+
 	return &domain.GoogleUserAccount{
 		GoogleUserID: googleUserID,
 		DisplayName:  name,

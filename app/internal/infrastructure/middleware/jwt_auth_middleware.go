@@ -39,13 +39,12 @@ func JwtAuthMiddleware(tokenMaker token.Maker) gin.HandlerFunc {
 		}
 
 		accessToken := fields[1]
-		payload, err := tokenMaker.VerifyJwtToken(accessToken)
+		_, err := tokenMaker.VerifyJwtToken(accessToken)
 		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, errorResponse(err))
 			return
 		}
 
-		ctx.Set(authorizationPayloadKey, payload)
 		ctx.Next()
 	}
 }

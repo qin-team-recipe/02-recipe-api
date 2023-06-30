@@ -50,7 +50,7 @@ func (r *Routing) setRouting() {
 	chefsController := product.NewChefsController(r.DB)
 	chefFollowsController := product.NewChefFollowsController(r.DB)
 	chefRecipesController := product.NewChefRecipesController(r.DB)
-	meController := product.NewMeController(product.MeControllerProvider{DB: r.DB})
+	meController := product.NewMeController(product.MeControllerProvider{DB: r.DB, Google: r.Google, Jwt: r.Jwt})
 	recipeFavoritesController := product.NewRecipeFavoritesController(r.DB)
 	recipeIngredientsController := product.NewRecipeIngretientsController(r.DB)
 	recipeLinksController := product.NewRecipeLinksController(r.DB)
@@ -125,6 +125,10 @@ func (r *Routing) setRouting() {
 		v1.GET("/me", func(ctx *gin.Context) {
 			meController.Get(ctx)
 		})
+		v1.GET("/me/login", func(ctx *gin.Context) {
+			meController.LoginUser(ctx)
+		})
+
 		v1.POST("/me", func(ctx *gin.Context) {
 			meController.Post(ctx)
 		})
@@ -173,7 +177,7 @@ func (r *Routing) setRouting() {
 		})
 
 		/*
-		 * shopping Items
+		 * shopping items
 		 *
 		 */
 		v1.GET("/shoppingItems", func(ctx *gin.Context) {
