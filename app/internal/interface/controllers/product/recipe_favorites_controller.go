@@ -23,14 +23,14 @@ func NewRecipeFavoritesController(db gateways.DB) *RecipeFavoritesController {
 	}
 }
 
-//	@summary		Get list of recipes of favorite.
-//	@description	This API return list of recipes of favorite.
-//	@tags			recipeFavorites
-//	@accept			application/x-json-stream
-//	@param			user_id	query		int	true	"User ID"
-//	@Success		200		{array}		domain.RecipeFavoritesForGet
-//	@Failure		404		{object}	usecase.ResultStatus
-//	@router			/recipeFavorites [get]
+// @summary		Get list of recipes of favorite.
+// @description	This API return list of recipes of favorite.
+// @tags			recipeFavorites
+// @accept			application/x-json-stream
+// @param			user_id	query		int	true	"User ID"
+// @Success		200		{array}		domain.RecipeFavoritesForGet
+// @Failure		404		{object}	usecase.ResultStatus
+// @router			/recipeFavorites [get]
 func (rc *RecipeFavoritesController) GetList(ctx controllers.Context) {
 
 	userID, _ := strconv.Atoi(ctx.Query("user_id"))
@@ -42,3 +42,7 @@ func (rc *RecipeFavoritesController) GetList(ctx controllers.Context) {
 	}
 	ctx.JSON(res.Code, controllers.NewH("success", recipeFavorites))
 }
+
+func (rc *RecipeFavoritesController) Post(ctx controllers.Context) {}
+
+func (rc *RecipeFavoritesController) Delete(ctx controllers.Context) {}

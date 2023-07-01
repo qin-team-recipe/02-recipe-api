@@ -111,6 +111,13 @@ func (r *Routing) setRouting() {
 			chefFollowsController.GetList(ctx)
 		})
 
+		v1.POST("/chefFollows", func(ctx *gin.Context) {
+			chefFollowsController.Post(ctx)
+		})
+		v1.DELETE("/chefFollows", func(ctx *gin.Context) {
+			chefFollowsController.Delete(ctx)
+		})
+
 		/*
 		 * chef recipes
 		 *

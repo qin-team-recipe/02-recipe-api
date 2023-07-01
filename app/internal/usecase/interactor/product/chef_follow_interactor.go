@@ -1,7 +1,9 @@
 package product
 
 import (
+	"errors"
 	"net/http"
+	"time"
 
 	"github.com/qin-team-recipe/02-recipe-api/internal/domain"
 	"github.com/qin-team-recipe/02-recipe-api/internal/usecase"
@@ -14,6 +16,7 @@ type ChefFollowInteractor struct {
 	DB         gateway.DBRepository
 	Chef       repository.ChefRepository
 	ChefFollow repository.ChefFollowRepository
+	User       repository.UserRepository
 }
 
 func (ci *ChefFollowInteractor) GetList(userID int) ([]*domain.ChefFollowsForGet, *usecase.ResultStatus) {
@@ -28,6 +31,47 @@ func (ci *ChefFollowInteractor) GetList(userID int) ([]*domain.ChefFollowsForGet
 	builtChefFollows, _ := ci.buildList(db, chefFollows)
 
 	return builtChefFollows, usecase.NewResultStatus(http.StatusOK, nil)
+}
+
+func (ci *ChefFollowInteractor) Create(chefFollow *domain.ChefFollows) (*domain.ChefFollowsForGet, *usecase.ResultStatus) {
+	db := ci.DB.Connect()
+
+	if _, err := ci.User.FirstByID(db, chefFollow.UserID); err != nil {
+		return &domain.ChefFollowsForGet{}, usecase.NewResultStatus(http.StatusNotFound, err)
+	}
+
+	if _, err := ci.Chef.FirstByID(db, chefFollow.ChefID); err != nil {
+		return &domain.ChefFollowsForGet{}, usecase.NewResultStatus(http.StatusNotFound, err)
+	}
+
+	if _, err := ci.ChefFollow.FirstByUserIDAndChefID(db, chefFollow.UserID, chefFollow.ChefID); err == nil {
+		return &domain.ChefFollowsForGet{}, usecase.NewResultStatus(http.StatusConflict, errors.New("既にフォローしています"))
+	}
+
+	chefFollow.CreatedAt = time.Now().Unix()
+
+	newChefFollow, err := ci.ChefFollow.Create(db, chefFollow)
+	if err != nil {
+		return &domain.ChefFollowsForGet{}, usecase.NewResultStatus(http.StatusBadRequest, err)
+	}
+
+	return newChefFollow.BuildForGet(), usecase.NewResultStatus(http.StatusOK, nil)
+}
+
+func (ci *ChefFollowInteractor) Delete(f *domain.ChefFollows) *usecase.ResultStatus {
+
+	db := ci.DB.Connect()
+
+	follow, err := ci.ChefFollow.FirstByUserIDAndChefID(db, f.UserID, f.ChefID)
+	if err != nil {
+		return usecase.NewResultStatus(http.StatusNotFound, err)
+	}
+
+	if err = ci.ChefFollow.Delete(db, follow); err != nil {
+		return usecase.NewResultStatus(http.StatusBadRequest, err)
+	}
+
+	return usecase.NewResultStatus(http.StatusOK, nil)
 }
 
 func (ci *ChefFollowInteractor) buildList(db *gorm.DB, chefFollows []*domain.ChefFollows) ([]*domain.ChefFollowsForGet, error) {

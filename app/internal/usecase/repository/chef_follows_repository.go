@@ -7,4 +7,7 @@ import (
 
 type ChefFollowRepository interface {
 	FindByUserID(db *gorm.DB, userID int) ([]*domain.ChefFollows, error)
+	FirstByUserIDAndChefID(db *gorm.DB, userID, chefID int) (*domain.ChefFollows, error)
+	Create(db *gorm.DB, follow *domain.ChefFollows) (*domain.ChefFollows, error)
+	Delete(db *gorm.DB, follow *domain.ChefFollows) error
 }
