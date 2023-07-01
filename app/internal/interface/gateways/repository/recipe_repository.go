@@ -24,11 +24,15 @@ func (rr *RecipeRepository) FindByQuery(db *gorm.DB, userID int, q string) ([]*d
 
 	query := db.
 		Joins("left outer join chef_recipes as cr on recipes.id = cr.recipe_id").
-		Joins("left outer join user_recipes as ur on recipes.id = ur.recipe_id").
-		Where("0 < cr.chef_id or ur.user_id = ?", userID)
+		Where("0 < cr.chef_id")
 
 	if q != "" {
 		query = query.Where("title like ? or description like ?", q, q)
+	}
+	if 0 < userID {
+		query = query.
+			Joins("left outer join user_recipes as ur on recipes.id = ur.recipe_id").
+			Or("ur.user_id = ?", userID)
 	}
 
 	query.Order("created_at desc").Find(&recipes)
