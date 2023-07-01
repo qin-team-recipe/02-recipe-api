@@ -1,4 +1,4 @@
-package random
+package utils
 
 import (
 	"fmt"
@@ -10,6 +10,7 @@ import (
 
 const alphabet = "abcdefghijklnmopqrstuvwxyz"
 const fullKeyword = "ABCDEFGHIJKLNMOPQRSTUVWXYZabcdefghijklnmopqrstuvwxyz0123456789"
+const full = "ABCDEFGHIJKLNMOPQRSTUVWXYZabcdefghijklnmopqrstuvwxyz0123456789!#$%&+-=?/._"
 
 func init() {
 	rand.Seed(time.Now().UnixNano())
@@ -45,6 +46,19 @@ func RandomScreenNameID(n int) string {
 
 	for i := 0; i < n; i++ {
 		c := fullKeyword[rand.Intn(k)]
+		sb.WriteByte(c)
+	}
+
+	return sb.String()
+}
+
+// RandomToken id generates a random string of length n
+func RandomToken(n int) string {
+	var sb strings.Builder
+	k := len(full)
+
+	for i := 0; i < n; i++ {
+		c := full[rand.Intn(k)]
 		sb.WriteByte(c)
 	}
 

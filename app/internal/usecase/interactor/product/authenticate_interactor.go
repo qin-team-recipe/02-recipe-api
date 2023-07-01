@@ -7,6 +7,7 @@ import (
 	"github.com/qin-team-recipe/02-recipe-api/internal/domain"
 	"github.com/qin-team-recipe/02-recipe-api/internal/usecase"
 	"github.com/qin-team-recipe/02-recipe-api/internal/usecase/gateway"
+	"github.com/qin-team-recipe/02-recipe-api/utils"
 )
 
 type AuthenticateInteractor struct {
@@ -18,7 +19,7 @@ type AuthenticateResponse struct {
 }
 
 func (ai *AuthenticateInteractor) GetAuthCodeURL() (*AuthenticateResponse, *usecase.ResultStatus) {
-	loginURL := ai.Google.AuthCodeURL("")
+	loginURL := ai.Google.AuthCodeURL(utils.RandomToken(20))
 
 	if loginURL == "" {
 		return &AuthenticateResponse{}, usecase.NewResultStatus(http.StatusBadGateway, errors.New("URL生成に失敗しました"))

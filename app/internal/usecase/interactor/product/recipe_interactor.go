@@ -31,8 +31,11 @@ func (ri *RecipeInteractor) GetList(userID int, q string) ([]*domain.RecipesForG
 }
 
 // 注目のレシピのリストを取得
+// レコメンドの条件
 func (ri *RecipeInteractor) GetRecomendList() ([]*domain.Recipes, *usecase.ResultStatus) {
 	recipes := []*domain.Recipes{}
+
+	// 今週のRecipeIDごとの数が多いRecipeFavoritesを取得する
 
 	return recipes, usecase.NewResultStatus(http.StatusOK, nil)
 }
