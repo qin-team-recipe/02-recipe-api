@@ -17,6 +17,8 @@ type RecipesForGet struct {
 	Description *string `json:"description"`
 	Servings    int     `json:"servings"`
 	IsDraft     bool    `json:"is_draft"`
+
+	FavoritesCount int `json:"facorites_count"`
 }
 
 func (r *Recipes) BuildForGet() *RecipesForGet {

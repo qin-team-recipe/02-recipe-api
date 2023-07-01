@@ -8,4 +8,5 @@ type Context interface {
 	Param(key string) string
 	PostForm(key string) (value string)
 	Query(key string) string
+	Value(key any) any
 }

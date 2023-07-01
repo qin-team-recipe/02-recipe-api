@@ -54,6 +54,7 @@ func (r *Routing) setRouting() {
 	chefFollowsController := product.NewChefFollowsController(r.DB)
 	chefRecipesController := product.NewChefRecipesController(r.DB)
 	meController := product.NewMeController(product.MeControllerProvider{DB: r.DB, Google: r.Google, Jwt: r.Jwt})
+	recipesController := product.NewRecipesController(r.DB)
 	recipeFavoritesController := product.NewRecipeFavoritesController(r.DB)
 	recipeIngredientsController := product.NewRecipeIngretientsController(r.DB)
 	recipeLinksController := product.NewRecipeLinksController(r.DB)
@@ -130,7 +131,7 @@ func (r *Routing) setRouting() {
 		// v1.GET("/me", func(ctx *gin.Context) {
 		// 	meController.Get(ctx)
 		// })
-		v1.GET("/self/login", func(ctx *gin.Context) {
+		v1.GET("/login", func(ctx *gin.Context) {
 			meController.LoginUser(ctx)
 		})
 		v1.POST("/me/register", func(ctx *gin.Context) {
@@ -143,6 +144,14 @@ func (r *Routing) setRouting() {
 		// v1.DELETE("/me", func(ctx *gin.Context) {
 		// 	meController.Delete(ctx)
 		// })
+
+		/*
+		 * recipes
+		 *
+		 */
+		v1.GET("/recipes", func(ctx *gin.Context) {
+			recipesController.GetList(ctx, r.Jwt)
+		})
 
 		/*
 		 * recipes favorites

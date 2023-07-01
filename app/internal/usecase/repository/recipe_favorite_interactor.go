@@ -7,4 +7,5 @@ import (
 
 type RecipeFavoriteRepository interface {
 	FindByUserID(db *gorm.DB, userID int) ([]*domain.RecipeFavorites, error)
+	CountByRecipeID(db *gorm.DB, recipeID int) int
 }

@@ -17,3 +17,9 @@ func (rr *RecipeFavoriteRepository) FindByUserID(db *gorm.DB, userID int) ([]*do
 	}
 	return recipeFavorites, nil
 }
+
+func (rr *RecipeFavoriteRepository) CountByRecipeID(db *gorm.DB, recipeID int) int {
+	var count int64
+	db.Model(&domain.RecipeFavorites{}).Where("recipe_id = ?", recipeID).Count(&count)
+	return int(count)
+}
