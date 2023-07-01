@@ -103,20 +103,20 @@ func (r *Routing) setRouting() {
 			chefsController.Get(ctx)
 		})
 
-		/*
-		 * chefs　follows
-		 *
-		 */
-		v1.GET("/chefFollows", func(ctx *gin.Context) {
-			chefFollowsController.GetList(ctx)
-		})
+		// /*
+		//  * chefs　follows
+		//  *
+		//  */
+		// v1.GET("/chefFollows", func(ctx *gin.Context) {
+		// 	chefFollowsController.GetList(ctx)
+		// })
 
-		v1.POST("/chefFollows", func(ctx *gin.Context) {
-			chefFollowsController.Post(ctx)
-		})
-		v1.DELETE("/chefFollows", func(ctx *gin.Context) {
-			chefFollowsController.Delete(ctx)
-		})
+		// v1.POST("/chefFollows", func(ctx *gin.Context) {
+		// 	chefFollowsController.Post(ctx)
+		// })
+		// v1.DELETE("/chefFollows", func(ctx *gin.Context) {
+		// 	chefFollowsController.Delete(ctx)
+		// })
 
 		/*
 		 * chef recipes
@@ -157,6 +157,13 @@ func (r *Routing) setRouting() {
 		 */
 		v1.GET("/recipeFavorites", func(ctx *gin.Context) {
 			recipeFavoritesController.GetList(ctx)
+		})
+
+		v1.POST("/recipeFavorites", func(ctx *gin.Context) {
+			recipeFavoritesController.Post(ctx)
+		})
+		v1.DELETE("/recipeFavorites", func(ctx *gin.Context) {
+			recipeFavoritesController.Delete(ctx)
 		})
 
 		/*
@@ -262,6 +269,21 @@ func (r *Routing) setRouting() {
 		})
 		v1Auth.DELETE("/me", func(ctx *gin.Context) {
 			meController.Delete(ctx)
+		})
+
+		/*
+		 * chefs　follows
+		 *
+		 */
+		v1Auth.GET("/chefFollows", func(ctx *gin.Context) {
+			chefFollowsController.GetList(ctx)
+		})
+
+		v1Auth.POST("/chefFollows", func(ctx *gin.Context) {
+			chefFollowsController.Post(ctx)
+		})
+		v1Auth.DELETE("/chefFollows", func(ctx *gin.Context) {
+			chefFollowsController.Delete(ctx)
 		})
 
 		/*

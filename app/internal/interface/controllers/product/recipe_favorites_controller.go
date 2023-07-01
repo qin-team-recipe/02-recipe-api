@@ -1,8 +1,11 @@
 package product
 
 import (
+	"fmt"
+	"net/http"
 	"strconv"
 
+	"github.com/qin-team-recipe/02-recipe-api/internal/domain"
 	"github.com/qin-team-recipe/02-recipe-api/internal/interface/controllers"
 	"github.com/qin-team-recipe/02-recipe-api/internal/interface/gateways"
 	"github.com/qin-team-recipe/02-recipe-api/internal/interface/gateways/repository"
@@ -19,6 +22,7 @@ func NewRecipeFavoritesController(db gateways.DB) *RecipeFavoritesController {
 			DB:             &gateways.DBRepository{DB: db},
 			Recipe:         &repository.RecipeRepository{},
 			RecipeFavorite: &repository.RecipeFavoriteRepository{},
+			User:           &repository.UserRepository{},
 		},
 	}
 }
@@ -43,6 +47,39 @@ func (rc *RecipeFavoritesController) GetList(ctx controllers.Context) {
 	ctx.JSON(res.Code, controllers.NewH("success", recipeFavorites))
 }
 
-func (rc *RecipeFavoritesController) Post(ctx controllers.Context) {}
+func (rc *RecipeFavoritesController) Post(ctx controllers.Context) {
 
-func (rc *RecipeFavoritesController) Delete(ctx controllers.Context) {}
+	f := &domain.RecipeFavorites{}
+
+	if err := ctx.BindJSON(f); err != nil {
+		ctx.JSON(http.StatusBadRequest, controllers.NewH(fmt.Sprintf("failed bind json: %s", err.Error()), nil))
+		return
+	}
+
+	favorite, res := rc.Interactor.Create(f)
+	if res.Error != nil {
+		ctx.JSON(res.Code, controllers.NewH(res.Error.Error(), nil))
+		return
+	}
+
+	ctx.JSON(res.Code, controllers.NewH("success", favorite))
+
+}
+
+func (rc *RecipeFavoritesController) Delete(ctx controllers.Context) {
+	f := &domain.RecipeFavorites{}
+
+	if err := ctx.BindJSON(f); err != nil {
+		ctx.JSON(http.StatusBadRequest, controllers.NewH(fmt.Sprintf("failed bind json: %s", err.Error()), nil))
+		return
+	}
+
+	res := rc.Interactor.Delete(f)
+	if res.Error != nil {
+		ctx.JSON(res.Code, controllers.NewH(res.Error.Error(), nil))
+		return
+	}
+
+	ctx.JSON(res.Code, controllers.NewH("success", nil))
+
+}

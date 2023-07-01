@@ -44,6 +44,7 @@ func (ci *ChefFollowInteractor) Create(chefFollow *domain.ChefFollows) (*domain.
 		return &domain.ChefFollowsForGet{}, usecase.NewResultStatus(http.StatusNotFound, err)
 	}
 
+	// 重複しないように確認
 	if _, err := ci.ChefFollow.FirstByUserIDAndChefID(db, chefFollow.UserID, chefFollow.ChefID); err == nil {
 		return &domain.ChefFollowsForGet{}, usecase.NewResultStatus(http.StatusConflict, errors.New("既にフォローしています"))
 	}

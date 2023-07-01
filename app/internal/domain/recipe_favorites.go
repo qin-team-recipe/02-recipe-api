@@ -5,7 +5,6 @@ type RecipeFavorites struct {
 	UserID    int   `json:"user_id"`
 	RecipeID  int   `json:"recipe_id"`
 	CreatedAt int64 `json:"created_at"`
-	UpdatedAt int64 `json:"updated_at"`
 }
 
 type RecipeFavoritesForGet struct {
@@ -13,7 +12,7 @@ type RecipeFavoritesForGet struct {
 	UserID   int `json:"user_id"`
 	RecipeID int `json:"recipe_id"`
 
-	Recipe *RecipesForGet `json:"recipe"`
+	Recipe *RecipesForGet `json:"recipe,omitempty"`
 }
 
 func (r *RecipeFavorites) BuildForGet() *RecipeFavoritesForGet {
