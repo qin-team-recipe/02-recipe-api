@@ -2,7 +2,7 @@ package domain
 
 type RecipeIngredients struct {
 	ID          int     `json:"id"`
-	RecipeID    int     `json:"recipe_id" binding:"required"`
+	RecipeID    int     `json:"recipe_id"`
 	Name        string  `json:"name" binding:"required"`
 	Description *string `json:"description"`
 	CreatedAt   int64   `json:"created_at"`

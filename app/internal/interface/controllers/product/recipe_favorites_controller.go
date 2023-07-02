@@ -1,8 +1,11 @@
 package product
 
 import (
+	"fmt"
+	"net/http"
 	"strconv"
 
+	"github.com/qin-team-recipe/02-recipe-api/internal/domain"
 	"github.com/qin-team-recipe/02-recipe-api/internal/interface/controllers"
 	"github.com/qin-team-recipe/02-recipe-api/internal/interface/gateways"
 	"github.com/qin-team-recipe/02-recipe-api/internal/interface/gateways/repository"
@@ -19,10 +22,19 @@ func NewRecipeFavoritesController(db gateways.DB) *RecipeFavoritesController {
 			DB:             &gateways.DBRepository{DB: db},
 			Recipe:         &repository.RecipeRepository{},
 			RecipeFavorite: &repository.RecipeFavoriteRepository{},
+			User:           &repository.UserRepository{},
 		},
 	}
 }
 
+// @summary		Get list of recipes of favorite.
+// @description	This API return list of recipes of favorite.
+// @tags			recipeFavorites
+// @accept			application/x-json-stream
+// @param			user_id	query		int	true	"User ID"
+// @Success		200		{array}		domain.RecipeFavoritesForGet
+// @Failure		404		{object}	usecase.ResultStatus
+// @router			/recipeFavorites [get]
 func (rc *RecipeFavoritesController) GetList(ctx controllers.Context) {
 
 	userID, _ := strconv.Atoi(ctx.Query("user_id"))
@@ -33,4 +45,41 @@ func (rc *RecipeFavoritesController) GetList(ctx controllers.Context) {
 		return
 	}
 	ctx.JSON(res.Code, controllers.NewH("success", recipeFavorites))
+}
+
+func (rc *RecipeFavoritesController) Post(ctx controllers.Context) {
+
+	f := &domain.RecipeFavorites{}
+
+	if err := ctx.BindJSON(f); err != nil {
+		ctx.JSON(http.StatusBadRequest, controllers.NewH(fmt.Sprintf("failed bind json: %s", err.Error()), nil))
+		return
+	}
+
+	favorite, res := rc.Interactor.Create(f)
+	if res.Error != nil {
+		ctx.JSON(res.Code, controllers.NewH(res.Error.Error(), nil))
+		return
+	}
+
+	ctx.JSON(res.Code, controllers.NewH("success", favorite))
+
+}
+
+func (rc *RecipeFavoritesController) Delete(ctx controllers.Context) {
+	f := &domain.RecipeFavorites{}
+
+	if err := ctx.BindJSON(f); err != nil {
+		ctx.JSON(http.StatusBadRequest, controllers.NewH(fmt.Sprintf("failed bind json: %s", err.Error()), nil))
+		return
+	}
+
+	res := rc.Interactor.Delete(f)
+	if res.Error != nil {
+		ctx.JSON(res.Code, controllers.NewH(res.Error.Error(), nil))
+		return
+	}
+
+	ctx.JSON(res.Code, controllers.NewH("success", nil))
+
 }

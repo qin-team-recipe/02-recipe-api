@@ -6,23 +6,31 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/qin-team-recipe/02-recipe-api/config"
+	"github.com/qin-team-recipe/02-recipe-api/internal/infrastructure/middleware"
 	"github.com/qin-team-recipe/02-recipe-api/internal/interface/controllers/console"
 	"github.com/qin-team-recipe/02-recipe-api/internal/interface/controllers/product"
+	"github.com/qin-team-recipe/02-recipe-api/pkg/token"
 
 	docs "github.com/qin-team-recipe/02-recipe-api/docs"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
+const basePath = "/api/v1"
+
 type Routing struct {
-	Gin *gin.Engine
-	DB  *DB
+	Gin    *gin.Engine
+	DB     *DB
+	Google *Google
+	Jwt    token.Maker
 }
 
-func NewRouting(c *config.Config, db *DB) *Routing {
+func NewRouting(c *config.Config, db *DB, google *Google, jwt token.Maker) *Routing {
 	r := &Routing{
-		DB:  db,
-		Gin: gin.Default(),
+		DB:     db,
+		Gin:    gin.Default(),
+		Google: google,
+		Jwt:    jwt,
 	}
 
 	// r.setCors()
@@ -32,46 +40,55 @@ func NewRouting(c *config.Config, db *DB) *Routing {
 	return r
 }
 
-// @title           Swagger Example API
-// @version         1.0
-// @description     This is a sample server celler server.
-// @termsOfService  http://swagger.io/terms/
+//	@title			Team02's API
+//	@version		1.0
+//	@description	This is a Team02's API Docs at Qin.
+//	@termsOfService	http://swagger.io/terms/
 
-// @contact.name   API Support
-// @contact.url    http://www.swagger.io/support
-// @contact.email  support@swagger.io
-
-// @license.name  Apache 2.0
-// @license.url   http://www.apache.org/licenses/LICENSE-2.0.html
-
-// @host      localhost:8080
-// @BasePath  /v1
-
-// @securityDefinitions.basic  BasicAuth
-
-// @externalDocs.description  OpenAPI
-// @externalDocs.url          https://swagger.io/resources/open-api/
+// @host		localhost:8080
+// @BasePath	/api/v1
 func (r *Routing) setRouting() {
 
+	authenticatesController := product.NewAuthenticatesController(r.Google)
 	chefsController := product.NewChefsController(r.DB)
 	chefFollowsController := product.NewChefFollowsController(r.DB)
 	chefRecipesController := product.NewChefRecipesController(r.DB)
+	meController := product.NewMeController(product.MeControllerProvider{DB: r.DB, Google: r.Google, Jwt: r.Jwt})
 	recipeFavoritesController := product.NewRecipeFavoritesController(r.DB)
 	recipeIngredientsController := product.NewRecipeIngretientsController(r.DB)
 	recipeLinksController := product.NewRecipeLinksController(r.DB)
 	recipeStepsController := product.NewRecipeStepsController(r.DB)
 	shoppingItemsController := product.NewShoppingItemsController(r.DB)
-	userController := product.NewUsersController()
+	userController := product.NewUsersController(&product.UsersControllerProvider{DB: r.DB, Google: r.Google})
 	userRecipesController := product.NewUserRecipesController(r.DB)
 	userShoppingItemsController := product.NewUserShoppingItemsController(r.DB)
 
 	// REST API用
-	v1 := r.Gin.Group("/api/v1")
+	v1 := r.Gin.Group(basePath)
+
+	// v1Auth := v1.Use(middleware.JwtAuthMiddleware(r.Jwt))
 	// swagger用
-	docs.SwaggerInfo.BasePath = "/api/v1"
+	docs.SwaggerInfo.BasePath = basePath
 	{
+		//	@summary		Test API.
+		//	@description	This API return 'Hello World!!'.
+		//	@tags			mock
+		//	@accept			application/x-json-stream
+		//	@Success		200	{object}	json
+		//	@router			/ [get]
 		v1.GET("/", func(ctx *gin.Context) {
 			ctx.JSON(http.StatusOK, gin.H{"message": "Hello World!!"})
+		})
+
+		/*
+		 * authenticates
+		 *
+		 */
+		v1.GET("/authenticates/google", func(ctx *gin.Context) {
+			authenticatesController.GetGoogle(ctx)
+		})
+		v1.GET("/authenticates/google/userinfo", func(ctx *gin.Context) {
+			authenticatesController.GetGoogleUserInfo(ctx)
 		})
 
 		/*
@@ -86,13 +103,20 @@ func (r *Routing) setRouting() {
 			chefsController.Get(ctx)
 		})
 
-		/*
-		 * chefs　follows
-		 *
-		 */
-		v1.GET("/chefFollows", func(ctx *gin.Context) {
-			chefFollowsController.GetList(ctx)
-		})
+		// /*
+		//  * chefs　follows
+		//  *
+		//  */
+		// v1.GET("/chefFollows", func(ctx *gin.Context) {
+		// 	chefFollowsController.GetList(ctx)
+		// })
+
+		// v1.POST("/chefFollows", func(ctx *gin.Context) {
+		// 	chefFollowsController.Post(ctx)
+		// })
+		// v1.DELETE("/chefFollows", func(ctx *gin.Context) {
+		// 	chefFollowsController.Delete(ctx)
+		// })
 
 		/*
 		 * chef recipes
@@ -106,44 +130,79 @@ func (r *Routing) setRouting() {
 		// 	recipesController.Get(ctx)
 		// })
 
-		/*
-		 * recipes favorites
-		 *
-		 */
-		v1.GET("/recipeFavorites", func(ctx *gin.Context) {
-			recipeFavoritesController.GetList(ctx)
+		// /*
+		//  * me
+		//  *
+		//  */
+		// v1.GET("/me", func(ctx *gin.Context) {
+		// 	meController.Get(ctx)
+		// })
+		v1.GET("/self/login", func(ctx *gin.Context) {
+			meController.LoginUser(ctx)
+		})
+		v1.POST("/me/register", func(ctx *gin.Context) {
+			meController.Post(ctx)
 		})
 
+		// v1.PATCH("/me", func(ctx *gin.Context) {
+		// 	meController.Patch(ctx)
+		// })
+		// v1.DELETE("/me", func(ctx *gin.Context) {
+		// 	meController.Delete(ctx)
+		// })
+
+		// /*
+		//  * recipes favorites
+		//  *
+		//  */
+		// v1.GET("/recipeFavorites", func(ctx *gin.Context) {
+		// 	recipeFavoritesController.GetList(ctx)
+		// })
+
+		// v1.POST("/recipeFavorites", func(ctx *gin.Context) {
+		// 	recipeFavoritesController.Post(ctx)
+		// })
+		// v1.DELETE("/recipeFavorites", func(ctx *gin.Context) {
+		// 	recipeFavoritesController.Delete(ctx)
+		// })
+
+		/*
+		 * users
+		 *
+		 */
 		v1.GET("/users", func(ctx *gin.Context) {
 			userController.Get(ctx)
 		})
 
-		/*
-		 * recipes ingredients
-		 *
-		 */
-		v1.POST("/recipeIngredients", func(ctx *gin.Context) {
-			recipeIngredientsController.Post(ctx)
+		v1.POST("/users", func(ctx *gin.Context) {
 		})
 
-		/*
-		 * recipes links
-		 *
-		 */
-		v1.POST("/recipeLinks", func(ctx *gin.Context) {
-			recipeLinksController.Post(ctx)
-		})
+		// /*
+		//  * recipes ingredients
+		//  *
+		//  */
+		// v1.POST("/recipeIngredients", func(ctx *gin.Context) {
+		// 	recipeIngredientsController.Post(ctx)
+		// })
+
+		// /*
+		//  * recipes links
+		//  *
+		//  */
+		// v1.POST("/recipeLinks", func(ctx *gin.Context) {
+		// 	recipeLinksController.Post(ctx)
+		// })
+
+		// /*
+		//  * recipes steps
+		//  *
+		//  */
+		// v1.POST("/recipeSteps", func(ctx *gin.Context) {
+		// 	recipeStepsController.Post(ctx)
+		// })
 
 		/*
-		 * recipes steps
-		 *
-		 */
-		v1.POST("/recipeSteps", func(ctx *gin.Context) {
-			recipeStepsController.Post(ctx)
-		})
-
-		/*
-		 * shopping Items
+		 * shopping items
 		 *
 		 */
 		v1.GET("/shoppingItems", func(ctx *gin.Context) {
@@ -160,16 +219,16 @@ func (r *Routing) setRouting() {
 			shoppingItemsController.Delete(ctx)
 		})
 
-		/*
-		 * user recipes
-		 *
-		 */
-		v1.GET("/userRecipes", func(ctx *gin.Context) {
-			userRecipesController.GetList(ctx)
-		})
-		v1.POST("/userRecipes", func(ctx *gin.Context) {
-			userRecipesController.Post(ctx)
-		})
+		// /*
+		//  * user recipes
+		//  *
+		//  */
+		// v1.GET("/userRecipes", func(ctx *gin.Context) {
+		// 	userRecipesController.GetList(ctx)
+		// })
+		// v1.POST("/userRecipes", func(ctx *gin.Context) {
+		// 	userRecipesController.Post(ctx)
+		// })
 
 		/*
 		 * user shopping Items
@@ -194,6 +253,92 @@ func (r *Routing) setRouting() {
 		 *
 		 */
 		v1.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+	}
+
+	v1Auth := v1.Use(middleware.JwtAuthMiddleware(r.Jwt))
+	{
+		/*
+		 * me
+		 *
+		 */
+		v1Auth.GET("/me", func(ctx *gin.Context) {
+			meController.Get(ctx)
+		})
+		v1Auth.PATCH("/me", func(ctx *gin.Context) {
+			meController.Patch(ctx)
+		})
+		v1Auth.DELETE("/me", func(ctx *gin.Context) {
+			meController.Delete(ctx)
+		})
+
+		/*
+		 * chefs　follows
+		 *
+		 */
+		v1Auth.GET("/chefFollows", func(ctx *gin.Context) {
+			chefFollowsController.GetList(ctx)
+		})
+
+		v1Auth.POST("/chefFollows", func(ctx *gin.Context) {
+			chefFollowsController.Post(ctx)
+		})
+		v1Auth.DELETE("/chefFollows", func(ctx *gin.Context) {
+			chefFollowsController.Delete(ctx)
+		})
+
+		/*
+		 * recipes favorites
+		 *
+		 */
+		v1Auth.GET("/recipeFavorites", func(ctx *gin.Context) {
+			recipeFavoritesController.GetList(ctx)
+		})
+
+		v1Auth.POST("/recipeFavorites", func(ctx *gin.Context) {
+			recipeFavoritesController.Post(ctx)
+		})
+		v1Auth.DELETE("/recipeFavorites", func(ctx *gin.Context) {
+			recipeFavoritesController.Delete(ctx)
+		})
+
+		/*
+		 * recipes ingredients
+		 *
+		 */
+		v1Auth.POST("/recipeIngredients", func(ctx *gin.Context) {
+			recipeIngredientsController.Post(ctx)
+		})
+
+		/*
+		 * recipes links
+		 *
+		 */
+		v1Auth.POST("/recipeLinks", func(ctx *gin.Context) {
+			recipeLinksController.Post(ctx)
+		})
+
+		/*
+		 * recipes steps
+		 *
+		 */
+		v1Auth.POST("/recipeSteps", func(ctx *gin.Context) {
+			recipeStepsController.Post(ctx)
+		})
+
+		/*
+		 * user recipes
+		 *
+		 */
+		v1Auth.GET("/userRecipes", func(ctx *gin.Context) {
+			userRecipesController.GetList(ctx)
+		})
+		v1Auth.POST("/userRecipes", func(ctx *gin.Context) {
+			userRecipesController.Post(ctx)
+		})
+
+		v1Auth.GET("/userRecipes/:id", func(ctx *gin.Context) {
+			userRecipesController.Get(ctx)
+		})
 	}
 
 	consoleChefsController := console.NewChefsController(r.DB)

@@ -7,11 +7,13 @@ import (
 
 	"github.com/qin-team-recipe/02-recipe-api/internal/domain"
 	"github.com/qin-team-recipe/02-recipe-api/internal/usecase"
+	"github.com/qin-team-recipe/02-recipe-api/internal/usecase/gateway"
 	"github.com/qin-team-recipe/02-recipe-api/internal/usecase/repository"
 )
 
 type UserInteractor struct {
-	User repository.UserRepository
+	Google gateway.GoogleGateway
+	User   repository.UserRepository
 }
 
 func (ui *UserInteractor) Get() (domain.Users, *usecase.ResultStatus) {

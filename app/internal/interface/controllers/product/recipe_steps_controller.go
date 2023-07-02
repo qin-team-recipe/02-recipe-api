@@ -25,6 +25,17 @@ func NewRecipeStepsController(db gateways.DB) *RecipeStepsController {
 	}
 }
 
+//	@summary		Regist recipe steps.
+//	@description	This API regist recipe steps and return this results data.
+//	@tags			recipeSteps
+//	@accept			application/x-json-stream
+//	@param			recipe_id	formData	int		true	"Recipe ID"
+//	@param			title		formData	string	true	"Title"
+//	@param			description	formData	string	false	"Description"
+//	@param			step_number	formData	int		false	"Step Number"
+//	@Success		200			{object}	domain.RecipeStepsForGet
+//	@Failure		400			{object}	usecase.ResultStatus
+//	@router			/recipeSteps [post]
 func (rc *RecipeStepsController) Post(ctx controllers.Context) {
 
 	r := &domain.RecipeSteps{}

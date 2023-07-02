@@ -5,7 +5,6 @@ type ChefFollows struct {
 	UserID    int   `json:"user_id"`
 	ChefID    int   `json:"chef_id"`
 	CreatedAt int64 `json:"created_at"`
-	UpdatedAt int64 `json:"updated_at"`
 }
 
 type ChefFollowsForGet struct {
@@ -13,7 +12,7 @@ type ChefFollowsForGet struct {
 	UserID int `json:"user_id"`
 	ChefID int `json:"chef_id"`
 
-	Chef *ChefsForGet `json:"chef"`
+	Chef *ChefsForGet `json:"chef,omitempty"`
 }
 
 func (c *ChefFollows) BuildForGet() *ChefFollowsForGet {
