@@ -160,6 +160,10 @@ func (r *Routing) setRouting() {
 			recipesController.GetList(ctx, r.Jwt)
 		})
 
+		v1.GET("/recipes/:id", func(ctx *gin.Context) {
+			recipesController.Get(ctx)
+		})
+
 		// /*
 		//  * recipes favorites
 		//  *

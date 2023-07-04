@@ -19,6 +19,10 @@ type RecipesForGet struct {
 	IsDraft     bool    `json:"is_draft"`
 
 	FavoritesCount int `json:"facorites_count"`
+
+	// この値はどちらかが入る
+	Chef *ChefsForGet `json:"chef,omitempty"`
+	User *UsersForGet `json:"user,omitempty"`
 }
 
 func (r *Recipes) BuildForGet() *RecipesForGet {

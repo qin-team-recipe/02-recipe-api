@@ -1,6 +1,7 @@
 package product
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/qin-team-recipe/02-recipe-api/internal/domain"
@@ -11,9 +12,13 @@ import (
 )
 
 type RecipeInteractor struct {
+	Chef           repository.ChefRepository
+	ChefRecipe     repository.ChefRecipeRepository
 	DB             gateway.DBRepository
 	RecipeFavorite repository.RecipeFavoriteRepository
 	Recipe         repository.RecipeRepository
+	User           repository.UserRepository
+	UserRecipe     repository.UserRecipeRepository
 }
 
 // 単なるレシピのリストの取得
@@ -35,9 +40,22 @@ func (ri *RecipeInteractor) GetList(userID int, q string) ([]*domain.RecipesForG
 func (ri *RecipeInteractor) GetRecomendList() ([]*domain.Recipes, *usecase.ResultStatus) {
 	recipes := []*domain.Recipes{}
 
-	// 今週のRecipeIDごとの数が多いRecipeFavoritesを取得する
+	// 直近三日のRecipeIDごとの数が多いRecipeFavoritesを取得する
 
 	return recipes, usecase.NewResultStatus(http.StatusOK, nil)
+}
+
+func (ri *RecipeInteractor) Get(id int) (*domain.RecipesForGet, *usecase.ResultStatus) {
+	db := ri.DB.Connect()
+
+	recipe, err := ri.Recipe.FirstByID(db, id)
+	if err != nil {
+		return &domain.RecipesForGet{}, usecase.NewResultStatus(http.StatusNotFound, err)
+	}
+
+	builtRecipe, _ := ri.build(db, recipe)
+
+	return builtRecipe, usecase.NewResultStatus(http.StatusOK, nil)
 }
 
 func (ri *RecipeInteractor) buildList(db *gorm.DB, recipes []*domain.Recipes) ([]*domain.RecipesForGet, error) {
@@ -59,6 +77,23 @@ func (ri *RecipeInteractor) build(db *gorm.DB, recipe *domain.Recipes) (*domain.
 	builtRecipe := recipe.BuildForGet()
 
 	builtRecipe.FavoritesCount = ri.RecipeFavorite.CountByRecipeID(db, builtRecipe.ID)
+
+	chefRecipe, err := ri.ChefRecipe.FirstByRecipeID(db, builtRecipe.ID)
+	if err == nil {
+		chef, _ := ri.Chef.FirstByID(db, chefRecipe.ChefID)
+
+		builtRecipe.Chef = chef.BuildForGet()
+	} else {
+		userRecipe, err := ri.UserRecipe.FirstByRecipeID(db, builtRecipe.ID)
+		if err == nil {
+			user, err := ri.User.FirstByID(db, userRecipe.UserID)
+			if err != nil {
+				return &domain.RecipesForGet{}, errors.New("レシピを作成したシェフ、またはユーザーが見つかりません")
+			}
+
+			builtRecipe.User = user.BuildForGet()
+		}
+	}
 
 	return builtRecipe, nil
 }
