@@ -47,13 +47,14 @@ func (cc *ChefFollowsController) GetList(ctx controllers.Context) {
 	ctx.JSON(res.Code, controllers.NewH("success", chefFollows))
 }
 
-// @summary		ユーザーがシェフをフォロー
-// @description	シェフをフォローする際のリクエスト
-// @tags			chefFollows
-// @Param		chef_id body int true "シェフのID"
-// @Success		200			{object}	controllers.H{data=domain.SocialUserAccount}
+// @summary		ユーザーがシェフをフォロー登録
+// @description	シェフをフォロー登録する際のリクエスト
+// @tags		chefFollows
+// @accept		json
+// @Param		chefFollow body domain.ChefFollows true "user_id, chef_id は必須"
+// @Success		200			{object}	controllers.H{data=domain.ChefFollowsForGet}
 // @Failure		400			{object}	controllers.H
-// @router			/authenticates/google/userinfo [get]
+// @router			/chefFollows [post]
 func (cc *ChefFollowsController) Post(ctx controllers.Context) {
 
 	f := &domain.ChefFollows{}
@@ -72,6 +73,14 @@ func (cc *ChefFollowsController) Post(ctx controllers.Context) {
 	ctx.JSON(res.Code, controllers.NewH("success", follow))
 }
 
+// @summary		ユーザーがシェフをフォロー解除
+// @description	シェフをフォロー解除する際のリクエスト
+// @tags		chefFollows
+// @accept		json
+// @Param		chefFollow body domain.ChefFollows true "user_id, chef_id は必須"
+// @Success		200			{object}	controllers.H
+// @Failure		400			{object}	controllers.H
+// @router			/chefFollows [delete]
 func (cc *ChefFollowsController) Delete(ctx controllers.Context) {
 	f := &domain.ChefFollows{}
 

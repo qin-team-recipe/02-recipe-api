@@ -47,6 +47,14 @@ func (rc *RecipeFavoritesController) GetList(ctx controllers.Context) {
 	ctx.JSON(res.Code, controllers.NewH("success", recipeFavorites))
 }
 
+// @summary		ユーザーがレシピをお気に入り登録
+// @description	レシピをお気に入り登録する際のリクエスト
+// @tags		recipeFavorites
+// @accept		json
+// @Param		recipeFavorite body domain.RecipeFavorites true "user_id, recipe_id は必須"
+// @Success		200			{object}	controllers.H{data=domain.RecipeFavoritesForGet}
+// @Failure		400			{object}	controllers.H
+// @router			/recipeFavorites [post]
 func (rc *RecipeFavoritesController) Post(ctx controllers.Context) {
 
 	f := &domain.RecipeFavorites{}
@@ -66,6 +74,14 @@ func (rc *RecipeFavoritesController) Post(ctx controllers.Context) {
 
 }
 
+// @summary		ユーザーがレシピをお気に入り解除
+// @description	レシピをお気に入り解除する際のリクエスト
+// @tags		recipeFavorites
+// @accept		json
+// @Param		recipeFavorite body domain.RecipeFavorites true "user_id, recipe_id は必須"
+// @Success		200			{object}	controllers.H
+// @Failure		400			{object}	controllers.H
+// @router			/recipeFavorites [delete]
 func (rc *RecipeFavoritesController) Delete(ctx controllers.Context) {
 	f := &domain.RecipeFavorites{}
 
