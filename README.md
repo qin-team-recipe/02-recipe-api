@@ -36,7 +36,7 @@ CONTAINER_SERVER_PORT=8080
 ENV=development
 
 DB_ROOT_PASS=任意のルートユーザーのパスワードを入力
-DB_NAME=任意のデータベース名を入力
+DB_NAME=02_recipe_db
 DB_USER=任意のユーザー名を入力
 DB_PASS=任意のパスワードを入力
 DB_HOST=mysql  #<-docker-composeでコンテナ起動させるので固定
@@ -47,7 +47,9 @@ GOOGLE_SECRET_KEY=Google Cloudで設定された値
 
 APPLICATION_NAME=qin_recipe02
 TOKEN_SYMMETRIC_KEY=12345678901234567890123456789012
-ACCESS_TOKEN_DURATION=15m
+ACCESS_TOKEN_DURATION=60m
+
+CORS_ALLOW_ORIGINS=フロントエンドのURL <- 例: http://localhost:3000 など。配列にする場合は(例: "http://localhost:3000 http://localhost:5000")としてください
 ```
 
 ## Running
