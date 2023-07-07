@@ -18,6 +18,12 @@ func NewAuthenticatesController(g gateways.Google) *AuthenticatesController {
 	}
 }
 
+// @summary		GoogleアカウントログインURLの取得.
+// @description	Googleアカウントログイン認証に必要なURLの発行.
+// @tags			authenticates
+// @Success		200			{object}	controllers.H{data=product.AuthenticateResponse}
+// @Failure		400			{object}	controllers.H
+// @router			/authenticates/google [get]
 func (ac *AuthenticatesController) GetGoogle(ctx controllers.Context) {
 	googleUrl, res := ac.Interactor.GetAuthCodeURL()
 	if res.Error != nil {
@@ -27,6 +33,13 @@ func (ac *AuthenticatesController) GetGoogle(ctx controllers.Context) {
 	ctx.JSON(res.Code, controllers.NewH("success", googleUrl))
 }
 
+// @summary		Googleアカウント情報の取得.
+// @description	Googleアカウントログイン認証に成功すればアカウント情報を取得する.
+// @tags			authenticates
+// @Param 		code	query	string	true	"Googleから返却される署名（code）"
+// @Success		200			{object}	controllers.H{data=domain.SocialUserAccount}
+// @Failure		400			{object}	controllers.H
+// @router			/authenticates/google/userinfo [get]
 func (ac *AuthenticatesController) GetGoogleUserInfo(ctx controllers.Context) {
 
 	code := ctx.Query("code")

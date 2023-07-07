@@ -1,5 +1,11 @@
 basePath: /api/v1
 definitions:
+  controllers.H:
+    properties:
+      data: {}
+      message:
+        type: string
+    type: object
   domain.ChefFollowsForGet:
     properties:
       chef:
@@ -92,6 +98,17 @@ definitions:
       user_id:
         type: integer
     type: object
+  domain.SocialUserAccount:
+    properties:
+      display_name:
+        type: string
+      email:
+        type: string
+      service_name:
+        type: string
+      service_user_id:
+        type: string
+    type: object
   domain.UserRecipesForGet:
     properties:
       id:
@@ -120,11 +137,24 @@ definitions:
     type: object
   domain.Users:
     properties:
+      created_at:
+        type: integer
+      deleted_at:
+        type: integer
       display_name:
+        type: string
+      email:
         type: string
       id:
         type: integer
       screen_name:
+        type: string
+      updated_at:
+        type: integer
+    type: object
+  product.AuthenticateResponse:
+    properties:
+      login_url:
         type: string
     type: object
   usecase.ResultStatus:
@@ -141,6 +171,52 @@ info:
   title: Team02's API
   version: "1.0"
 paths:
+  /authenticates/google:
+    get:
+      description: Googleアカウントログイン認証に必要なURLの発行.
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/controllers.H'
+            - properties:
+                data:
+                  $ref: '#/definitions/product.AuthenticateResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.H'
+      summary: GoogleアカウントログインURLの取得.
+      tags:
+      - authenticates
+  /authenticates/google/userinfo:
+    get:
+      description: Googleアカウントログイン認証に成功すればアカウント情報を取得する.
+      parameters:
+      - description: Googleから返却される署名（code）
+        in: query
+        name: code
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/controllers.H'
+            - properties:
+                data:
+                  $ref: '#/definitions/domain.SocialUserAccount'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.H'
+      summary: Googleアカウント情報の取得.
+      tags:
+      - authenticates
   /chefFollows:
     get:
       consumes:

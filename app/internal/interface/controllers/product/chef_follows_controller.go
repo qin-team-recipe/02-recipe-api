@@ -47,6 +47,13 @@ func (cc *ChefFollowsController) GetList(ctx controllers.Context) {
 	ctx.JSON(res.Code, controllers.NewH("success", chefFollows))
 }
 
+// @summary		ユーザーがシェフをフォロー
+// @description	シェフをフォローする際のリクエスト
+// @tags			chefFollows
+// @Param		chef_id body int true "シェフのID"
+// @Success		200			{object}	controllers.H{data=domain.SocialUserAccount}
+// @Failure		400			{object}	controllers.H
+// @router			/authenticates/google/userinfo [get]
 func (cc *ChefFollowsController) Post(ctx controllers.Context) {
 
 	f := &domain.ChefFollows{}

@@ -17,6 +17,85 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/authenticates/google": {
+            "get": {
+                "description": "Googleアカウントログイン認証に必要なURLの発行.",
+                "tags": [
+                    "authenticates"
+                ],
+                "summary": "GoogleアカウントログインURLの取得.",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/product.AuthenticateResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.H"
+                        }
+                    }
+                }
+            }
+        },
+        "/authenticates/google/userinfo": {
+            "get": {
+                "description": "Googleアカウントログイン認証に成功すればアカウント情報を取得する.",
+                "tags": [
+                    "authenticates"
+                ],
+                "summary": "Googleアカウント情報の取得.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Googleから返却される署名（code）",
+                        "name": "code",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/domain.SocialUserAccount"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.H"
+                        }
+                    }
+                }
+            }
+        },
         "/chefFollows": {
             "get": {
                 "description": "This API return the list of following chefs by user.",
@@ -784,6 +863,15 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "controllers.H": {
+            "type": "object",
+            "properties": {
+                "data": {},
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "domain.ChefFollowsForGet": {
             "type": "object",
             "properties": {
@@ -926,6 +1014,23 @@ const docTemplate = `{
                 }
             }
         },
+        "domain.SocialUserAccount": {
+            "type": "object",
+            "properties": {
+                "display_name": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "service_name": {
+                    "type": "string"
+                },
+                "service_user_id": {
+                    "type": "string"
+                }
+            }
+        },
         "domain.UserRecipesForGet": {
             "type": "object",
             "properties": {
@@ -969,13 +1074,33 @@ const docTemplate = `{
         "domain.Users": {
             "type": "object",
             "properties": {
+                "created_at": {
+                    "type": "integer"
+                },
+                "deleted_at": {
+                    "type": "integer"
+                },
                 "display_name": {
+                    "type": "string"
+                },
+                "email": {
                     "type": "string"
                 },
                 "id": {
                     "type": "integer"
                 },
                 "screen_name": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "integer"
+                }
+            }
+        },
+        "product.AuthenticateResponse": {
+            "type": "object",
+            "properties": {
+                "login_url": {
                     "type": "string"
                 }
             }
