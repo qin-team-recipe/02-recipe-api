@@ -33,11 +33,16 @@ func NewRouting(c *config.Config, db *DB, google *Google, jwt token.Maker) *Rout
 		Jwt:    jwt,
 	}
 
-	// r.setCors()
+	r.setCors(middleware.NewCors(c))
 
 	r.setRouting()
 
 	return r
+}
+
+// Cors 対応
+func (r *Routing) setCors(cors *middleware.Cors) {
+	r.Gin.Use(cors.Config)
 }
 
 //	@title			Team02's API
