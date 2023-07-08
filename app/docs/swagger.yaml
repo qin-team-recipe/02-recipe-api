@@ -1,5 +1,22 @@
 basePath: /api/v1
 definitions:
+  controllers.H:
+    properties:
+      data: {}
+      message:
+        type: string
+    type: object
+  domain.ChefFollows:
+    properties:
+      chef_id:
+        type: integer
+      created_at:
+        type: integer
+      id:
+        type: integer
+      user_id:
+        type: integer
+    type: object
   domain.ChefFollowsForGet:
     properties:
       chef:
@@ -21,6 +38,17 @@ definitions:
         type: integer
       screen_name:
         type: string
+    type: object
+  domain.RecipeFavorites:
+    properties:
+      created_at:
+        type: integer
+      id:
+        type: integer
+      recipe_id:
+        type: integer
+      user_id:
+        type: integer
     type: object
   domain.RecipeFavoritesForGet:
     properties:
@@ -92,6 +120,17 @@ definitions:
       user_id:
         type: integer
     type: object
+  domain.SocialUserAccount:
+    properties:
+      display_name:
+        type: string
+      email:
+        type: string
+      service_name:
+        type: string
+      service_user_id:
+        type: string
+    type: object
   domain.UserRecipesForGet:
     properties:
       id:
@@ -120,12 +159,43 @@ definitions:
     type: object
   domain.Users:
     properties:
+      created_at:
+        type: integer
+      deleted_at:
+        type: integer
       display_name:
+        type: string
+      email:
         type: string
       id:
         type: integer
       screen_name:
         type: string
+      updated_at:
+        type: integer
+    type: object
+  domain.UsersForGet:
+    properties:
+      display_name:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      screen_name:
+        type: string
+    type: object
+  product.AuthenticateResponse:
+    properties:
+      login_url:
+        type: string
+    type: object
+  product.UserResponse:
+    properties:
+      token:
+        type: string
+      user:
+        $ref: '#/definitions/domain.UsersForGet'
     type: object
   usecase.ResultStatus:
     properties:
@@ -141,7 +211,76 @@ info:
   title: Team02's API
   version: "1.0"
 paths:
+  /authenticates/google:
+    get:
+      description: Googleアカウントログイン認証に必要なURLの発行.
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/controllers.H'
+            - properties:
+                data:
+                  $ref: '#/definitions/product.AuthenticateResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.H'
+      summary: GoogleアカウントログインURLの取得.
+      tags:
+      - authenticates
+  /authenticates/google/userinfo:
+    get:
+      description: Googleアカウントログイン認証に成功すればアカウント情報を取得する.
+      parameters:
+      - description: Googleから返却される署名（code）
+        in: query
+        name: code
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/controllers.H'
+            - properties:
+                data:
+                  $ref: '#/definitions/domain.SocialUserAccount'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.H'
+      summary: Googleアカウント情報の取得.
+      tags:
+      - authenticates
   /chefFollows:
+    delete:
+      consumes:
+      - application/json
+      description: シェフをフォロー解除する際のリクエスト
+      parameters:
+      - description: user_id, chef_id は必須
+        in: body
+        name: chefFollow
+        required: true
+        schema:
+          $ref: '#/definitions/domain.ChefFollows'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.H'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.H'
+      summary: ユーザーがシェフをフォロー解除
+      tags:
+      - chefFollows
     get:
       consumes:
       - application/x-json-stream
@@ -164,6 +303,34 @@ paths:
           schema:
             $ref: '#/definitions/usecase.ResultStatus'
       summary: Get following chef list.
+      tags:
+      - chefFollows
+    post:
+      consumes:
+      - application/json
+      description: シェフをフォロー登録する際のリクエスト
+      parameters:
+      - description: user_id, chef_id は必須
+        in: body
+        name: chefFollow
+        required: true
+        schema:
+          $ref: '#/definitions/domain.ChefFollows'
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/controllers.H'
+            - properties:
+                data:
+                  $ref: '#/definitions/domain.ChefFollowsForGet'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.H'
+      summary: ユーザーがシェフをフォロー登録
       tags:
       - chefFollows
   /chefs:
@@ -214,7 +381,91 @@ paths:
       summary: Get unique chef.
       tags:
       - chef
+  /me:
+    delete:
+      description: ユーザーアカウントの削除のエンドポイント
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.H'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.H'
+      summary: ユーザーアカウントの削除
+      tags:
+      - me
+    get:
+      description: ユーザー情報の取得のエンドポイント
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/controllers.H'
+            - properties:
+                data:
+                  $ref: '#/definitions/domain.Users'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.H'
+      summary: ユーザー情報の取得
+      tags:
+      - me
+  /me/register:
+    get:
+      description: ユーザー新規登録のエンドポイント
+      parameters:
+      - description: 登録するGoogleアカウント
+        in: body
+        name: social_user_account
+        required: true
+        schema:
+          $ref: '#/definitions/domain.SocialUserAccount'
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/controllers.H'
+            - properties:
+                data:
+                  $ref: '#/definitions/product.UserResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.H'
+      summary: ユーザー新規登録
+      tags:
+      - me
   /recipeFavorites:
+    delete:
+      consumes:
+      - application/json
+      description: レシピをお気に入り解除する際のリクエスト
+      parameters:
+      - description: user_id, recipe_id は必須
+        in: body
+        name: recipeFavorite
+        required: true
+        schema:
+          $ref: '#/definitions/domain.RecipeFavorites'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.H'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.H'
+      summary: ユーザーがレシピをお気に入り解除
+      tags:
+      - recipeFavorites
     get:
       consumes:
       - application/x-json-stream
@@ -237,6 +488,34 @@ paths:
           schema:
             $ref: '#/definitions/usecase.ResultStatus'
       summary: Get list of recipes of favorite.
+      tags:
+      - recipeFavorites
+    post:
+      consumes:
+      - application/json
+      description: レシピをお気に入り登録する際のリクエスト
+      parameters:
+      - description: user_id, recipe_id は必須
+        in: body
+        name: recipeFavorite
+        required: true
+        schema:
+          $ref: '#/definitions/domain.RecipeFavorites'
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/controllers.H'
+            - properties:
+                data:
+                  $ref: '#/definitions/domain.RecipeFavoritesForGet'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.H'
+      summary: ユーザーがレシピをお気に入り登録
       tags:
       - recipeFavorites
   /recipeIngredients:
@@ -354,6 +633,32 @@ paths:
       summary: Get recipe list.
       tags:
       - recipes
+  /self/login:
+    get:
+      description: ユーザーログインのエンドポイント
+      parameters:
+      - description: GoogleアカウントのユーザーID
+        in: query
+        name: service_user_id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/controllers.H'
+            - properties:
+                data:
+                  $ref: '#/definitions/product.UserResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.H'
+      summary: ユーザーログイン
+      tags:
+      - me
   /shoppingItems:
     get:
       consumes:

@@ -37,6 +37,13 @@ func NewMeController(p MeControllerProvider) *MeController {
 	}
 }
 
+// @summary		ユーザーログイン
+// @description	ユーザーログインのエンドポイント
+// @tags		me
+// @Param		service_user_id	query	string	true	"GoogleアカウントのユーザーID"
+// @Success		200			{object}	controllers.H{data=product.UserResponse}
+// @Failure		400			{object}	controllers.H
+// @router		/self/login [get]
 func (mc *MeController) LoginUser(ctx controllers.Context) {
 
 	serviceUserID := ctx.Query("service_user_id")
@@ -49,6 +56,12 @@ func (mc *MeController) LoginUser(ctx controllers.Context) {
 	ctx.JSON(res.Code, controllers.NewH("success", user))
 }
 
+// @summary		ユーザー情報の取得
+// @description	ユーザー情報の取得のエンドポイント
+// @tags		me
+// @Success		200			{object}	controllers.H{data=domain.Users}
+// @Failure		400			{object}	controllers.H
+// @router		/me [get]
 func (mc *MeController) Get(ctx controllers.Context) {
 	authPayload := ctx.MustGet("authorization_payload").(*token.Payload)
 	// authToken := ctx.GetHeader("authorization")
@@ -63,6 +76,13 @@ func (mc *MeController) Get(ctx controllers.Context) {
 	ctx.JSON(res.Code, controllers.NewH("success", me.BuildForGet()))
 }
 
+// @summary		ユーザー新規登録
+// @description	ユーザー新規登録のエンドポイント
+// @tags		me
+// @Param		social_user_account	body	domain.SocialUserAccount	true	"登録するGoogleアカウント"
+// @Success		200			{object}	controllers.H{data=product.UserResponse}
+// @Failure		400			{object}	controllers.H
+// @router		/me/register [get]
 func (mc *MeController) Post(ctx controllers.Context) {
 
 	u := &domain.SocialUserAccount{}
@@ -79,6 +99,13 @@ func (mc *MeController) Post(ctx controllers.Context) {
 	ctx.JSON(res.Code, controllers.NewH("success", me))
 }
 
+// @summary		ユーザー情報の変更
+// @description	ユーザー情報の変更のエンドポイント
+// @tags		me
+// @Param		user body domain.Users true "変更したユーザー情報"
+// @Success		200			{object}	controllers.H
+// @Failure		400			{object}	controllers.H
+// @router		/me [delete]
 func (mc *MeController) Patch(ctx controllers.Context) {
 
 	u := &domain.Users{}
@@ -96,6 +123,12 @@ func (mc *MeController) Patch(ctx controllers.Context) {
 	ctx.JSON(res.Code, controllers.NewH("success", me))
 }
 
+// @summary		ユーザーアカウントの削除
+// @description	ユーザーアカウントの削除のエンドポイント
+// @tags		me
+// @Success		200			{object}	controllers.H
+// @Failure		400			{object}	controllers.H
+// @router		/me [delete]
 func (mc *MeController) Delete(ctx controllers.Context) {
 
 	authToken := ctx.GetHeader("authorization")
