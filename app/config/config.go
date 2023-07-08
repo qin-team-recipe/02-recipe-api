@@ -8,7 +8,7 @@ import (
 )
 
 type Config struct {
-	ApplicationName string
+	ApplicationName string `mapstructure:"APPLICATION_NAME"`
 
 	ServerPort          string `mapstructure:"SERVER_PORT"`
 	ContainerServerPort string `mapstructure:"CONTAINER_SERVER_PORT"`
@@ -27,7 +27,7 @@ type Config struct {
 	GoogleSecretKey string `mapstructure:"GOOGLE_SECRET_KEY"`
 
 	Cors struct {
-		AllowOringins []string
+		AllowOrigins []string `mapstructure:"CORS_ALLOW_ORINGINS"`
 	}
 
 	// Jwt struct {
@@ -57,9 +57,7 @@ func NewConfig(path string) *Config {
 		log.Print("\n==================================================\n")
 	}
 
-	c.ApplicationName = "recipe-api"
-
-	c.Cors.AllowOringins = []string{"http://localhost:3000"}
+	c.Cors.AllowOrigins = viper.GetStringSlice("CORS_ALLOW_ORIGINS")
 
 	return c
 }

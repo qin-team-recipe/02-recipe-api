@@ -17,6 +17,85 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/authenticates/google": {
+            "get": {
+                "description": "Googleアカウントログイン認証に必要なURLの発行.",
+                "tags": [
+                    "authenticates"
+                ],
+                "summary": "GoogleアカウントログインURLの取得.",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/product.AuthenticateResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.H"
+                        }
+                    }
+                }
+            }
+        },
+        "/authenticates/google/userinfo": {
+            "get": {
+                "description": "Googleアカウントログイン認証に成功すればアカウント情報を取得する.",
+                "tags": [
+                    "authenticates"
+                ],
+                "summary": "Googleアカウント情報の取得.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Googleから返却される署名（code）",
+                        "name": "code",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/domain.SocialUserAccount"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.H"
+                        }
+                    }
+                }
+            }
+        },
         "/chefFollows": {
             "get": {
                 "description": "This API return the list of following chefs by user.",
@@ -50,6 +129,88 @@ const docTemplate = `{
                         "description": "Not Found",
                         "schema": {
                             "$ref": "#/definitions/usecase.ResultStatus"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "シェフをフォロー登録する際のリクエスト",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "chefFollows"
+                ],
+                "summary": "ユーザーがシェフをフォロー登録",
+                "parameters": [
+                    {
+                        "description": "user_id, chef_id は必須",
+                        "name": "chefFollow",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.ChefFollows"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/domain.ChefFollowsForGet"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.H"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "シェフをフォロー解除する際のリクエスト",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "chefFollows"
+                ],
+                "summary": "ユーザーがシェフをフォロー解除",
+                "parameters": [
+                    {
+                        "description": "user_id, chef_id は必須",
+                        "name": "chefFollow",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.ChefFollows"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.H"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.H"
                         }
                     }
                 }
@@ -128,6 +289,108 @@ const docTemplate = `{
                 }
             }
         },
+        "/me": {
+            "get": {
+                "description": "ユーザー情報の取得のエンドポイント",
+                "tags": [
+                    "me"
+                ],
+                "summary": "ユーザー情報の取得",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/domain.Users"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.H"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "ユーザーアカウントの削除のエンドポイント",
+                "tags": [
+                    "me"
+                ],
+                "summary": "ユーザーアカウントの削除",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.H"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.H"
+                        }
+                    }
+                }
+            }
+        },
+        "/me/register": {
+            "get": {
+                "description": "ユーザー新規登録のエンドポイント",
+                "tags": [
+                    "me"
+                ],
+                "summary": "ユーザー新規登録",
+                "parameters": [
+                    {
+                        "description": "登録するGoogleアカウント",
+                        "name": "social_user_account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.SocialUserAccount"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/product.UserResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.H"
+                        }
+                    }
+                }
+            }
+        },
         "/recipeFavorites": {
             "get": {
                 "description": "This API return list of recipes of favorite.",
@@ -161,6 +424,88 @@ const docTemplate = `{
                         "description": "Not Found",
                         "schema": {
                             "$ref": "#/definitions/usecase.ResultStatus"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "レシピをお気に入り登録する際のリクエスト",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "recipeFavorites"
+                ],
+                "summary": "ユーザーがレシピをお気に入り登録",
+                "parameters": [
+                    {
+                        "description": "user_id, recipe_id は必須",
+                        "name": "recipeFavorite",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.RecipeFavorites"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/domain.RecipeFavoritesForGet"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.H"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "レシピをお気に入り解除する際のリクエスト",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "recipeFavorites"
+                ],
+                "summary": "ユーザーがレシピをお気に入り解除",
+                "parameters": [
+                    {
+                        "description": "user_id, recipe_id は必須",
+                        "name": "recipeFavorite",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.RecipeFavorites"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.H"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.H"
                         }
                     }
                 }
@@ -334,6 +679,50 @@ const docTemplate = `{
                         "description": "Not Found",
                         "schema": {
                             "$ref": "#/definitions/usecase.ResultStatus"
+                        }
+                    }
+                }
+            }
+        },
+        "/self/login": {
+            "get": {
+                "description": "ユーザーログインのエンドポイント",
+                "tags": [
+                    "me"
+                ],
+                "summary": "ユーザーログイン",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "GoogleアカウントのユーザーID",
+                        "name": "service_user_id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/product.UserResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.H"
                         }
                     }
                 }
@@ -784,6 +1173,32 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "controllers.H": {
+            "type": "object",
+            "properties": {
+                "data": {},
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.ChefFollows": {
+            "type": "object",
+            "properties": {
+                "chef_id": {
+                    "type": "integer"
+                },
+                "created_at": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
         "domain.ChefFollowsForGet": {
             "type": "object",
             "properties": {
@@ -815,6 +1230,23 @@ const docTemplate = `{
                 },
                 "screen_name": {
                     "type": "string"
+                }
+            }
+        },
+        "domain.RecipeFavorites": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "recipe_id": {
+                    "type": "integer"
+                },
+                "user_id": {
+                    "type": "integer"
                 }
             }
         },
@@ -926,6 +1358,23 @@ const docTemplate = `{
                 }
             }
         },
+        "domain.SocialUserAccount": {
+            "type": "object",
+            "properties": {
+                "display_name": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "service_name": {
+                    "type": "string"
+                },
+                "service_user_id": {
+                    "type": "string"
+                }
+            }
+        },
         "domain.UserRecipesForGet": {
             "type": "object",
             "properties": {
@@ -969,7 +1418,16 @@ const docTemplate = `{
         "domain.Users": {
             "type": "object",
             "properties": {
+                "created_at": {
+                    "type": "integer"
+                },
+                "deleted_at": {
+                    "type": "integer"
+                },
                 "display_name": {
+                    "type": "string"
+                },
+                "email": {
                     "type": "string"
                 },
                 "id": {
@@ -977,6 +1435,45 @@ const docTemplate = `{
                 },
                 "screen_name": {
                     "type": "string"
+                },
+                "updated_at": {
+                    "type": "integer"
+                }
+            }
+        },
+        "domain.UsersForGet": {
+            "type": "object",
+            "properties": {
+                "display_name": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "screen_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "product.AuthenticateResponse": {
+            "type": "object",
+            "properties": {
+                "login_url": {
+                    "type": "string"
+                }
+            }
+        },
+        "product.UserResponse": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string"
+                },
+                "user": {
+                    "$ref": "#/definitions/domain.UsersForGet"
                 }
             }
         },
