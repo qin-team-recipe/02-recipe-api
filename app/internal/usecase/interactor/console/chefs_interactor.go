@@ -18,7 +18,9 @@ type ChefInteractor struct {
 func (ci *ChefInteractor) Create(chef *domain.Chefs) (*domain.Chefs, *usecase.ResultStatus) {
 	db := ci.DB.Connect()
 	// TODO: 後で書き換える
-	chef.ScreenName = "1234567890abc"
+	if &chef.ScreenName == nil {
+		chef.ScreenName = "1234567890abc"
+	}
 
 	currentTime := time.Now().Unix()
 	chef.CreatedAt = currentTime
