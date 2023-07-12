@@ -37,12 +37,29 @@ func (ri *RecipeInteractor) GetList(userID int, q string) ([]*domain.RecipesForG
 
 // 注目のレシピのリストを取得
 // レコメンドの条件
-func (ri *RecipeInteractor) GetRecomendList() ([]*domain.Recipes, *usecase.ResultStatus) {
-	recipes := []*domain.Recipes{}
+func (ri *RecipeInteractor) GetRecommendRecipeList() ([]*domain.RecipesForGet, *usecase.ResultStatus) {
 
-	// 直近三日のRecipeIDごとの数が多いRecipeFavoritesを取得する
+	db := ri.DB.Connect()
 
-	return recipes, usecase.NewResultStatus(http.StatusOK, nil)
+	// 直近三日のRecipeIDごとの数が多いRecipeIDとCountを取得する
+	recipeFavoritesCounts, err := ri.RecipeFavorite.FindBybyNumberOfFavoriteSubscriptions(db)
+	if err != nil {
+		return []*domain.RecipesForGet{}, usecase.NewResultStatus(http.StatusBadRequest, errors.New("注目されているレシピはありません"))
+	}
+
+	recipeIDs := []int{}
+	for key := range recipeFavoritesCounts {
+		recipeIDs = append(recipeIDs, key)
+	}
+
+	recipes, err := ri.Recipe.FindInRecipeIDs(db, recipeIDs)
+	if err != nil {
+		return []*domain.RecipesForGet{}, usecase.NewResultStatus(http.StatusBadRequest, err)
+	}
+
+	builtRecipes, _ := ri.buildList(db, recipes)
+
+	return builtRecipes, usecase.NewResultStatus(http.StatusOK, nil)
 }
 
 func (ri *RecipeInteractor) Get(id int) (*domain.RecipesForGet, *usecase.ResultStatus) {

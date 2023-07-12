@@ -54,6 +54,16 @@ func (ci *ChefInteractor) Get(screenName string) (*domain.ChefsForGet, *usecase.
 	return builtChef, usecase.NewResultStatus(http.StatusOK, nil)
 }
 
+// おすすめのシェフリストを取得
+// レコメンドの条件
+func (ri *ChefInteractor) GetRecommendChefList() ([]*domain.Chefs, *usecase.ResultStatus) {
+	chefs := []*domain.Chefs{}
+
+	// 直近三日のRecipeIDごとの数が多いRecipeFavoritesを取得する
+
+	return chefs, usecase.NewResultStatus(http.StatusOK, nil)
+}
+
 func (ci *ChefInteractor) buildList(chefs []*domain.Chefs) ([]*domain.ChefsForGet, error) {
 	builtChefs := []*domain.ChefsForGet{}
 

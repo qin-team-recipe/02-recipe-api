@@ -59,6 +59,7 @@ func (r *Routing) setRouting() {
 	chefFollowsController := product.NewChefFollowsController(r.DB)
 	chefRecipesController := product.NewChefRecipesController(r.DB)
 	meController := product.NewMeController(product.MeControllerProvider{DB: r.DB, Google: r.Google, Jwt: r.Jwt})
+	recommendsController := product.NewRecommendsController(r.DB)
 	recipesController := product.NewRecipesController(r.DB)
 	recipeFavoritesController := product.NewRecipeFavoritesController(r.DB)
 	recipeIngredientsController := product.NewRecipeIngretientsController(r.DB)
@@ -156,6 +157,10 @@ func (r *Routing) setRouting() {
 		// v1.DELETE("/me", func(ctx *gin.Context) {
 		// 	meController.Delete(ctx)
 		// })
+
+		v1.GET("/recommends/recipes", func(ctx *gin.Context) {
+			recommendsController.GetRecommendRecipeList(ctx)
+		})
 
 		/*
 		 * recipes

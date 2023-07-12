@@ -51,6 +51,15 @@ func (rr *RecipeRepository) FindByUserID(db *gorm.DB, userID int) ([]*domain.Rec
 	return recipes, nil
 }
 
+func (rr *RecipeRepository) FindInRecipeIDs(db *gorm.DB, ids []int) ([]*domain.Recipes, error) {
+	recipes := []*domain.Recipes{}
+	db.Where("id in ?", ids).Find(&recipes)
+	if len(recipes) <= 0 {
+		return []*domain.Recipes{}, fmt.Errorf("Not found: %w", errors.New("recipes is not found"))
+	}
+	return recipes, nil
+}
+
 func (rr *RecipeRepository) FirstByID(db *gorm.DB, id int) (*domain.Recipes, error) {
 	recipe := &domain.Recipes{}
 	if err := db.First(recipe, id).Error; err != nil {
