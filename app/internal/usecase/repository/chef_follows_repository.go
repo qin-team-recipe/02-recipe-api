@@ -7,7 +7,9 @@ import (
 
 type ChefFollowRepository interface {
 	FindByUserID(db *gorm.DB, userID int) ([]*domain.ChefFollows, error)
+	FindBybyNumberOfFollowSubscriptions(db *gorm.DB) (map[int]int64, error)
 	FirstByUserIDAndChefID(db *gorm.DB, userID, chefID int) (*domain.ChefFollows, error)
 	Create(db *gorm.DB, follow *domain.ChefFollows) (*domain.ChefFollows, error)
+	CountByChefID(db *gorm.DB, chefID int) int
 	Delete(db *gorm.DB, follow *domain.ChefFollows) error
 }

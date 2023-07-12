@@ -23,3 +23,9 @@ func (cr *ChefRecipeRepository) Create(db *gorm.DB, chefRecipe *domain.ChefRecip
 	}
 	return chefRecipe, nil
 }
+
+func (cr *ChefRecipeRepository) CountByChefID(db *gorm.DB, chefID int) int {
+	var count int64
+	db.Model(&domain.ChefRecipes{}).Where("chef_id = ?", chefID).Count(&count)
+	return int(count)
+}
