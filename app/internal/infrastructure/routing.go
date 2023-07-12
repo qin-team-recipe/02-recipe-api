@@ -158,6 +158,10 @@ func (r *Routing) setRouting() {
 		// 	meController.Delete(ctx)
 		// })
 
+		/*
+		 * recommend chefs or recipes
+		 *
+		 */
 		v1.GET("/recommends/recipes", func(ctx *gin.Context) {
 			recommendsController.GetRecommendRecipeList(ctx)
 		})

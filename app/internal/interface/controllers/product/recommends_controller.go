@@ -41,6 +41,13 @@ func (rc *RecommendsController) GetRecommendChefList(ctx controllers.Context) {
 	ctx.JSON(res.Code, controllers.NewH("success", chefs))
 }
 
+// @summary		話題のレシピ
+// @description	過去3日間でお気に入り登録の多かったレシピを取得
+// @tags			recommend
+// @accept			application/x-json-stream
+// @Success		200			{object}	domain.RecipesForGet
+// @Failure		404			{object}	usecase.ResultStatus
+// @router			/recommend/recipes [get]
 func (rc *RecommendsController) GetRecommendRecipeList(ctx controllers.Context) {
 
 	recipes, res := rc.RecipeInteractor.GetRecommendRecipeList()
