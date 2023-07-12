@@ -14,6 +14,7 @@ type ChefInteractor struct {
 	DB         gateway.DBRepository
 	Chef       repository.ChefRepository
 	ChefFollow repository.ChefFollowRepository
+	ChefLink   repository.ChefLinkRepository
 	ChefRecipe repository.ChefRecipeRepository
 }
 
@@ -57,6 +58,15 @@ func (ci *ChefInteractor) Get(userID int, screenName string) (*domain.ChefsForGe
 	if _, err := ci.ChefFollow.FindByUserID(db, userID); err == nil {
 		builtChef.IsFollowing = true
 	}
+
+	chefLinks, _ := ci.ChefLink.FindByChefID(db, builtChef.ID)
+
+	builtChefLinks := []*domain.ChefLinksForGet{}
+	for _, chefLink := range chefLinks {
+		builtChefLinks = append(builtChefLinks, chefLink.BuildForGet())
+	}
+
+	builtChef.ChefLinks = builtChefLinks
 
 	return builtChef, usecase.NewResultStatus(http.StatusOK, nil)
 }

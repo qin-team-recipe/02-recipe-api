@@ -18,6 +18,7 @@ func NewRecommendsController(db gateways.DB) *RecommendsController {
 			DB:         &gateways.DBRepository{DB: db},
 			Chef:       &repository.ChefRepository{},
 			ChefFollow: &repository.ChefFollowRepository{},
+			ChefLink:   &repository.ChefLinkRepository{},
 			ChefRecipe: &repository.ChefRecipeRepository{},
 		},
 		RecipeInteractor: product.RecipeInteractor{

@@ -25,6 +25,7 @@ func NewChefsController(p ChefsControllerProvider) *ChefsController {
 			DB:         &gateways.DBRepository{DB: p.DB},
 			Chef:       &repository.ChefRepository{},
 			ChefFollow: &repository.ChefFollowRepository{},
+			ChefLink:   &repository.ChefLinkRepository{},
 			ChefRecipe: &repository.ChefRecipeRepository{},
 		},
 	}
