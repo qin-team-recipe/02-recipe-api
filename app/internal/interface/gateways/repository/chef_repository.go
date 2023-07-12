@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/qin-team-recipe/02-recipe-api/internal/domain"
@@ -21,6 +22,15 @@ func (cr *ChefRepository) FindByQuery(db *gorm.DB, q string) ([]*domain.Chefs, e
 	chefs := []*domain.Chefs{}
 	if err := db.Where("display_name like ? or description like ?", q, q).Find(&chefs).Error; err != nil {
 		return []*domain.Chefs{}, fmt.Errorf("chef is not found: %w", err)
+	}
+	return chefs, nil
+}
+
+func (cr *ChefRepository) FindInChefIDs(db *gorm.DB, ids []int) ([]*domain.Chefs, error) {
+	chefs := []*domain.Chefs{}
+	db.Where("id in ?", ids).Find(&chefs)
+	if len(chefs) <= 0 {
+		return []*domain.Chefs{}, fmt.Errorf("not found: %w", errors.New("chefs is not found"))
 	}
 	return chefs, nil
 }

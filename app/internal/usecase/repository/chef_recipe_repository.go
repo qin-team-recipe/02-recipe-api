@@ -8,4 +8,5 @@ import (
 type ChefRecipeRepository interface {
 	FirstByRecipeID(db *gorm.DB, recipeID int) (*domain.ChefRecipes, error)
 	Create(db *gorm.DB, chefRecipe *domain.ChefRecipes) (*domain.ChefRecipes, error)
+	CountByChefID(db *gorm.DB, chefID int) int
 }
