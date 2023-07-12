@@ -6,5 +6,6 @@ import (
 )
 
 type UserRecipeRepository interface {
+	FirstByRecipeID(db *gorm.DB, recipeID int) (*domain.UserRecipes, error)
 	Create(db *gorm.DB, userRecipe *domain.UserRecipes) (*domain.UserRecipes, error)
 }

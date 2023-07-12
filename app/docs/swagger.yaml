@@ -96,8 +96,14 @@ definitions:
     type: object
   domain.RecipesForGet:
     properties:
+      chef:
+        allOf:
+        - $ref: '#/definitions/domain.ChefsForGet'
+        description: この値はどちらかが入る
       description:
         type: string
+      facorites_count:
+        type: integer
       id:
         type: integer
       is_draft:
@@ -106,6 +112,8 @@ definitions:
         type: integer
       title:
         type: string
+      user:
+        $ref: '#/definitions/domain.UsersForGet'
     type: object
   domain.ShoppingItemsForGet:
     properties:
@@ -339,7 +347,7 @@ paths:
       - application/x-json-stream
       description: This API return all chef list.
       parameters:
-      - description: Query
+      - description: 検索ワード
         in: query
         name: q
         required: true
@@ -633,6 +641,23 @@ paths:
       summary: Get recipe list.
       tags:
       - recipes
+  /recommend/recipes:
+    get:
+      consumes:
+      - application/x-json-stream
+      description: 過去3日間でお気に入り登録の多かったレシピを取得
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.RecipesForGet'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/usecase.ResultStatus'
+      summary: 話題のレシピ
+      tags:
+      - recommend
   /self/login:
     get:
       description: ユーザーログインのエンドポイント

@@ -229,7 +229,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Query",
+                        "description": "検索ワード",
                         "name": "q",
                         "in": "query",
                         "required": true
@@ -673,6 +673,32 @@ const docTemplate = `{
                             "items": {
                                 "$ref": "#/definitions/domain.RecipesForGet"
                             }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.ResultStatus"
+                        }
+                    }
+                }
+            }
+        },
+        "/recommend/recipes": {
+            "get": {
+                "description": "過去3日間でお気に入り登録の多かったレシピを取得",
+                "consumes": [
+                    "application/x-json-stream"
+                ],
+                "tags": [
+                    "recommend"
+                ],
+                "summary": "話題のレシピ",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/domain.RecipesForGet"
                         }
                     },
                     "404": {
@@ -1321,8 +1347,19 @@ const docTemplate = `{
         "domain.RecipesForGet": {
             "type": "object",
             "properties": {
+                "chef": {
+                    "description": "この値はどちらかが入る",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/domain.ChefsForGet"
+                        }
+                    ]
+                },
                 "description": {
                     "type": "string"
+                },
+                "facorites_count": {
+                    "type": "integer"
                 },
                 "id": {
                     "type": "integer"
@@ -1335,6 +1372,9 @@ const docTemplate = `{
                 },
                 "title": {
                     "type": "string"
+                },
+                "user": {
+                    "$ref": "#/definitions/domain.UsersForGet"
                 }
             }
         },

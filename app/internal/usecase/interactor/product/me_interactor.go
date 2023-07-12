@@ -10,7 +10,7 @@ import (
 	"github.com/qin-team-recipe/02-recipe-api/internal/usecase"
 	"github.com/qin-team-recipe/02-recipe-api/internal/usecase/gateway"
 	"github.com/qin-team-recipe/02-recipe-api/internal/usecase/repository"
-	"github.com/qin-team-recipe/02-recipe-api/pkg/random"
+	"github.com/qin-team-recipe/02-recipe-api/utils"
 )
 
 type MeInteractor struct {
@@ -165,7 +165,7 @@ func (mi *MeInteractor) Delete(authToken string) *usecase.ResultStatus {
 func (mi *MeInteractor) setRegisterUser(a *domain.SocialUserAccount) *domain.Users {
 	return &domain.Users{
 		DisplayName: a.DisplayName,
-		ScreenName:  random.RandomScreenName(),
+		ScreenName:  utils.RandomScreenName(),
 		Email:       a.Email,
 	}
 }

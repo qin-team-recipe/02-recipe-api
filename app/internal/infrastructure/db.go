@@ -31,7 +31,7 @@ func connection(host, username, password, dbName string) *gorm.DB {
 	newLogger := logger.New(
 		log.New(os.Stdout, "\r\n", log.LstdFlags),
 		logger.Config{
-			SlowThreshold:             time.Millisecond,
+			SlowThreshold:             time.Nanosecond,
 			LogLevel:                  logger.Info,
 			IgnoreRecordNotFoundError: true,
 			Colorful:                  true,
