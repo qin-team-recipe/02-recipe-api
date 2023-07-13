@@ -2,6 +2,7 @@ package product
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/qin-team-recipe/02-recipe-api/internal/domain"
 	"github.com/qin-team-recipe/02-recipe-api/internal/usecase"
@@ -18,30 +19,47 @@ type ChefInteractor struct {
 	ChefRecipe repository.ChefRecipeRepository
 }
 
-func (ci *ChefInteractor) GetList(q string) ([]*domain.ChefsForGet, *usecase.ResultStatus) {
+type ChefList struct {
+	Lists    []*domain.ChefsForGet `json:"lists"`
+	PageInfo usecase.PageInfo      `json:"page_info"`
+}
+
+func (ci *ChefInteractor) GetList(q string, cursor int) (ChefList, *usecase.ResultStatus) {
 
 	db := ci.DB.Connect()
 
 	chefs := []*domain.Chefs{}
+	pageInfo := usecase.PageInfo{}
 
 	if q == "" {
 		foundChefs, err := ci.Chef.Find(db)
 		if err != nil {
-			return []*domain.ChefsForGet{}, usecase.NewResultStatus(http.StatusNotFound, err)
+			return ChefList{}, usecase.NewResultStatus(http.StatusNotFound, err)
 		}
 		chefs = foundChefs
 	} else {
-		q = "%" + q + "%"
-		foundChefs, err := ci.Chef.FindByQuery(db, q)
+		q = "%_" + q + "_%"
+		foundChefs, err := ci.Chef.FindByQuery(db, q, cursor)
 		if err != nil {
-			return []*domain.ChefsForGet{}, usecase.NewResultStatus(http.StatusNotFound, err)
+			return ChefList{}, usecase.NewResultStatus(http.StatusNotFound, err)
 		}
 		chefs = foundChefs
 	}
 
+	pageInfo.HasNextPage = 10 < len(chefs)
+	pageInfo.HasPreviousPage = 0 < cursor
+
+	if pageInfo.HasNextPage {
+		pageInfo.EndCursor = strconv.Itoa(chefs[len(chefs)-1].ID)
+	}
+
+	if len(chefs) > 0 {
+		pageInfo.StartCursor = strconv.Itoa(chefs[0].ID)
+	}
+
 	builtChefs, _ := ci.buildList(db, chefs)
 
-	return builtChefs, usecase.NewResultStatus(http.StatusOK, nil)
+	return ChefList{Lists: builtChefs, PageInfo: pageInfo}, usecase.NewResultStatus(http.StatusOK, nil)
 }
 
 func (ci *ChefInteractor) Get(userID int, screenName string) (*domain.ChefsForGet, *usecase.ResultStatus) {

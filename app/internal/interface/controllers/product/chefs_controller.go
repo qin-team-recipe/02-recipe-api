@@ -1,6 +1,8 @@
 package product
 
 import (
+	"strconv"
+
 	"github.com/qin-team-recipe/02-recipe-api/constants"
 	"github.com/qin-team-recipe/02-recipe-api/internal/interface/controllers"
 	"github.com/qin-team-recipe/02-recipe-api/internal/interface/gateways"
@@ -41,8 +43,9 @@ func NewChefsController(p ChefsControllerProvider) *ChefsController {
 // @router			/chefs [get]
 func (cc *ChefsController) GetList(ctx controllers.Context) {
 	q := ctx.Query("q")
+	cursor, _ := strconv.Atoi(ctx.Query("cursor"))
 
-	chefs, res := cc.Interactor.GetList(q)
+	chefs, res := cc.Interactor.GetList(q, cursor)
 	if res.Error != nil {
 		ctx.JSON(res.Code, controllers.NewH(res.Error.Error(), nil))
 		return

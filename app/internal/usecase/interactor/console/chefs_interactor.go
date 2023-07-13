@@ -8,6 +8,7 @@ import (
 	"github.com/qin-team-recipe/02-recipe-api/internal/usecase"
 	"github.com/qin-team-recipe/02-recipe-api/internal/usecase/gateway"
 	"github.com/qin-team-recipe/02-recipe-api/internal/usecase/repository"
+	"github.com/qin-team-recipe/02-recipe-api/utils"
 )
 
 type ChefInteractor struct {
@@ -18,7 +19,7 @@ type ChefInteractor struct {
 func (ci *ChefInteractor) Create(chef *domain.Chefs) (*domain.Chefs, *usecase.ResultStatus) {
 	db := ci.DB.Connect()
 	// TODO: 後で書き換える
-	chef.ScreenName = "1234567890abc"
+	chef.ScreenName = utils.RandomScreenNameID(10)
 
 	currentTime := time.Now().Unix()
 	chef.CreatedAt = currentTime

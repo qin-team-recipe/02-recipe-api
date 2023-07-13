@@ -18,9 +18,15 @@ func (cr *ChefRepository) Find(db *gorm.DB) ([]*domain.Chefs, error) {
 	return chefs, nil
 }
 
-func (cr *ChefRepository) FindByQuery(db *gorm.DB, q string) ([]*domain.Chefs, error) {
+func (cr *ChefRepository) FindByQuery(db *gorm.DB, q string, cursor int) ([]*domain.Chefs, error) {
 	chefs := []*domain.Chefs{}
-	if err := db.Where("display_name like ? or description like ?", q, q).Find(&chefs).Error; err != nil {
+	query := db.Where("? < id", cursor).Limit(11).Order("created_at desc")
+
+	if q != "" {
+		query = query.Where("display_name like ? or description like ?", q, q)
+	}
+
+	if err := query.Find(&chefs).Error; err != nil {
 		return []*domain.Chefs{}, fmt.Errorf("chef is not found: %w", err)
 	}
 	return chefs, nil
