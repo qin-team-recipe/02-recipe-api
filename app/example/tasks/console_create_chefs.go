@@ -41,6 +41,7 @@ func CreateChefs(db *infrastructure.DB, benchmark *utilities.Benchmark) (error) 
 			benchmark.Finish()
 			return res.Error
 		}
+
 	}
 
 	return nil
