@@ -1,0 +1,23 @@
+[
+  {
+    "id": 20001,
+    "title": "レシピ1",
+    "description": "レシピ1説明レシピ1説明レシピ1説明レシピ1説明レシピ1説明レシピ1説明",
+    "servings": 1,
+    "is_draft": false
+  },
+  {
+    "id": 20002,
+    "title": "レシピ2",
+    "description": "レシピ2説明レシピ2説明レシピ2説明レシピ2説明レシピ2説明レシピ2説明",
+    "servings": 2,
+    "is_draft": false
+  },
+  {
+    "id": 20003,
+    "title": "レシピ3",
+    "description": "レシピ3説明レシピ3説明レシピ3説明レシピ3説明レシピ3説明レシピ3説明",
+    "servings": 3,
+    "is_draft": false
+  }
+]

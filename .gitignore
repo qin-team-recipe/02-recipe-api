@@ -9,3 +9,6 @@ mysql/data
 main
 
 !.gitkeep
+
+.devcontainer/devcontainer.json
+.devcontainer/docker-compose.yml

@@ -1,0 +1,32 @@
+[
+  {
+    "id": 40001,
+    "recipe_id": 20001,
+    "name": "材料名1",
+    "description": "材料説明1材料説明1材料説明1材料説明1材料説明1"
+  },
+  {
+    "id": 40002,
+    "recipe_id": 20001,
+    "name": "材料名2",
+    "description": "材料説明2材料説明2材料説明2材料説明2材料説明2"
+  },
+  {
+    "id": 40003,
+    "recipe_id": 20002,
+    "name": "材料名a",
+    "description": "材料説明a材料説明a材料説明a材料説明a材料説明a"
+  },
+  {
+    "id": 40004,
+    "recipe_id": 20002,
+    "name": "材料名b",
+    "description": "材料説明b材料説明b材料説明b材料説明b材料説明b"
+  },
+  {
+    "id": 40005,
+    "recipe_id": 20003,
+    "name": "材料名foo",
+    "description": "材料説明foo材料説明foo材料説明foo材料説明foo材料説明foo"
+  }
+]
