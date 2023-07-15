@@ -223,10 +223,13 @@ func (r *Routing) setRouting() {
 		// 	recipeLinksController.Post(ctx)
 		// })
 
-		// /*
-		//  * recipes steps
-		//  *
-		//  */
+		/*
+		 * recipes steps
+		 *
+		 */
+		v1.GET("/recipeSteps", func(ctx *gin.Context) {
+			recipeStepsController.GetList(ctx)
+		})
 		// v1.POST("/recipeSteps", func(ctx *gin.Context) {
 		// 	recipeStepsController.Post(ctx)
 		// })
