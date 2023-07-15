@@ -15,6 +15,12 @@ type ChefsForGet struct {
 	ScreenName  string  `json:"screen_name"`
 	DisplayName string  `json:"display_name"`
 	Description *string `json:"description"`
+
+	RecipesCount int  `json:"recipes_count"`
+	FollowsCount int  `json:"follows_count"`
+	IsFollowing  bool `json:"is_following"`
+
+	ChefLinks []*ChefLinksForGet `json:"chef_links"`
 }
 
 func (c *Chefs) BuildForGet() *ChefsForGet {

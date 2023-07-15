@@ -55,7 +55,7 @@ func (r *Routing) setCors(cors *middleware.Cors) {
 func (r *Routing) setRouting() {
 
 	authenticatesController := product.NewAuthenticatesController(r.Google)
-	chefsController := product.NewChefsController(r.DB)
+	chefsController := product.NewChefsController(product.ChefsControllerProvider{DB: r.DB, Jwt: r.Jwt})
 	chefFollowsController := product.NewChefFollowsController(r.DB)
 	chefRecipesController := product.NewChefRecipesController(r.DB)
 	meController := product.NewMeController(product.MeControllerProvider{DB: r.DB, Google: r.Google, Jwt: r.Jwt})
@@ -162,6 +162,9 @@ func (r *Routing) setRouting() {
 		 * recommend chefs or recipes
 		 *
 		 */
+		v1.GET("/recommends/chefs", func(ctx *gin.Context) {
+			recommendsController.GetRecommendChefList(ctx)
+		})
 		v1.GET("/recommends/recipes", func(ctx *gin.Context) {
 			recommendsController.GetRecommendRecipeList(ctx)
 		})

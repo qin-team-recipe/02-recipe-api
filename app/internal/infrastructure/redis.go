@@ -28,7 +28,7 @@ func NewRedis() *Redis {
 func (r *Redis) Set(key string, value interface{}) error {
 	err := r.Set(key, value)
 	if err != nil {
-		panic(err)
+		return err
 	}
 	return nil
 }
@@ -39,7 +39,7 @@ func (r *Redis) Get(key string) (value interface{}, err error) {
 		return value, fmt.Errorf("key does not exist: %v", key)
 	}
 	if err != nil {
-		panic(err)
+		return value, err
 	}
 	return value, err
 }

@@ -8,7 +8,7 @@ import (
 	"github.com/qin-team-recipe/02-recipe-api/internal/usecase"
 	"github.com/qin-team-recipe/02-recipe-api/internal/usecase/gateway"
 	"github.com/qin-team-recipe/02-recipe-api/internal/usecase/repository"
-	"github.com/qin-team-recipe/02-recipe-api/pkg/random"
+	"github.com/qin-team-recipe/02-recipe-api/utils"
 )
 
 type ChefInteractor struct {
@@ -18,19 +18,20 @@ type ChefInteractor struct {
 
 func (ci *ChefInteractor) Create(chef *domain.Chefs) (*domain.Chefs, *usecase.ResultStatus) {
 	db := ci.DB.Connect()
-	
-	chef.ScreenName = random.RandomScreenNameID(10)
+	// TODO: 後で書き換える
+	chef.ScreenName = utils.RandomScreenNameID(10)
+
 	currentTime := time.Now().Unix()
 	chef.CreatedAt = currentTime
 	chef.UpdatedAt = currentTime
 
-	is_duplicate, err := ci.Chef.ExistsByScreenName(db,chef.ScreenName)
+	isDuplicate, err := ci.Chef.ExistsByScreenName(db, chef.ScreenName)
 
-	for is_duplicate {
-		if is_duplicate {
-			chef.ScreenName = random.RandomScreenNameID(10)
+	for isDuplicate {
+		if isDuplicate {
+			chef.ScreenName = utils.RandomScreenNameID(10)
 		}
-		is_duplicate, err = ci.Chef.ExistsByScreenName(db,chef.ScreenName)
+		isDuplicate, err = ci.Chef.ExistsByScreenName(db, chef.ScreenName)
 		if err != nil {
 			return &domain.Chefs{}, usecase.NewResultStatus(http.StatusBadRequest, err)
 		}
