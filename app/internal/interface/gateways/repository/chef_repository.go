@@ -59,6 +59,18 @@ func (cr *ChefRepository) FirstByScreenName(db *gorm.DB, screenName string) (*do
 	return chef, nil
 }
 
+func (cr *ChefRepository) ExistsByScreenName(db *gorm.DB, screenName string) (bool, error) {
+	var count int64 = 0
+	chef := &domain.Chefs{}
+	if err := db.Where("screen_name = ?", screenName).Find(chef).Count(&count).Error; err != nil {
+		return true, fmt.Errorf("query error: %w", err)
+	}
+	if int(count) > 1 {
+		return true, nil
+	}
+	return false, nil
+}
+
 func (cr *ChefRepository) Create(db *gorm.DB, chef *domain.Chefs) (*domain.Chefs, error) {
 	if err := db.Create(chef).Error; err != nil {
 		return &domain.Chefs{}, fmt.Errorf("failed chef create: %w", err)

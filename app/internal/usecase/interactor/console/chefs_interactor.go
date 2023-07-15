@@ -25,6 +25,18 @@ func (ci *ChefInteractor) Create(chef *domain.Chefs) (*domain.Chefs, *usecase.Re
 	chef.CreatedAt = currentTime
 	chef.UpdatedAt = currentTime
 
+	isDuplicate, err := ci.Chef.ExistsByScreenName(db, chef.ScreenName)
+
+	for isDuplicate {
+		if isDuplicate {
+			chef.ScreenName = utils.RandomScreenNameID(10)
+		}
+		isDuplicate, err = ci.Chef.ExistsByScreenName(db, chef.ScreenName)
+		if err != nil {
+			return &domain.Chefs{}, usecase.NewResultStatus(http.StatusBadRequest, err)
+		}
+	}
+
 	newChef, err := ci.Chef.Create(db, chef)
 	if err != nil {
 		return &domain.Chefs{}, usecase.NewResultStatus(http.StatusBadRequest, err)

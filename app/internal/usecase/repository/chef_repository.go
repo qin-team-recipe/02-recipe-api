@@ -11,5 +11,6 @@ type ChefRepository interface {
 	FindInChefIDs(db *gorm.DB, ids []int) ([]*domain.Chefs, error)
 	FirstByID(db *gorm.DB, id int) (*domain.Chefs, error)
 	FirstByScreenName(db *gorm.DB, screenName string) (*domain.Chefs, error)
+	ExistsByScreenName(db *gorm.DB, screenName string) (bool, error)
 	Create(db *gorm.DB, chef *domain.Chefs) (*domain.Chefs, error)
 }

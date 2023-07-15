@@ -11,37 +11,37 @@ import (
 	"github.com/qin-team-recipe/02-recipe-api/internal/infrastructure"
 	"github.com/qin-team-recipe/02-recipe-api/internal/interface/gateways"
 	"github.com/qin-team-recipe/02-recipe-api/internal/interface/gateways/repository"
-	"github.com/qin-team-recipe/02-recipe-api/internal/usecase/interactor/console"
+	"github.com/qin-team-recipe/02-recipe-api/internal/usecase/interactor/product"
 )
 
-func CreateChefs(db *infrastructure.DB, benchmark *utilities.Benchmark) (error) {
+func CreateRecipeLinks(db *infrastructure.DB, benchmark *utilities.Benchmark) (error) {
 
-	interactor := console.ChefInteractor{
+	interactor := product.RecipeLinkInteractor{
 		DB:   &gateways.DBRepository{DB: db},
-		Chef: &repository.ChefRepository{},
+		Recipe: &repository.RecipeRepository{},
+		RecipeLink: &repository.RecipeLinkRepository{},
 	}
 	
-	j, err := ioutil.ReadFile("/app/example/data/example_chefs_data.json")
+	j, err := ioutil.ReadFile("/app/example/data/example_recipe_links_data.json")
 	if err != nil {
 		log.Println(err)
 		benchmark.Finish()
 		return err
 	}
 
-	chefs := []domain.Chefs{}
+	recipeLinks := []domain.RecipeLinks{}
 
-	json.Unmarshal(j, &chefs)
-	fmt.Printf("%+v\n", chefs)
+	json.Unmarshal(j, &recipeLinks)
+	fmt.Printf("%+v\n", recipeLinks)
 
-	for _, c := range chefs {
-		fmt.Printf("%+v\n", c)
-		_, res := interactor.Create(&c)
+	for _, ri := range recipeLinks {
+		fmt.Printf("%+v\n", ri)
+		_, res := interactor.Create(&ri)
 		if res.Error != nil {
 			log.Println(res.Error)
 			benchmark.Finish()
 			return res.Error
 		}
-
 	}
 
 	return nil
