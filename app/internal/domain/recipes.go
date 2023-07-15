@@ -18,7 +18,7 @@ type RecipesForGet struct {
 	Servings    int     `json:"servings"`
 	IsDraft     bool    `json:"is_draft"`
 
-	FavoritesCount int `json:"facorites_count"`
+	FavoritesCount int `json:"favorites_count"`
 
 	// この値はどちらかが入る
 	Chef *ChefsForGet `json:"chef,omitempty"`

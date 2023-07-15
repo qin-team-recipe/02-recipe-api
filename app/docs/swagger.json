@@ -1,1595 +1,1481 @@
 {
-    "swagger": "2.0",
-    "info": {
-        "description": "This is a Team02's API Docs at Qin.",
-        "title": "Team02's API",
-        "termsOfService": "http://swagger.io/terms/",
-        "contact": {},
-        "version": "1.0"
-    },
-    "host": "localhost:8080",
-    "basePath": "/api/v1",
-    "paths": {
-        "/authenticates/google": {
-            "get": {
-                "description": "Googleアカウントログイン認証に必要なURLの発行.",
-                "tags": [
-                    "authenticates"
-                ],
-                "summary": "GoogleアカウントログインURLの取得.",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/controllers.H"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/product.AuthenticateResponse"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/controllers.H"
-                        }
+  "swagger": "2.0",
+  "info": {
+    "description": "This is a Team02's API Docs at Qin.",
+    "title": "Team02's API",
+    "termsOfService": "http://swagger.io/terms/",
+    "contact": {},
+    "version": "1.0"
+  },
+  "host": "localhost:8080",
+  "basePath": "/api/v1",
+  "paths": {
+    "/authenticates/google": {
+      "get": {
+        "description": "Googleアカウントログイン認証に必要なURLの発行.",
+        "tags": ["authenticates"],
+        "summary": "GoogleアカウントログインURLの取得.",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/controllers.H"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/definitions/product.AuthenticateResponse"
                     }
+                  }
                 }
+              ]
             }
-        },
-        "/authenticates/google/userinfo": {
-            "get": {
-                "description": "Googleアカウントログイン認証に成功すればアカウント情報を取得する.",
-                "tags": [
-                    "authenticates"
-                ],
-                "summary": "Googleアカウント情報の取得.",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Googleから返却される署名（code）",
-                        "name": "code",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/controllers.H"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/domain.SocialUserAccount"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/controllers.H"
-                        }
-                    }
-                }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/controllers.H"
             }
-        },
-        "/chefFollows": {
-            "get": {
-                "description": "This API return the list of following chefs by user.",
-                "consumes": [
-                    "application/x-json-stream"
-                ],
-                "tags": [
-                    "chefFollows"
-                ],
-                "summary": "Get following chef list.",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "User ID",
-                        "name": "user_id",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/domain.ChefFollowsForGet"
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/usecase.ResultStatus"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "description": "シェフをフォロー登録する際のリクエスト",
-                "consumes": [
-                    "application/json"
-                ],
-                "tags": [
-                    "chefFollows"
-                ],
-                "summary": "ユーザーがシェフをフォロー登録",
-                "parameters": [
-                    {
-                        "description": "user_id, chef_id は必須",
-                        "name": "chefFollow",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/domain.ChefFollows"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/controllers.H"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/domain.ChefFollowsForGet"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/controllers.H"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "description": "シェフをフォロー解除する際のリクエスト",
-                "consumes": [
-                    "application/json"
-                ],
-                "tags": [
-                    "chefFollows"
-                ],
-                "summary": "ユーザーがシェフをフォロー解除",
-                "parameters": [
-                    {
-                        "description": "user_id, chef_id は必須",
-                        "name": "chefFollow",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/domain.ChefFollows"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/controllers.H"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/controllers.H"
-                        }
-                    }
-                }
-            }
-        },
-        "/chefs": {
-            "get": {
-                "description": "This API return all chef list.",
-                "consumes": [
-                    "application/x-json-stream"
-                ],
-                "tags": [
-                    "chef"
-                ],
-                "summary": "Get chef list.",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "検索ワード",
-                        "name": "q",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/domain.ChefsForGet"
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/usecase.ResultStatus"
-                        }
-                    }
-                }
-            }
-        },
-        "/chefs/{screenName}": {
-            "get": {
-                "description": "This API return unique chef by screenName.",
-                "consumes": [
-                    "application/x-json-stream"
-                ],
-                "tags": [
-                    "chef"
-                ],
-                "summary": "Get unique chef.",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "screenName",
-                        "name": "screenName",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/domain.ChefsForGet"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/usecase.ResultStatus"
-                        }
-                    }
-                }
-            }
-        },
-        "/me": {
-            "get": {
-                "description": "ユーザー情報の取得のエンドポイント",
-                "tags": [
-                    "me"
-                ],
-                "summary": "ユーザー情報の取得",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/controllers.H"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/domain.Users"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/controllers.H"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "description": "ユーザーアカウントの削除のエンドポイント",
-                "tags": [
-                    "me"
-                ],
-                "summary": "ユーザーアカウントの削除",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/controllers.H"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/controllers.H"
-                        }
-                    }
-                }
-            }
-        },
-        "/me/register": {
-            "get": {
-                "description": "ユーザー新規登録のエンドポイント",
-                "tags": [
-                    "me"
-                ],
-                "summary": "ユーザー新規登録",
-                "parameters": [
-                    {
-                        "description": "登録するGoogleアカウント",
-                        "name": "social_user_account",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/domain.SocialUserAccount"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/controllers.H"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/product.UserResponse"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/controllers.H"
-                        }
-                    }
-                }
-            }
-        },
-        "/recipeFavorites": {
-            "get": {
-                "description": "This API return list of recipes of favorite.",
-                "consumes": [
-                    "application/x-json-stream"
-                ],
-                "tags": [
-                    "recipeFavorites"
-                ],
-                "summary": "Get list of recipes of favorite.",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "User ID",
-                        "name": "user_id",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/domain.RecipeFavoritesForGet"
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/usecase.ResultStatus"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "description": "レシピをお気に入り登録する際のリクエスト",
-                "consumes": [
-                    "application/json"
-                ],
-                "tags": [
-                    "recipeFavorites"
-                ],
-                "summary": "ユーザーがレシピをお気に入り登録",
-                "parameters": [
-                    {
-                        "description": "user_id, recipe_id は必須",
-                        "name": "recipeFavorite",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/domain.RecipeFavorites"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/controllers.H"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/domain.RecipeFavoritesForGet"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/controllers.H"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "description": "レシピをお気に入り解除する際のリクエスト",
-                "consumes": [
-                    "application/json"
-                ],
-                "tags": [
-                    "recipeFavorites"
-                ],
-                "summary": "ユーザーがレシピをお気に入り解除",
-                "parameters": [
-                    {
-                        "description": "user_id, recipe_id は必須",
-                        "name": "recipeFavorite",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/domain.RecipeFavorites"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/controllers.H"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/controllers.H"
-                        }
-                    }
-                }
-            }
-        },
-        "/recipeIngredients": {
-            "get": {
-                "description": "レシピの材料一覧を取得するエンドポイント",
-                "consumes": [
-                    "application/x-json-stream"
-                ],
-                "tags": [
-                    "recipeIngredients"
-                ],
-                "summary": "レシピの材料一覧を取得",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Recipe ID",
-                        "name": "recipe_id",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/domain.RecipeIngredientsForGet"
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/usecase.ResultStatus"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "description": "This API regist recipe ingredients and return this results data.",
-                "consumes": [
-                    "application/x-json-stream"
-                ],
-                "tags": [
-                    "recipeIngredients"
-                ],
-                "summary": "Regist recipe ingredients.",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "RecipeID",
-                        "name": "recipe_id",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Name",
-                        "name": "name",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Description",
-                        "name": "description",
-                        "in": "formData"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/domain.RecipeIngredientsForGet"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/usecase.ResultStatus"
-                        }
-                    }
-                }
-            }
-        },
-        "/recipeLinks": {
-            "post": {
-                "description": "This API regist recipe links and return this results data.",
-                "consumes": [
-                    "application/x-json-stream"
-                ],
-                "tags": [
-                    "recipeLinks"
-                ],
-                "summary": "Regist recipe links.",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Recipe ID",
-                        "name": "recipe_id",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "URL",
-                        "name": "url",
-                        "in": "formData",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/domain.RecipeLinksForGet"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/usecase.ResultStatus"
-                        }
-                    }
-                }
-            }
-        },
-        "/recipeSteps": {
-            "get": {
-                "description": "レシピの手順一覧を取得するエンドポイント",
-                "consumes": [
-                    "application/x-json-stream"
-                ],
-                "tags": [
-                    "recipeSteps"
-                ],
-                "summary": "レシピの手順一覧を取得",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Recipe ID",
-                        "name": "recipe_id",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/domain.RecipeStepsForGet"
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/usecase.ResultStatus"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "description": "This API regist recipe steps and return this results data.",
-                "consumes": [
-                    "application/x-json-stream"
-                ],
-                "tags": [
-                    "recipeSteps"
-                ],
-                "summary": "Regist recipe steps.",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Recipe ID",
-                        "name": "recipe_id",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Title",
-                        "name": "title",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Description",
-                        "name": "description",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Step Number",
-                        "name": "step_number",
-                        "in": "formData"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/domain.RecipeStepsForGet"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/usecase.ResultStatus"
-                        }
-                    }
-                }
-            }
-        },
-        "/recipes": {
-            "get": {
-                "description": "This API return all recipe list.",
-                "consumes": [
-                    "application/x-json-stream"
-                ],
-                "tags": [
-                    "recipes"
-                ],
-                "summary": "Get recipe list.",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/domain.RecipesForGet"
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/usecase.ResultStatus"
-                        }
-                    }
-                }
-            }
-        },
-        "/recommend/recipes": {
-            "get": {
-                "description": "過去3日間でお気に入り登録の多かったレシピを取得",
-                "consumes": [
-                    "application/x-json-stream"
-                ],
-                "tags": [
-                    "recommend"
-                ],
-                "summary": "話題のレシピ",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/domain.RecipesForGet"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/usecase.ResultStatus"
-                        }
-                    }
-                }
-            }
-        },
-        "/self/login": {
-            "get": {
-                "description": "ユーザーログインのエンドポイント",
-                "tags": [
-                    "me"
-                ],
-                "summary": "ユーザーログイン",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "GoogleアカウントのユーザーID",
-                        "name": "service_user_id",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/controllers.H"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/product.UserResponse"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/controllers.H"
-                        }
-                    }
-                }
-            }
-        },
-        "/shoppingItems": {
-            "get": {
-                "description": "This API return list of recipes shopping items by Recipe ID.",
-                "consumes": [
-                    "application/x-json-stream"
-                ],
-                "tags": [
-                    "shoppingItems"
-                ],
-                "summary": "Get recipes shopping items.",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Recipe ID",
-                        "name": "recipe_id",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/domain.ShoppingItemsForGet"
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/usecase.ResultStatus"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "description": "This API regist shopping items at recipe and return this results data.",
-                "consumes": [
-                    "application/x-json-stream"
-                ],
-                "tags": [
-                    "shoppingItems"
-                ],
-                "summary": "Regist recipes shopping items.",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "User ID",
-                        "name": "user_id",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Recipe Ingredient ID",
-                        "name": "recipe_ingredient_id",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "boolean",
-                        "description": "IsDone",
-                        "name": "id_done",
-                        "in": "formData"
-                    }
-                ],
-                "responses": {
-                    "202": {
-                        "description": "Accepted",
-                        "schema": {
-                            "$ref": "#/definitions/domain.ShoppingItemsForGet"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/usecase.ResultStatus"
-                        }
-                    }
-                }
-            }
-        },
-        "/shoppingItems/{id}": {
-            "delete": {
-                "description": "This API delete shopping items.",
-                "consumes": [
-                    "application/x-json-stream"
-                ],
-                "tags": [
-                    "shoppingItems"
-                ],
-                "summary": "Delete shopping items.",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "nil"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/usecase.ResultStatus"
-                        }
-                    }
-                }
-            },
-            "patch": {
-                "description": "This API update state of done at shopping items and return this results data.",
-                "consumes": [
-                    "application/x-json-stream"
-                ],
-                "tags": [
-                    "shoppingItems"
-                ],
-                "summary": "Update state of done.",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "User ID",
-                        "name": "user_id",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Recipe Ingredient ID",
-                        "name": "recipe_ingredient_id",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "boolean",
-                        "description": "IsDone",
-                        "name": "id_done",
-                        "in": "formData"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/domain.ShoppingItemsForGet"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/usecase.ResultStatus"
-                        }
-                    }
-                }
-            }
-        },
-        "/userRecipes": {
-            "post": {
-                "description": "This API regist user recipes and return this results data.",
-                "consumes": [
-                    "application/x-json-stream"
-                ],
-                "tags": [
-                    "userRecipes"
-                ],
-                "summary": "Regist user recipes.",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Title",
-                        "name": "title",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Description",
-                        "name": "description",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Servings",
-                        "name": "servings",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "boolean",
-                        "description": "isDraft",
-                        "name": "is_draft",
-                        "in": "formData"
-                    }
-                ],
-                "responses": {
-                    "202": {
-                        "description": "Accepted",
-                        "schema": {
-                            "$ref": "#/definitions/domain.UserRecipesForGet"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/usecase.ResultStatus"
-                        }
-                    }
-                }
-            }
-        },
-        "/userShoppingItems": {
-            "get": {
-                "description": "This API return list of users shopping items by User ID.",
-                "consumes": [
-                    "application/x-json-stream"
-                ],
-                "tags": [
-                    "userShoppingItems"
-                ],
-                "summary": "Get users shopping items.",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "User ID",
-                        "name": "user_id",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/domain.UserShoppingItemsForGet"
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/usecase.ResultStatus"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "description": "This API regist shopping items yourself and return this results data.",
-                "consumes": [
-                    "application/x-json-stream"
-                ],
-                "tags": [
-                    "userShoppingItems"
-                ],
-                "summary": "Regist users shopping items.",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "User ID",
-                        "name": "user_id",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Title",
-                        "name": "title",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Description",
-                        "name": "description",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "boolean",
-                        "description": "isDone",
-                        "name": "is_done",
-                        "in": "formData"
-                    }
-                ],
-                "responses": {
-                    "202": {
-                        "description": "Accepted",
-                        "schema": {
-                            "$ref": "#/definitions/domain.UserShoppingItemsForGet"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/usecase.ResultStatus"
-                        }
-                    }
-                }
-            }
-        },
-        "/userShoppingItems/{id}": {
-            "delete": {
-                "description": "This API delete user shopping items.",
-                "consumes": [
-                    "application/x-json-stream"
-                ],
-                "tags": [
-                    "userShoppingItems"
-                ],
-                "summary": "Delete shopping items.",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "nil"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/usecase.ResultStatus"
-                        }
-                    }
-                }
-            },
-            "patch": {
-                "description": "This API update state of done at user shopping items and return this results data.",
-                "consumes": [
-                    "application/x-json-stream"
-                ],
-                "tags": [
-                    "userShoppingItems"
-                ],
-                "summary": "Update state of done.",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "User ID",
-                        "name": "user_id",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Title",
-                        "name": "title",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Description",
-                        "name": "description",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "boolean",
-                        "description": "isDone",
-                        "name": "is_done",
-                        "in": "formData"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/domain.UserShoppingItemsForGet"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/usecase.ResultStatus"
-                        }
-                    }
-                }
-            }
-        },
-        "/users/{id}": {
-            "get": {
-                "description": "get user info",
-                "consumes": [
-                    "application/x-json-stream"
-                ],
-                "tags": [
-                    "users"
-                ],
-                "summary": "product users",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "User ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/domain.Users"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/usecase.ResultStatus"
-                        }
-                    }
-                }
-            }
+          }
         }
+      }
     },
-    "definitions": {
-        "controllers.H": {
-            "type": "object",
-            "properties": {
-                "data": {},
-                "message": {
-                    "type": "string"
+    "/authenticates/google/userinfo": {
+      "get": {
+        "description": "Googleアカウントログイン認証に成功すればアカウント情報を取得する.",
+        "tags": ["authenticates"],
+        "summary": "Googleアカウント情報の取得.",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Googleから返却される署名（code）",
+            "name": "code",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/controllers.H"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/definitions/domain.SocialUserAccount"
+                    }
+                  }
                 }
+              ]
             }
-        },
-        "domain.ChefFollows": {
-            "type": "object",
-            "properties": {
-                "chef_id": {
-                    "type": "integer"
-                },
-                "created_at": {
-                    "type": "integer"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "user_id": {
-                    "type": "integer"
-                }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/controllers.H"
             }
-        },
-        "domain.ChefFollowsForGet": {
-            "type": "object",
-            "properties": {
-                "chef": {
-                    "$ref": "#/definitions/domain.ChefsForGet"
-                },
-                "chef_id": {
-                    "type": "integer"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "user_id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "domain.ChefsForGet": {
-            "type": "object",
-            "properties": {
-                "description": {
-                    "type": "string"
-                },
-                "display_name": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "screen_name": {
-                    "type": "string"
-                }
-            }
-        },
-        "domain.RecipeFavorites": {
-            "type": "object",
-            "properties": {
-                "created_at": {
-                    "type": "integer"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "recipe_id": {
-                    "type": "integer"
-                },
-                "user_id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "domain.RecipeFavoritesForGet": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
-                },
-                "recipe": {
-                    "$ref": "#/definitions/domain.RecipesForGet"
-                },
-                "recipe_id": {
-                    "type": "integer"
-                },
-                "user_id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "domain.RecipeIngredientsForGet": {
-            "type": "object",
-            "properties": {
-                "description": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "recipe_id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "domain.RecipeLinksForGet": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
-                },
-                "recipe_id": {
-                    "type": "integer"
-                },
-                "url": {
-                    "type": "string"
-                }
-            }
-        },
-        "domain.RecipeStepsForGet": {
-            "type": "object",
-            "properties": {
-                "description": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "recipe_id": {
-                    "type": "integer"
-                },
-                "step_number": {
-                    "type": "integer"
-                },
-                "title": {
-                    "type": "string"
-                }
-            }
-        },
-        "domain.RecipesForGet": {
-            "type": "object",
-            "properties": {
-                "chef": {
-                    "description": "この値はどちらかが入る",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/domain.ChefsForGet"
-                        }
-                    ]
-                },
-                "description": {
-                    "type": "string"
-                },
-                "facorites_count": {
-                    "type": "integer"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "is_draft": {
-                    "type": "boolean"
-                },
-                "servings": {
-                    "type": "integer"
-                },
-                "title": {
-                    "type": "string"
-                },
-                "user": {
-                    "$ref": "#/definitions/domain.UsersForGet"
-                }
-            }
-        },
-        "domain.ShoppingItemsForGet": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
-                },
-                "is_done": {
-                    "type": "boolean"
-                },
-                "recipe_ingredient": {
-                    "$ref": "#/definitions/domain.RecipeIngredientsForGet"
-                },
-                "recipe_ingredient_id": {
-                    "type": "integer"
-                },
-                "user_id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "domain.SocialUserAccount": {
-            "type": "object",
-            "properties": {
-                "display_name": {
-                    "type": "string"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "service_name": {
-                    "type": "string"
-                },
-                "service_user_id": {
-                    "type": "string"
-                }
-            }
-        },
-        "domain.UserRecipesForGet": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
-                },
-                "recipe": {
-                    "$ref": "#/definitions/domain.RecipesForGet"
-                },
-                "recipe_id": {
-                    "type": "integer"
-                },
-                "user_id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "domain.UserShoppingItemsForGet": {
-            "type": "object",
-            "required": [
-                "title"
-            ],
-            "properties": {
-                "description": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "is_done": {
-                    "type": "boolean"
-                },
-                "title": {
-                    "type": "string"
-                },
-                "user_id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "domain.Users": {
-            "type": "object",
-            "properties": {
-                "created_at": {
-                    "type": "integer"
-                },
-                "deleted_at": {
-                    "type": "integer"
-                },
-                "display_name": {
-                    "type": "string"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "screen_name": {
-                    "type": "string"
-                },
-                "updated_at": {
-                    "type": "integer"
-                }
-            }
-        },
-        "domain.UsersForGet": {
-            "type": "object",
-            "properties": {
-                "display_name": {
-                    "type": "string"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "screen_name": {
-                    "type": "string"
-                }
-            }
-        },
-        "product.AuthenticateResponse": {
-            "type": "object",
-            "properties": {
-                "login_url": {
-                    "type": "string"
-                }
-            }
-        },
-        "product.UserResponse": {
-            "type": "object",
-            "properties": {
-                "token": {
-                    "type": "string"
-                },
-                "user": {
-                    "$ref": "#/definitions/domain.UsersForGet"
-                }
-            }
-        },
-        "usecase.ResultStatus": {
-            "type": "object",
-            "properties": {
-                "code": {
-                    "type": "integer"
-                },
-                "error": {}
-            }
+          }
         }
+      }
+    },
+    "/chefFollows": {
+      "get": {
+        "description": "This API return the list of following chefs by user.",
+        "consumes": ["application/x-json-stream"],
+        "tags": ["chefFollows"],
+        "summary": "Get following chef list.",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "User ID",
+            "name": "user_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/domain.ChefFollowsForGet"
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/usecase.ResultStatus"
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "シェフをフォロー登録する際のリクエスト",
+        "consumes": ["application/json"],
+        "tags": ["chefFollows"],
+        "summary": "ユーザーがシェフをフォロー登録",
+        "parameters": [
+          {
+            "description": "user_id, chef_id は必須",
+            "name": "chefFollow",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/domain.ChefFollows"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/controllers.H"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/definitions/domain.ChefFollowsForGet"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/controllers.H"
+            }
+          }
+        }
+      },
+      "delete": {
+        "description": "シェフをフォロー解除する際のリクエスト",
+        "consumes": ["application/json"],
+        "tags": ["chefFollows"],
+        "summary": "ユーザーがシェフをフォロー解除",
+        "parameters": [
+          {
+            "description": "user_id, chef_id は必須",
+            "name": "chefFollow",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/domain.ChefFollows"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/controllers.H"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/controllers.H"
+            }
+          }
+        }
+      }
+    },
+    "/chefs": {
+      "get": {
+        "description": "This API return all chef list.",
+        "consumes": ["application/x-json-stream"],
+        "tags": ["chef"],
+        "summary": "Get chef list.",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "検索ワード",
+            "name": "q",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/domain.ChefsForGet"
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/usecase.ResultStatus"
+            }
+          }
+        }
+      }
+    },
+    "/chefs/{screenName}": {
+      "get": {
+        "description": "This API return unique chef by screenName.",
+        "consumes": ["application/x-json-stream"],
+        "tags": ["chef"],
+        "summary": "Get unique chef.",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "screenName",
+            "name": "screenName",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/domain.ChefsForGet"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/usecase.ResultStatus"
+            }
+          }
+        }
+      }
+    },
+    "/me": {
+      "get": {
+        "description": "ユーザー情報の取得のエンドポイント",
+        "tags": ["me"],
+        "summary": "ユーザー情報の取得",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/controllers.H"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/definitions/domain.Users"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/controllers.H"
+            }
+          }
+        }
+      },
+      "delete": {
+        "description": "ユーザーアカウントの削除のエンドポイント",
+        "tags": ["me"],
+        "summary": "ユーザーアカウントの削除",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/controllers.H"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/controllers.H"
+            }
+          }
+        }
+      }
+    },
+    "/me/register": {
+      "get": {
+        "description": "ユーザー新規登録のエンドポイント",
+        "tags": ["me"],
+        "summary": "ユーザー新規登録",
+        "parameters": [
+          {
+            "description": "登録するGoogleアカウント",
+            "name": "social_user_account",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/domain.SocialUserAccount"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/controllers.H"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/definitions/product.UserResponse"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/controllers.H"
+            }
+          }
+        }
+      }
+    },
+    "/recipeFavorites": {
+      "get": {
+        "description": "This API return list of recipes of favorite.",
+        "consumes": ["application/x-json-stream"],
+        "tags": ["recipeFavorites"],
+        "summary": "Get list of recipes of favorite.",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "User ID",
+            "name": "user_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/domain.RecipeFavoritesForGet"
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/usecase.ResultStatus"
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "レシピをお気に入り登録する際のリクエスト",
+        "consumes": ["application/json"],
+        "tags": ["recipeFavorites"],
+        "summary": "ユーザーがレシピをお気に入り登録",
+        "parameters": [
+          {
+            "description": "user_id, recipe_id は必須",
+            "name": "recipeFavorite",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/domain.RecipeFavorites"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/controllers.H"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/definitions/domain.RecipeFavoritesForGet"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/controllers.H"
+            }
+          }
+        }
+      },
+      "delete": {
+        "description": "レシピをお気に入り解除する際のリクエスト",
+        "consumes": ["application/json"],
+        "tags": ["recipeFavorites"],
+        "summary": "ユーザーがレシピをお気に入り解除",
+        "parameters": [
+          {
+            "description": "user_id, recipe_id は必須",
+            "name": "recipeFavorite",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/domain.RecipeFavorites"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/controllers.H"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/controllers.H"
+            }
+          }
+        }
+      }
+    },
+    "/recipeIngredients": {
+      "get": {
+        "description": "レシピの材料一覧を取得するエンドポイント",
+        "consumes": ["application/x-json-stream"],
+        "tags": ["recipeIngredients"],
+        "summary": "レシピの材料一覧を取得",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "Recipe ID",
+            "name": "recipe_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/domain.RecipeIngredientsForGet"
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/usecase.ResultStatus"
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "This API regist recipe ingredients and return this results data.",
+        "consumes": ["application/x-json-stream"],
+        "tags": ["recipeIngredients"],
+        "summary": "Regist recipe ingredients.",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "RecipeID",
+            "name": "recipe_id",
+            "in": "formData",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Name",
+            "name": "name",
+            "in": "formData",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Description",
+            "name": "description",
+            "in": "formData"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/domain.RecipeIngredientsForGet"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/usecase.ResultStatus"
+            }
+          }
+        }
+      }
+    },
+    "/recipeLinks": {
+      "post": {
+        "description": "This API regist recipe links and return this results data.",
+        "consumes": ["application/x-json-stream"],
+        "tags": ["recipeLinks"],
+        "summary": "Regist recipe links.",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "Recipe ID",
+            "name": "recipe_id",
+            "in": "formData",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "URL",
+            "name": "url",
+            "in": "formData",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/domain.RecipeLinksForGet"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/usecase.ResultStatus"
+            }
+          }
+        }
+      }
+    },
+    "/recipeSteps": {
+      "get": {
+        "description": "レシピの手順一覧を取得するエンドポイント",
+        "consumes": ["application/x-json-stream"],
+        "tags": ["recipeSteps"],
+        "summary": "レシピの手順一覧を取得",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "Recipe ID",
+            "name": "recipe_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/domain.RecipeStepsForGet"
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/usecase.ResultStatus"
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "This API regist recipe steps and return this results data.",
+        "consumes": ["application/x-json-stream"],
+        "tags": ["recipeSteps"],
+        "summary": "Regist recipe steps.",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "Recipe ID",
+            "name": "recipe_id",
+            "in": "formData",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Title",
+            "name": "title",
+            "in": "formData",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Description",
+            "name": "description",
+            "in": "formData"
+          },
+          {
+            "type": "integer",
+            "description": "Step Number",
+            "name": "step_number",
+            "in": "formData"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/domain.RecipeStepsForGet"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/usecase.ResultStatus"
+            }
+          }
+        }
+      }
+    },
+    "/recipes": {
+      "get": {
+        "description": "This API return all recipe list.",
+        "consumes": ["application/x-json-stream"],
+        "tags": ["recipes"],
+        "summary": "Get recipe list.",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/domain.RecipesForGet"
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/usecase.ResultStatus"
+            }
+          }
+        }
+      }
+    },
+    "/recommend/recipes": {
+      "get": {
+        "description": "過去3日間でお気に入り登録の多かったレシピを取得",
+        "consumes": ["application/x-json-stream"],
+        "tags": ["recommend"],
+        "summary": "話題のレシピ",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/domain.RecipesForGet"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/usecase.ResultStatus"
+            }
+          }
+        }
+      }
+    },
+    "/self/login": {
+      "get": {
+        "description": "ユーザーログインのエンドポイント",
+        "tags": ["me"],
+        "summary": "ユーザーログイン",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "GoogleアカウントのユーザーID",
+            "name": "service_user_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/controllers.H"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/definitions/product.UserResponse"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/controllers.H"
+            }
+          }
+        }
+      }
+    },
+    "/shoppingItems": {
+      "get": {
+        "description": "This API return list of recipes shopping items by Recipe ID.",
+        "consumes": ["application/x-json-stream"],
+        "tags": ["shoppingItems"],
+        "summary": "Get recipes shopping items.",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "Recipe ID",
+            "name": "recipe_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/domain.ShoppingItemsForGet"
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/usecase.ResultStatus"
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "This API regist shopping items at recipe and return this results data.",
+        "consumes": ["application/x-json-stream"],
+        "tags": ["shoppingItems"],
+        "summary": "Regist recipes shopping items.",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "User ID",
+            "name": "user_id",
+            "in": "formData"
+          },
+          {
+            "type": "integer",
+            "description": "Recipe Ingredient ID",
+            "name": "recipe_ingredient_id",
+            "in": "formData"
+          },
+          {
+            "type": "boolean",
+            "description": "IsDone",
+            "name": "id_done",
+            "in": "formData"
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Accepted",
+            "schema": {
+              "$ref": "#/definitions/domain.ShoppingItemsForGet"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/usecase.ResultStatus"
+            }
+          }
+        }
+      }
+    },
+    "/shoppingItems/{id}": {
+      "delete": {
+        "description": "This API delete shopping items.",
+        "consumes": ["application/x-json-stream"],
+        "tags": ["shoppingItems"],
+        "summary": "Delete shopping items.",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "ID",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "nil"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/usecase.ResultStatus"
+            }
+          }
+        }
+      },
+      "patch": {
+        "description": "This API update state of done at shopping items and return this results data.",
+        "consumes": ["application/x-json-stream"],
+        "tags": ["shoppingItems"],
+        "summary": "Update state of done.",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "ID",
+            "name": "id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "description": "User ID",
+            "name": "user_id",
+            "in": "formData",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "description": "Recipe Ingredient ID",
+            "name": "recipe_ingredient_id",
+            "in": "formData",
+            "required": true
+          },
+          {
+            "type": "boolean",
+            "description": "IsDone",
+            "name": "id_done",
+            "in": "formData"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/domain.ShoppingItemsForGet"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/usecase.ResultStatus"
+            }
+          }
+        }
+      }
+    },
+    "/userRecipes": {
+      "post": {
+        "description": "This API regist user recipes and return this results data.",
+        "consumes": ["application/x-json-stream"],
+        "tags": ["userRecipes"],
+        "summary": "Regist user recipes.",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Title",
+            "name": "title",
+            "in": "formData",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Description",
+            "name": "description",
+            "in": "formData"
+          },
+          {
+            "type": "integer",
+            "description": "Servings",
+            "name": "servings",
+            "in": "formData",
+            "required": true
+          },
+          {
+            "type": "boolean",
+            "description": "isDraft",
+            "name": "is_draft",
+            "in": "formData"
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Accepted",
+            "schema": {
+              "$ref": "#/definitions/domain.UserRecipesForGet"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/usecase.ResultStatus"
+            }
+          }
+        }
+      }
+    },
+    "/userShoppingItems": {
+      "get": {
+        "description": "This API return list of users shopping items by User ID.",
+        "consumes": ["application/x-json-stream"],
+        "tags": ["userShoppingItems"],
+        "summary": "Get users shopping items.",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "User ID",
+            "name": "user_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/domain.UserShoppingItemsForGet"
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/usecase.ResultStatus"
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "This API regist shopping items yourself and return this results data.",
+        "consumes": ["application/x-json-stream"],
+        "tags": ["userShoppingItems"],
+        "summary": "Regist users shopping items.",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "User ID",
+            "name": "user_id",
+            "in": "formData",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Title",
+            "name": "title",
+            "in": "formData",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Description",
+            "name": "description",
+            "in": "formData"
+          },
+          {
+            "type": "boolean",
+            "description": "isDone",
+            "name": "is_done",
+            "in": "formData"
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Accepted",
+            "schema": {
+              "$ref": "#/definitions/domain.UserShoppingItemsForGet"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/usecase.ResultStatus"
+            }
+          }
+        }
+      }
+    },
+    "/userShoppingItems/{id}": {
+      "delete": {
+        "description": "This API delete user shopping items.",
+        "consumes": ["application/x-json-stream"],
+        "tags": ["userShoppingItems"],
+        "summary": "Delete shopping items.",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "ID",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "nil"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/usecase.ResultStatus"
+            }
+          }
+        }
+      },
+      "patch": {
+        "description": "This API update state of done at user shopping items and return this results data.",
+        "consumes": ["application/x-json-stream"],
+        "tags": ["userShoppingItems"],
+        "summary": "Update state of done.",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "ID",
+            "name": "id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "description": "User ID",
+            "name": "user_id",
+            "in": "formData",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Title",
+            "name": "title",
+            "in": "formData",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Description",
+            "name": "description",
+            "in": "formData"
+          },
+          {
+            "type": "boolean",
+            "description": "isDone",
+            "name": "is_done",
+            "in": "formData"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/domain.UserShoppingItemsForGet"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/usecase.ResultStatus"
+            }
+          }
+        }
+      }
+    },
+    "/users/{id}": {
+      "get": {
+        "description": "get user info",
+        "consumes": ["application/x-json-stream"],
+        "tags": ["users"],
+        "summary": "product users",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "User ID",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/domain.Users"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/usecase.ResultStatus"
+            }
+          }
+        }
+      }
     }
+  },
+  "definitions": {
+    "controllers.H": {
+      "type": "object",
+      "properties": {
+        "data": {},
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "domain.ChefFollows": {
+      "type": "object",
+      "properties": {
+        "chef_id": {
+          "type": "integer"
+        },
+        "created_at": {
+          "type": "integer"
+        },
+        "id": {
+          "type": "integer"
+        },
+        "user_id": {
+          "type": "integer"
+        }
+      }
+    },
+    "domain.ChefFollowsForGet": {
+      "type": "object",
+      "properties": {
+        "chef": {
+          "$ref": "#/definitions/domain.ChefsForGet"
+        },
+        "chef_id": {
+          "type": "integer"
+        },
+        "id": {
+          "type": "integer"
+        },
+        "user_id": {
+          "type": "integer"
+        }
+      }
+    },
+    "domain.ChefsForGet": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "display_name": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer"
+        },
+        "screen_name": {
+          "type": "string"
+        }
+      }
+    },
+    "domain.RecipeFavorites": {
+      "type": "object",
+      "properties": {
+        "created_at": {
+          "type": "integer"
+        },
+        "id": {
+          "type": "integer"
+        },
+        "recipe_id": {
+          "type": "integer"
+        },
+        "user_id": {
+          "type": "integer"
+        }
+      }
+    },
+    "domain.RecipeFavoritesForGet": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "recipe": {
+          "$ref": "#/definitions/domain.RecipesForGet"
+        },
+        "recipe_id": {
+          "type": "integer"
+        },
+        "user_id": {
+          "type": "integer"
+        }
+      }
+    },
+    "domain.RecipeIngredientsForGet": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "recipe_id": {
+          "type": "integer"
+        }
+      }
+    },
+    "domain.RecipeLinksForGet": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "recipe_id": {
+          "type": "integer"
+        },
+        "url": {
+          "type": "string"
+        }
+      }
+    },
+    "domain.RecipeStepsForGet": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer"
+        },
+        "recipe_id": {
+          "type": "integer"
+        },
+        "step_number": {
+          "type": "integer"
+        },
+        "title": {
+          "type": "string"
+        }
+      }
+    },
+    "domain.RecipesForGet": {
+      "type": "object",
+      "properties": {
+        "chef": {
+          "description": "この値はどちらかが入る",
+          "allOf": [
+            {
+              "$ref": "#/definitions/domain.ChefsForGet"
+            }
+          ]
+        },
+        "description": {
+          "type": "string"
+        },
+        "favorites_count": {
+          "type": "integer"
+        },
+        "id": {
+          "type": "integer"
+        },
+        "is_draft": {
+          "type": "boolean"
+        },
+        "servings": {
+          "type": "integer"
+        },
+        "title": {
+          "type": "string"
+        },
+        "user": {
+          "$ref": "#/definitions/domain.UsersForGet"
+        }
+      }
+    },
+    "domain.ShoppingItemsForGet": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "is_done": {
+          "type": "boolean"
+        },
+        "recipe_ingredient": {
+          "$ref": "#/definitions/domain.RecipeIngredientsForGet"
+        },
+        "recipe_ingredient_id": {
+          "type": "integer"
+        },
+        "user_id": {
+          "type": "integer"
+        }
+      }
+    },
+    "domain.SocialUserAccount": {
+      "type": "object",
+      "properties": {
+        "display_name": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "service_name": {
+          "type": "string"
+        },
+        "service_user_id": {
+          "type": "string"
+        }
+      }
+    },
+    "domain.UserRecipesForGet": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "recipe": {
+          "$ref": "#/definitions/domain.RecipesForGet"
+        },
+        "recipe_id": {
+          "type": "integer"
+        },
+        "user_id": {
+          "type": "integer"
+        }
+      }
+    },
+    "domain.UserShoppingItemsForGet": {
+      "type": "object",
+      "required": ["title"],
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer"
+        },
+        "is_done": {
+          "type": "boolean"
+        },
+        "title": {
+          "type": "string"
+        },
+        "user_id": {
+          "type": "integer"
+        }
+      }
+    },
+    "domain.Users": {
+      "type": "object",
+      "properties": {
+        "created_at": {
+          "type": "integer"
+        },
+        "deleted_at": {
+          "type": "integer"
+        },
+        "display_name": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer"
+        },
+        "screen_name": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "integer"
+        }
+      }
+    },
+    "domain.UsersForGet": {
+      "type": "object",
+      "properties": {
+        "display_name": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer"
+        },
+        "screen_name": {
+          "type": "string"
+        }
+      }
+    },
+    "product.AuthenticateResponse": {
+      "type": "object",
+      "properties": {
+        "login_url": {
+          "type": "string"
+        }
+      }
+    },
+    "product.UserResponse": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string"
+        },
+        "user": {
+          "$ref": "#/definitions/domain.UsersForGet"
+        }
+      }
+    },
+    "usecase.ResultStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer"
+        },
+        "error": {}
+      }
+    }
+  }
 }

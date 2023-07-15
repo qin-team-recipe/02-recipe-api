@@ -1430,7 +1430,7 @@ const docTemplate = `{
                 "description": {
                     "type": "string"
                 },
-                "facorites_count": {
+                "favorites_count": {
                     "type": "integer"
                 },
                 "id": {
