@@ -16,7 +16,7 @@ type ChefsForGet struct {
 	DisplayName string  `json:"display_name"`
 	Description *string `json:"description"`
 
-	RecipeCount  int  `json:"recipe_count"`
+	RecipesCount int  `json:"recipes_count"`
 	FollowsCount int  `json:"follows_count"`
 	IsFollowing  bool `json:"is_following"`
 

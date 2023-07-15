@@ -31,20 +31,20 @@ func (ci *ChefInteractor) GetList(q string, cursor int) (ChefList, *usecase.Resu
 	chefs := []*domain.Chefs{}
 	pageInfo := usecase.PageInfo{}
 
-	if q == "" {
-		foundChefs, err := ci.Chef.Find(db)
-		if err != nil {
-			return ChefList{}, usecase.NewResultStatus(http.StatusNotFound, err)
-		}
-		chefs = foundChefs
-	} else {
-		q = "%_" + q + "_%"
-		foundChefs, err := ci.Chef.FindByQuery(db, q, cursor)
-		if err != nil {
-			return ChefList{}, usecase.NewResultStatus(http.StatusNotFound, err)
-		}
-		chefs = foundChefs
+	// if q == "" {
+	// 	foundChefs, err := ci.Chef.Find(db)
+	// 	if err != nil {
+	// 		return ChefList{}, usecase.NewResultStatus(http.StatusNotFound, err)
+	// 	}
+	// 	chefs = foundChefs
+	// } else {
+	// 	q = "%_" + q + "_%"
+	foundChefs, err := ci.Chef.FindByQuery(db, q, cursor)
+	if err != nil {
+		return ChefList{}, usecase.NewResultStatus(http.StatusNotFound, err)
 	}
+	chefs = foundChefs
+	// }
 
 	pageInfo.HasNextPage = 10 < len(chefs)
 	pageInfo.HasPreviousPage = 0 < cursor
@@ -135,7 +135,7 @@ func (ci *ChefInteractor) build(db *gorm.DB, chef *domain.Chefs) (*domain.ChefsF
 	builtChef = chef.BuildForGet()
 
 	recipeCount := ci.ChefRecipe.CountByChefID(db, chef.ID)
-	builtChef.RecipeCount = recipeCount
+	builtChef.RecipesCount = recipeCount
 
 	followCount := ci.ChefFollow.CountByChefID(db, chef.ID)
 	builtChef.FollowsCount = followCount
