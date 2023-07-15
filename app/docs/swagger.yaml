@@ -527,6 +527,30 @@ paths:
       tags:
       - recipeFavorites
   /recipeIngredients:
+    get:
+      consumes:
+      - application/x-json-stream
+      description: レシピの材料一覧を取得するエンドポイント
+      parameters:
+      - description: Recipe ID
+        in: query
+        name: recipe_id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/domain.RecipeIngredientsForGet'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/usecase.ResultStatus'
+      summary: レシピの材料一覧を取得
+      tags:
+      - recipeIngredients
     post:
       consumes:
       - application/x-json-stream

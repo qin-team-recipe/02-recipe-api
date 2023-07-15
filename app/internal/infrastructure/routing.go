@@ -50,8 +50,8 @@ func (r *Routing) setCors(cors *middleware.Cors) {
 //	@description	This is a Team02's API Docs at Qin.
 //	@termsOfService	http://swagger.io/terms/
 
-// @host		localhost:8080
-// @BasePath	/api/v1
+//	@host		localhost:8080
+//	@BasePath	/api/v1
 func (r *Routing) setRouting() {
 
 	authenticatesController := product.NewAuthenticatesController(r.Google)
@@ -204,10 +204,13 @@ func (r *Routing) setRouting() {
 		v1.POST("/users", func(ctx *gin.Context) {
 		})
 
-		// /*
-		//  * recipes ingredients
-		//  *
-		//  */
+		/*
+		 * recipes ingredients
+		 *
+		 */
+		v1.GET("/recipeIngredients", func(ctx *gin.Context) {
+			recipeIngredientsController.GetList(ctx)
+		})
 		// v1.POST("/recipeIngredients", func(ctx *gin.Context) {
 		// 	recipeIngredientsController.Post(ctx)
 		// })
