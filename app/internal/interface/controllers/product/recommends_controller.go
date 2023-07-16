@@ -15,8 +15,11 @@ type RecommendsController struct {
 func NewRecommendsController(db gateways.DB) *RecommendsController {
 	return &RecommendsController{
 		ChefInteractor: product.ChefInteractor{
-			DB:   &gateways.DBRepository{DB: db},
-			Chef: &repository.ChefRepository{},
+			DB:         &gateways.DBRepository{DB: db},
+			Chef:       &repository.ChefRepository{},
+			ChefFollow: &repository.ChefFollowRepository{},
+			ChefLink:   &repository.ChefLinkRepository{},
+			ChefRecipe: &repository.ChefRecipeRepository{},
 		},
 		RecipeInteractor: product.RecipeInteractor{
 			Chef:           &repository.ChefRepository{},
