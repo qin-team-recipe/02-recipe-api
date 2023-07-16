@@ -3,13 +3,14 @@ package product
 import (
 	"fmt"
 	"net/http"
-	"strconv"
 
+	"github.com/qin-team-recipe/02-recipe-api/constants"
 	"github.com/qin-team-recipe/02-recipe-api/internal/domain"
 	"github.com/qin-team-recipe/02-recipe-api/internal/interface/controllers"
 	"github.com/qin-team-recipe/02-recipe-api/internal/interface/gateways"
 	"github.com/qin-team-recipe/02-recipe-api/internal/interface/gateways/repository"
 	"github.com/qin-team-recipe/02-recipe-api/internal/usecase/interactor/product"
+	"github.com/qin-team-recipe/02-recipe-api/pkg/token"
 )
 
 type RecipeFavoritesController struct {
@@ -20,9 +21,12 @@ func NewRecipeFavoritesController(db gateways.DB) *RecipeFavoritesController {
 	return &RecipeFavoritesController{
 		Interactor: product.RecipeFavoriteInteractor{
 			DB:             &gateways.DBRepository{DB: db},
+			Chef:           &repository.ChefRepository{},
+			ChefRecipe:     &repository.ChefRecipeRepository{},
 			Recipe:         &repository.RecipeRepository{},
 			RecipeFavorite: &repository.RecipeFavoriteRepository{},
 			User:           &repository.UserRepository{},
+			UserRecipe:     &repository.UserRecipeRepository{},
 		},
 	}
 }
@@ -37,9 +41,9 @@ func NewRecipeFavoritesController(db gateways.DB) *RecipeFavoritesController {
 // @router			/recipeFavorites [get]
 func (rc *RecipeFavoritesController) GetList(ctx controllers.Context) {
 
-	userID, _ := strconv.Atoi(ctx.Query("user_id"))
+	authPayload := ctx.MustGet(constants.AuthorizationPayloadKey).(*token.Payload)
 
-	recipeFavorites, res := rc.Interactor.GetList(userID)
+	recipeFavorites, res := rc.Interactor.GetList(authPayload.Audience)
 	if res.Error != nil {
 		ctx.JSON(res.Code, controllers.NewH(res.Error.Error(), nil))
 		return

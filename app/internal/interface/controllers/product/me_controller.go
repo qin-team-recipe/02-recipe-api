@@ -82,7 +82,7 @@ func (mc *MeController) Get(ctx controllers.Context) {
 // @Param		social_user_account	body	domain.SocialUserAccount	true	"登録するGoogleアカウント"
 // @Success		200			{object}	controllers.H{data=product.UserResponse}
 // @Failure		400			{object}	controllers.H
-// @router		/me/register [get]
+// @router		/me/register [post]
 func (mc *MeController) Post(ctx controllers.Context) {
 
 	u := &domain.SocialUserAccount{}

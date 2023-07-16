@@ -14,9 +14,12 @@ import (
 
 type RecipeFavoriteInteractor struct {
 	DB             gateway.DBRepository
+	Chef           repository.ChefRepository
+	ChefRecipe     repository.ChefRecipeRepository
 	Recipe         repository.RecipeRepository
 	RecipeFavorite repository.RecipeFavoriteRepository
 	User           repository.UserRepository
+	UserRecipe     repository.UserRecipeRepository
 }
 
 func (ri *RecipeFavoriteInteractor) GetList(userID int) ([]*domain.RecipeFavoritesForGet, *usecase.ResultStatus) {
@@ -76,7 +79,10 @@ func (ri *RecipeFavoriteInteractor) buildList(db *gorm.DB, recipeFavorites []*do
 	builtRecipeFavorites := []*domain.RecipeFavoritesForGet{}
 
 	for _, recipeFavorite := range recipeFavorites {
-		builtRecipeFavorite, _ := ri.build(db, recipeFavorite)
+		builtRecipeFavorite, err := ri.build(db, recipeFavorite)
+		if err != nil {
+			continue
+		}
 
 		builtRecipeFavorites = append(builtRecipeFavorites, builtRecipeFavorite)
 	}
@@ -93,6 +99,25 @@ func (ri *RecipeFavoriteInteractor) build(db *gorm.DB, recipeFavorite *domain.Re
 	}
 
 	builtRecipeFavorite.Recipe = recipe.BuildForGet()
+
+	chefRecipe, err := ri.ChefRecipe.FirstByRecipeID(db, recipe.ID)
+	if err == nil {
+		chef, _ := ri.Chef.FirstByID(db, chefRecipe.ChefID)
+		builtRecipeFavorite.Recipe.Chef = chef.BuildForGet()
+	} else {
+		userRecipe, err := ri.UserRecipe.FirstByRecipeID(db, recipe.ID)
+		if err != nil {
+			return &domain.RecipeFavoritesForGet{}, err
+		}
+
+		user, err := ri.User.FirstByID(db, userRecipe.UserID)
+		if err != nil {
+			return &domain.RecipeFavoritesForGet{}, err
+		}
+		builtRecipeFavorite.Recipe.User = user.BuildForGet()
+	}
+
+	builtRecipeFavorite.Recipe.FavoritesCount = ri.RecipeFavorite.CountByRecipeID(db, recipe.ID)
 
 	return builtRecipeFavorite, nil
 }

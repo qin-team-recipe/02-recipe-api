@@ -3,13 +3,14 @@ package product
 import (
 	"fmt"
 	"net/http"
-	"strconv"
 
+	"github.com/qin-team-recipe/02-recipe-api/constants"
 	"github.com/qin-team-recipe/02-recipe-api/internal/domain"
 	"github.com/qin-team-recipe/02-recipe-api/internal/interface/controllers"
 	"github.com/qin-team-recipe/02-recipe-api/internal/interface/gateways"
 	"github.com/qin-team-recipe/02-recipe-api/internal/interface/gateways/repository"
 	"github.com/qin-team-recipe/02-recipe-api/internal/usecase/interactor/product"
+	"github.com/qin-team-recipe/02-recipe-api/pkg/token"
 )
 
 type ChefFollowsController struct {
@@ -37,9 +38,9 @@ func NewChefFollowsController(db gateways.DB) *ChefFollowsController {
 // @router			/chefFollows [get]
 func (cc *ChefFollowsController) GetList(ctx controllers.Context) {
 
-	userID, _ := strconv.Atoi(ctx.Query("user_id"))
+	authPayload := ctx.MustGet(constants.AuthorizationPayloadKey).(*token.Payload)
 
-	chefFollows, res := cc.Interactor.GetList(userID)
+	chefFollows, res := cc.Interactor.GetList(authPayload.Audience)
 	if res.Error != nil {
 		ctx.JSON(res.Code, controllers.NewH(res.Error.Error(), nil))
 		return
