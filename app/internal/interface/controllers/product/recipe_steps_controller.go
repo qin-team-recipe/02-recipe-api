@@ -3,6 +3,7 @@ package product
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/qin-team-recipe/02-recipe-api/internal/domain"
 	"github.com/qin-team-recipe/02-recipe-api/internal/interface/controllers"
@@ -24,6 +25,26 @@ func NewRecipeStepsController(db gateways.DB) *RecipeStepsController {
 		},
 	}
 }
+
+//	@summary		レシピの手順一覧を取得
+//	@description	レシピの手順一覧を取得するエンドポイント
+//	@tags			recipeSteps
+//	@accept			application/x-json-stream
+//	@param			recipe_id	query		int	true	"Recipe ID"
+//	@Success		200			{array}		domain.RecipeStepsForGet
+//	@Failure		404			{object}	usecase.ResultStatus
+//	@router			/recipeSteps [get]
+func (rc *RecipeStepsController) GetList(ctx controllers.Context) {
+	recipeID, _ := strconv.Atoi(ctx.Query("recipe_id"))
+
+	Items, res := rc.Interactor.GetList(recipeID)
+	if res.Error != nil {
+		ctx.JSON(res.Code, controllers.NewH(res.Error.Error(), nil))
+		return
+	}
+	ctx.JSON(res.Code, controllers.NewH("success", Items))
+}
+
 
 //	@summary		Regist recipe steps.
 //	@description	This API regist recipe steps and return this results data.

@@ -18,14 +18,17 @@ type ChefInteractor struct {
 
 func (ci *ChefInteractor) Create(chef *domain.Chefs) (*domain.Chefs, *usecase.ResultStatus) {
 	db := ci.DB.Connect()
+  
 	// TODO: 後で書き換える
 	chef.ScreenName = utils.RandomScreenNameID(10)
-
 	currentTime := time.Now().Unix()
 	chef.CreatedAt = currentTime
 	chef.UpdatedAt = currentTime
-
-	isDuplicate, err := ci.Chef.ExistsByScreenName(db, chef.ScreenName)
+  
+	isDuplicate, err := ci.Chef.ExistsByScreenName(db,chef.ScreenName)
+	if err != nil {
+		return &domain.Chefs{}, usecase.NewResultStatus(http.StatusBadRequest, err)
+	}
 
 	for isDuplicate {
 		if isDuplicate {

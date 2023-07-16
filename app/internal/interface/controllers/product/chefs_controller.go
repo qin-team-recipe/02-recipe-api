@@ -33,14 +33,14 @@ func NewChefsController(p ChefsControllerProvider) *ChefsController {
 	}
 }
 
-// @summary		Get chef list.
-// @description	This API return all chef list.
-// @tags			chef
-// @accept			application/x-json-stream
-// @param			q	query		string	true	"検索ワード"
-// @Success		200	{array}		domain.ChefsForGet
-// @Failure		404	{object}	usecase.ResultStatus
-// @router			/chefs [get]
+//	@summary		Get chef list.
+//	@description	This API return all chef list.
+//	@tags			chef
+//	@accept			application/x-json-stream
+//	@param			q	query		string	true	"検索ワード"
+//	@Success		200	{array}		domain.ChefsForGet
+//	@Failure		404	{object}	usecase.ResultStatus
+//	@router			/chefs [get]
 func (cc *ChefsController) GetList(ctx controllers.Context) {
 	q := ctx.Query("q")
 	cursor, _ := strconv.Atoi(ctx.Query("cursor"))
@@ -53,14 +53,14 @@ func (cc *ChefsController) GetList(ctx controllers.Context) {
 	ctx.JSON(res.Code, controllers.NewH("success", chefs))
 }
 
-// @summary		Get unique chef.
-// @description	This API return unique chef by screenName.
-// @tags			chef
-// @accept			application/x-json-stream
-// @param			screenName	path		string	true	"screenName"
-// @Success		200			{object}	domain.ChefsForGet
-// @Failure		404			{object}	usecase.ResultStatus
-// @router			/chefs/{screenName} [get]
+//	@summary		Get unique chef.
+//	@description	This API return unique chef by screenName.
+//	@tags			chef
+//	@accept			application/x-json-stream
+//	@param			screenName	path		string	true	"screenName"
+//	@Success		200			{object}	domain.ChefsForGet
+//	@Failure		404			{object}	usecase.ResultStatus
+//	@router			/chefs/{screenName} [get]
 func (cc *ChefsController) Get(ctx controllers.Context) {
 
 	token := ctx.GetHeader(constants.AuthorizationHeaderKey)
