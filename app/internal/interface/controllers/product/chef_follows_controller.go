@@ -28,14 +28,14 @@ func NewChefFollowsController(db gateways.DB) *ChefFollowsController {
 	}
 }
 
-// @summary		Get following chef list.
-// @description	This API return the list of following chefs by user.
-// @tags			chefFollows
-// @accept			application/x-json-stream
-// @param			user_id	query		int	true	"User ID"
-// @Success		200		{array}		domain.ChefFollowsForGet
-// @Failure		404		{object}	usecase.ResultStatus
-// @router			/chefFollows [get]
+//	@summary		Get following chef list.
+//	@description	This API return the list of following chefs by user.
+//	@tags			chefFollows
+//	@accept			application/x-json-stream
+//	@param			user_id	query		int	true	"User ID"
+//	@Success		200		{array}		domain.ChefFollowsForGet
+//	@Failure		404		{object}	usecase.ResultStatus
+//	@router			/chefFollows [get]
 func (cc *ChefFollowsController) GetList(ctx controllers.Context) {
 
 	authPayload := ctx.MustGet(constants.AuthorizationPayloadKey).(*token.Payload)
@@ -48,14 +48,14 @@ func (cc *ChefFollowsController) GetList(ctx controllers.Context) {
 	ctx.JSON(res.Code, controllers.NewH("success", chefFollows))
 }
 
-// @summary		ユーザーがシェフをフォロー登録
-// @description	シェフをフォロー登録する際のリクエスト
-// @tags		chefFollows
-// @accept		json
-// @Param		chefFollow body domain.ChefFollows true "user_id, chef_id は必須"
-// @Success		200			{object}	controllers.H{data=domain.ChefFollowsForGet}
-// @Failure		400			{object}	controllers.H
-// @router			/chefFollows [post]
+//	@summary		ユーザーがシェフをフォロー登録
+//	@description	シェフをフォロー登録する際のリクエスト
+//	@tags			chefFollows
+//	@accept			json
+//	@Param			chefFollow	body		domain.ChefFollows	true	"user_id, chef_id は必須"
+//	@Success		200			{object}	controllers.H{data=domain.ChefFollowsForGet}
+//	@Failure		400			{object}	controllers.H
+//	@router			/chefFollows [post]
 func (cc *ChefFollowsController) Post(ctx controllers.Context) {
 
 	f := &domain.ChefFollows{}
@@ -74,14 +74,14 @@ func (cc *ChefFollowsController) Post(ctx controllers.Context) {
 	ctx.JSON(res.Code, controllers.NewH("success", follow))
 }
 
-// @summary		ユーザーがシェフをフォロー解除
-// @description	シェフをフォロー解除する際のリクエスト
-// @tags		chefFollows
-// @accept		json
-// @Param		chefFollow body domain.ChefFollows true "user_id, chef_id は必須"
-// @Success		200			{object}	controllers.H
-// @Failure		400			{object}	controllers.H
-// @router			/chefFollows [delete]
+//	@summary		ユーザーがシェフをフォロー解除
+//	@description	シェフをフォロー解除する際のリクエスト
+//	@tags			chefFollows
+//	@accept			json
+//	@Param			chefFollow	body		domain.ChefFollows	true	"user_id, chef_id は必須"
+//	@Success		200			{object}	controllers.H
+//	@Failure		400			{object}	controllers.H
+//	@router			/chefFollows [delete]
 func (cc *ChefFollowsController) Delete(ctx controllers.Context) {
 	f := &domain.ChefFollows{}
 

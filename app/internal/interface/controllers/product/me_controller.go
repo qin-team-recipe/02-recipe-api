@@ -39,11 +39,11 @@ func NewMeController(p MeControllerProvider) *MeController {
 
 // @summary		ユーザーログイン
 // @description	ユーザーログインのエンドポイント
-// @tags		me
-// @Param		service_user_id	query	string	true	"GoogleアカウントのユーザーID"
-// @Success		200			{object}	controllers.H{data=product.UserResponse}
-// @Failure		400			{object}	controllers.H
-// @router		/self/login [get]
+// @tags			me
+// @Param			service_user_id	query		string	true	"GoogleアカウントのユーザーID"
+// @Success		200				{object}	controllers.H{data=product.UserResponse}
+// @Failure		400				{object}	controllers.H
+// @router			/self/login [get]
 func (mc *MeController) LoginUser(ctx controllers.Context) {
 
 	serviceUserID := ctx.Query("service_user_id")
@@ -58,10 +58,10 @@ func (mc *MeController) LoginUser(ctx controllers.Context) {
 
 // @summary		ユーザー情報の取得
 // @description	ユーザー情報の取得のエンドポイント
-// @tags		me
-// @Success		200			{object}	controllers.H{data=domain.Users}
-// @Failure		400			{object}	controllers.H
-// @router		/me [get]
+// @tags			me
+// @Success		200	{object}	controllers.H{data=domain.Users}
+// @Failure		400	{object}	controllers.H
+// @router			/me [get]
 func (mc *MeController) Get(ctx controllers.Context) {
 	authPayload := ctx.MustGet("authorization_payload").(*token.Payload)
 	// authToken := ctx.GetHeader("authorization")
@@ -101,11 +101,11 @@ func (mc *MeController) Post(ctx controllers.Context) {
 
 // @summary		ユーザー情報の変更
 // @description	ユーザー情報の変更のエンドポイント
-// @tags		me
-// @Param		user body domain.Users true "変更したユーザー情報"
-// @Success		200			{object}	controllers.H
-// @Failure		400			{object}	controllers.H
-// @router		/me [delete]
+// @tags			me
+// @Param			user	body		domain.Users	true	"変更したユーザー情報"
+// @Success		200		{object}	controllers.H
+// @Failure		400		{object}	controllers.H
+// @router			/me [patch]
 func (mc *MeController) Patch(ctx controllers.Context) {
 
 	u := &domain.Users{}
@@ -125,10 +125,10 @@ func (mc *MeController) Patch(ctx controllers.Context) {
 
 // @summary		ユーザーアカウントの削除
 // @description	ユーザーアカウントの削除のエンドポイント
-// @tags		me
-// @Success		200			{object}	controllers.H
-// @Failure		400			{object}	controllers.H
-// @router		/me [delete]
+// @tags			me
+// @Success		200	{object}	controllers.H
+// @Failure		400	{object}	controllers.H
+// @router			/me [delete]
 func (mc *MeController) Delete(ctx controllers.Context) {
 
 	authToken := ctx.GetHeader("authorization")

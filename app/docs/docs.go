@@ -512,6 +512,42 @@ const docTemplate = `{
             }
         },
         "/recipeIngredients": {
+            "get": {
+                "description": "レシピの材料一覧を取得するエンドポイント",
+                "consumes": [
+                    "application/x-json-stream"
+                ],
+                "tags": [
+                    "recipeIngredients"
+                ],
+                "summary": "レシピの材料一覧を取得",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Recipe ID",
+                        "name": "recipe_id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/domain.RecipeIngredientsForGet"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.ResultStatus"
+                        }
+                    }
+                }
+            },
             "post": {
                 "description": "This API regist recipe ingredients and return this results data.",
                 "consumes": [
@@ -602,6 +638,42 @@ const docTemplate = `{
             }
         },
         "/recipeSteps": {
+            "get": {
+                "description": "レシピの手順一覧を取得するエンドポイント",
+                "consumes": [
+                    "application/x-json-stream"
+                ],
+                "tags": [
+                    "recipeSteps"
+                ],
+                "summary": "レシピの手順一覧を取得",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Recipe ID",
+                        "name": "recipe_id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/domain.RecipeStepsForGet"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.ResultStatus"
+                        }
+                    }
+                }
+            },
             "post": {
                 "description": "This API regist recipe steps and return this results data.",
                 "consumes": [
@@ -1358,7 +1430,7 @@ const docTemplate = `{
                 "description": {
                     "type": "string"
                 },
-                "facorites_count": {
+                "favorites_count": {
                     "type": "integer"
                 },
                 "id": {
