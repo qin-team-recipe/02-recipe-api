@@ -3,6 +3,7 @@ package product
 import (
 	"errors"
 	"net/http"
+	"sort"
 
 	"github.com/qin-team-recipe/02-recipe-api/internal/domain"
 	"github.com/qin-team-recipe/02-recipe-api/internal/usecase"
@@ -13,6 +14,7 @@ import (
 
 type RecipeInteractor struct {
 	Chef           repository.ChefRepository
+	ChefFollow     repository.ChefFollowRepository
 	ChefRecipe     repository.ChefRecipeRepository
 	DB             gateway.DBRepository
 	RecipeFavorite repository.RecipeFavoriteRepository
@@ -33,6 +35,41 @@ func (ri *RecipeInteractor) GetList(userID int, q string) ([]*domain.RecipesForG
 	builtRecipe, _ := ri.buildList(db, recipes)
 
 	return builtRecipe, usecase.NewResultStatus(http.StatusOK, nil)
+}
+
+func (ri *RecipeInteractor) GetLatestRecipesFromChefsFollows(userID int) ([]*domain.RecipesForGet, *usecase.ResultStatus) {
+
+	db := ri.DB.Connect()
+
+	chefFollows, err := ri.ChefFollow.FindByUserID(db, userID)
+	if err != nil {
+		return []*domain.RecipesForGet{}, usecase.NewResultStatus(http.StatusBadRequest, err)
+	}
+
+	followIDs := []int{}
+	for _, chefFollow := range chefFollows {
+		followIDs = append(followIDs, chefFollow.ChefID)
+	}
+
+	chefRecipes, err := ri.ChefRecipe.FindInByChefIDs(db, followIDs)
+	if err != nil {
+		return []*domain.RecipesForGet{}, usecase.NewResultStatus(http.StatusBadRequest, err)
+	}
+
+	recipeIDs := []int{}
+	for _, chefRecipe := range chefRecipes {
+		recipeIDs = append(followIDs, chefRecipe.RecipeID)
+	}
+
+	recipes, err := ri.Recipe.FindInRecipeIDs(db, recipeIDs)
+	if err != nil {
+		return []*domain.RecipesForGet{}, usecase.NewResultStatus(http.StatusBadRequest, err)
+	}
+
+	sort.Slice(recipes, func(i, j int) bool { return recipes[i].CreatedAt > recipes[j].CreatedAt })
+
+	builtRecipes, _ := ri.buildList(db, recipes)
+	return builtRecipes, usecase.NewResultStatus(http.StatusOK, nil)
 }
 
 // 注目のレシピのリストを取得

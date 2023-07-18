@@ -21,6 +21,7 @@ func NewRecipesController(db gateways.DB) *RecipesController {
 	return &RecipesController{
 		Interactor: product.RecipeInteractor{
 			Chef:           &repository.ChefRepository{},
+			ChefFollow:     &repository.ChefFollowRepository{},
 			ChefRecipe:     &repository.ChefRecipeRepository{},
 			DB:             &gateways.DBRepository{DB: db},
 			Recipe:         &repository.RecipeRepository{},
@@ -31,7 +32,20 @@ func NewRecipesController(db gateways.DB) *RecipesController {
 	}
 }
 
+// @summary		レシピリストの取得
+// @description	レシピリストを取得する
+// @tags			recipes
+// @Param			type	query		string	true	"type=chefFollowとすることでフォローしているシェフの情報を取得する"
+// @Success		200		{object}	controllers.H
+// @Failure		400		{object}	controllers.H
+// @router			/recipes [get]
 func (rc *RecipesController) GetList(ctx controllers.Context, jwt token.Maker) {
+
+	ty := ctx.Query("type")
+	if ty == "chefFollow" {
+		rc.getLatestRecipesFromChefsFollows(ctx, jwt)
+		return
+	}
 
 	authToken := ctx.GetHeader(constants.AuthorizationHeaderKey)
 
@@ -54,9 +68,40 @@ func (rc *RecipesController) GetList(ctx controllers.Context, jwt token.Maker) {
 		return
 	}
 	ctx.JSON(res.Code, controllers.NewH("success", recipes))
-
 }
 
+func (rc *RecipesController) getLatestRecipesFromChefsFollows(ctx controllers.Context, jwt token.Maker) {
+	authToken := ctx.GetHeader(constants.AuthorizationHeaderKey)
+
+	userID := 0
+
+	if authToken != "" {
+		payload, err := jwt.VerifyJwtToken(authToken)
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, controllers.NewH(fmt.Sprintf("failed verify jwt: %s", err.Error()), nil))
+			return
+		}
+		userID = payload.Audience
+	} else {
+		ctx.JSON(http.StatusForbidden, controllers.NewH("auth token not empty", nil))
+		return
+	}
+
+	recipes, res := rc.Interactor.GetLatestRecipesFromChefsFollows(userID)
+	if res.Error != nil {
+		ctx.JSON(res.Code, controllers.NewH(res.Error.Error(), nil))
+		return
+	}
+	ctx.JSON(res.Code, controllers.NewH("success", recipes))
+}
+
+// @summary		レシピ情報の取得
+// @description	レシピ情報を取得する
+// @tags			recipes
+// @Param			id	path		string	true	"レシピのPK"
+// @Success		200		{object}	controllers.H
+// @Failure		400		{object}	controllers.H
+// @router			/recipes/{id} [get]
 func (rc *RecipesController) Get(ctx controllers.Context) {
 
 	id, _ := strconv.Atoi(ctx.Param("id"))

@@ -343,10 +343,42 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "patch": {
+                "description": "ユーザー情報の変更のエンドポイント",
+                "tags": [
+                    "me"
+                ],
+                "summary": "ユーザー情報の変更",
+                "parameters": [
+                    {
+                        "description": "変更したユーザー情報",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.Users"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.H"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.H"
+                        }
+                    }
+                }
             }
         },
         "/me/register": {
-            "get": {
+            "post": {
                 "description": "ユーザー新規登録のエンドポイント",
                 "tags": [
                     "me"
@@ -729,28 +761,63 @@ const docTemplate = `{
         },
         "/recipes": {
             "get": {
-                "description": "This API return all recipe list.",
-                "consumes": [
-                    "application/x-json-stream"
-                ],
+                "description": "レシピリストを取得する",
                 "tags": [
                     "recipes"
                 ],
-                "summary": "Get recipe list.",
+                "summary": "レシピリストの取得",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "type=chefFollowとすることでフォローしているシェフの情報を取得する",
+                        "name": "type",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/domain.RecipesForGet"
-                            }
+                            "$ref": "#/definitions/controllers.H"
                         }
                     },
-                    "404": {
-                        "description": "Not Found",
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/usecase.ResultStatus"
+                            "$ref": "#/definitions/controllers.H"
+                        }
+                    }
+                }
+            }
+        },
+        "/recipes/{id}": {
+            "get": {
+                "description": "レシピ情報を取得する",
+                "tags": [
+                    "recipes"
+                ],
+                "summary": "レシピ情報の取得",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "レシピのPK",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.H"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.H"
                         }
                     }
                 }
@@ -1314,16 +1381,48 @@ const docTemplate = `{
                 }
             }
         },
+        "domain.ChefLinksForGet": {
+            "type": "object",
+            "properties": {
+                "chef_id": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "service_name": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
+                }
+            }
+        },
         "domain.ChefsForGet": {
             "type": "object",
             "properties": {
+                "chef_links": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/domain.ChefLinksForGet"
+                    }
+                },
                 "description": {
                     "type": "string"
                 },
                 "display_name": {
                     "type": "string"
                 },
+                "follows_count": {
+                    "type": "integer"
+                },
                 "id": {
+                    "type": "integer"
+                },
+                "is_following": {
+                    "type": "boolean"
+                },
+                "recipes_count": {
                     "type": "integer"
                 },
                 "screen_name": {
