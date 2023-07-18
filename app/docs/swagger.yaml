@@ -20,7 +20,7 @@ definitions:
   domain.ChefFollowsForGet:
     properties:
       chef:
-        $ref: "#/definitions/domain.ChefsForGet"
+        $ref: '#/definitions/domain.ChefsForGet'
       chef_id:
         type: integer
       id:
@@ -28,13 +28,34 @@ definitions:
       user_id:
         type: integer
     type: object
+  domain.ChefLinksForGet:
+    properties:
+      chef_id:
+        type: integer
+      id:
+        type: integer
+      service_name:
+        type: string
+      url:
+        type: string
+    type: object
   domain.ChefsForGet:
     properties:
+      chef_links:
+        items:
+          $ref: '#/definitions/domain.ChefLinksForGet'
+        type: array
       description:
         type: string
       display_name:
         type: string
+      follows_count:
+        type: integer
       id:
+        type: integer
+      is_following:
+        type: boolean
+      recipes_count:
         type: integer
       screen_name:
         type: string
@@ -55,7 +76,7 @@ definitions:
       id:
         type: integer
       recipe:
-        $ref: "#/definitions/domain.RecipesForGet"
+        $ref: '#/definitions/domain.RecipesForGet'
       recipe_id:
         type: integer
       user_id:
@@ -98,7 +119,7 @@ definitions:
     properties:
       chef:
         allOf:
-          - $ref: "#/definitions/domain.ChefsForGet"
+        - $ref: '#/definitions/domain.ChefsForGet'
         description: この値はどちらかが入る
       description:
         type: string
@@ -113,7 +134,7 @@ definitions:
       title:
         type: string
       user:
-        $ref: "#/definitions/domain.UsersForGet"
+        $ref: '#/definitions/domain.UsersForGet'
     type: object
   domain.ShoppingItemsForGet:
     properties:
@@ -122,7 +143,7 @@ definitions:
       is_done:
         type: boolean
       recipe_ingredient:
-        $ref: "#/definitions/domain.RecipeIngredientsForGet"
+        $ref: '#/definitions/domain.RecipeIngredientsForGet'
       recipe_ingredient_id:
         type: integer
       user_id:
@@ -144,7 +165,7 @@ definitions:
       id:
         type: integer
       recipe:
-        $ref: "#/definitions/domain.RecipesForGet"
+        $ref: '#/definitions/domain.RecipesForGet'
       recipe_id:
         type: integer
       user_id:
@@ -163,7 +184,7 @@ definitions:
       user_id:
         type: integer
     required:
-      - title
+    - title
     type: object
   domain.Users:
     properties:
@@ -203,7 +224,7 @@ definitions:
       token:
         type: string
       user:
-        $ref: "#/definitions/domain.UsersForGet"
+        $ref: '#/definitions/domain.UsersForGet'
     type: object
   usecase.ResultStatus:
     properties:
@@ -227,168 +248,168 @@ paths:
           description: OK
           schema:
             allOf:
-              - $ref: "#/definitions/controllers.H"
-              - properties:
-                  data:
-                    $ref: "#/definitions/product.AuthenticateResponse"
-                type: object
+            - $ref: '#/definitions/controllers.H'
+            - properties:
+                data:
+                  $ref: '#/definitions/product.AuthenticateResponse'
+              type: object
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/controllers.H"
+            $ref: '#/definitions/controllers.H'
       summary: GoogleアカウントログインURLの取得.
       tags:
-        - authenticates
+      - authenticates
   /authenticates/google/userinfo:
     get:
       description: Googleアカウントログイン認証に成功すればアカウント情報を取得する.
       parameters:
-        - description: Googleから返却される署名（code）
-          in: query
-          name: code
-          required: true
-          type: string
+      - description: Googleから返却される署名（code）
+        in: query
+        name: code
+        required: true
+        type: string
       responses:
         "200":
           description: OK
           schema:
             allOf:
-              - $ref: "#/definitions/controllers.H"
-              - properties:
-                  data:
-                    $ref: "#/definitions/domain.SocialUserAccount"
-                type: object
+            - $ref: '#/definitions/controllers.H'
+            - properties:
+                data:
+                  $ref: '#/definitions/domain.SocialUserAccount'
+              type: object
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/controllers.H"
+            $ref: '#/definitions/controllers.H'
       summary: Googleアカウント情報の取得.
       tags:
-        - authenticates
+      - authenticates
   /chefFollows:
     delete:
       consumes:
-        - application/json
+      - application/json
       description: シェフをフォロー解除する際のリクエスト
       parameters:
-        - description: user_id, chef_id は必須
-          in: body
-          name: chefFollow
-          required: true
-          schema:
-            $ref: "#/definitions/domain.ChefFollows"
+      - description: user_id, chef_id は必須
+        in: body
+        name: chefFollow
+        required: true
+        schema:
+          $ref: '#/definitions/domain.ChefFollows'
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/controllers.H"
+            $ref: '#/definitions/controllers.H'
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/controllers.H"
+            $ref: '#/definitions/controllers.H'
       summary: ユーザーがシェフをフォロー解除
       tags:
-        - chefFollows
+      - chefFollows
     get:
       consumes:
-        - application/x-json-stream
+      - application/x-json-stream
       description: This API return the list of following chefs by user.
       parameters:
-        - description: User ID
-          in: query
-          name: user_id
-          required: true
-          type: integer
+      - description: User ID
+        in: query
+        name: user_id
+        required: true
+        type: integer
       responses:
         "200":
           description: OK
           schema:
             items:
-              $ref: "#/definitions/domain.ChefFollowsForGet"
+              $ref: '#/definitions/domain.ChefFollowsForGet'
             type: array
         "404":
           description: Not Found
           schema:
-            $ref: "#/definitions/usecase.ResultStatus"
+            $ref: '#/definitions/usecase.ResultStatus'
       summary: Get following chef list.
       tags:
-        - chefFollows
+      - chefFollows
     post:
       consumes:
-        - application/json
+      - application/json
       description: シェフをフォロー登録する際のリクエスト
       parameters:
-        - description: user_id, chef_id は必須
-          in: body
-          name: chefFollow
-          required: true
-          schema:
-            $ref: "#/definitions/domain.ChefFollows"
+      - description: user_id, chef_id は必須
+        in: body
+        name: chefFollow
+        required: true
+        schema:
+          $ref: '#/definitions/domain.ChefFollows'
       responses:
         "200":
           description: OK
           schema:
             allOf:
-              - $ref: "#/definitions/controllers.H"
-              - properties:
-                  data:
-                    $ref: "#/definitions/domain.ChefFollowsForGet"
-                type: object
+            - $ref: '#/definitions/controllers.H'
+            - properties:
+                data:
+                  $ref: '#/definitions/domain.ChefFollowsForGet'
+              type: object
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/controllers.H"
+            $ref: '#/definitions/controllers.H'
       summary: ユーザーがシェフをフォロー登録
       tags:
-        - chefFollows
+      - chefFollows
   /chefs:
     get:
       consumes:
-        - application/x-json-stream
+      - application/x-json-stream
       description: This API return all chef list.
       parameters:
-        - description: 検索ワード
-          in: query
-          name: q
-          required: true
-          type: string
+      - description: 検索ワード
+        in: query
+        name: q
+        required: true
+        type: string
       responses:
         "200":
           description: OK
           schema:
             items:
-              $ref: "#/definitions/domain.ChefsForGet"
+              $ref: '#/definitions/domain.ChefsForGet'
             type: array
         "404":
           description: Not Found
           schema:
-            $ref: "#/definitions/usecase.ResultStatus"
+            $ref: '#/definitions/usecase.ResultStatus'
       summary: Get chef list.
       tags:
-        - chef
+      - chef
   /chefs/{screenName}:
     get:
       consumes:
-        - application/x-json-stream
+      - application/x-json-stream
       description: This API return unique chef by screenName.
       parameters:
-        - description: screenName
-          in: path
-          name: screenName
-          required: true
-          type: string
+      - description: screenName
+        in: path
+        name: screenName
+        required: true
+        type: string
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/domain.ChefsForGet"
+            $ref: '#/definitions/domain.ChefsForGet'
         "404":
           description: Not Found
           schema:
-            $ref: "#/definitions/usecase.ResultStatus"
+            $ref: '#/definitions/usecase.ResultStatus'
       summary: Get unique chef.
       tags:
-        - chef
+      - chef
   /me:
     delete:
       description: ユーザーアカウントの削除のエンドポイント
@@ -396,14 +417,14 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/controllers.H"
+            $ref: '#/definitions/controllers.H'
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/controllers.H"
+            $ref: '#/definitions/controllers.H'
       summary: ユーザーアカウントの削除
       tags:
-        - me
+      - me
     get:
       description: ユーザー情報の取得のエンドポイント
       responses:
@@ -411,394 +432,437 @@ paths:
           description: OK
           schema:
             allOf:
-              - $ref: "#/definitions/controllers.H"
-              - properties:
-                  data:
-                    $ref: "#/definitions/domain.Users"
-                type: object
+            - $ref: '#/definitions/controllers.H'
+            - properties:
+                data:
+                  $ref: '#/definitions/domain.Users'
+              type: object
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/controllers.H"
+            $ref: '#/definitions/controllers.H'
       summary: ユーザー情報の取得
       tags:
-        - me
+      - me
+    patch:
+      description: ユーザー情報の変更のエンドポイント
+      parameters:
+      - description: 変更したユーザー情報
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/domain.Users'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.H'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.H'
+      summary: ユーザー情報の変更
+      tags:
+      - me
   /me/register:
-    get:
+    post:
       description: ユーザー新規登録のエンドポイント
       parameters:
-        - description: 登録するGoogleアカウント
-          in: body
-          name: social_user_account
-          required: true
-          schema:
-            $ref: "#/definitions/domain.SocialUserAccount"
+      - description: 登録するGoogleアカウント
+        in: body
+        name: social_user_account
+        required: true
+        schema:
+          $ref: '#/definitions/domain.SocialUserAccount'
       responses:
         "200":
           description: OK
           schema:
             allOf:
-              - $ref: "#/definitions/controllers.H"
-              - properties:
-                  data:
-                    $ref: "#/definitions/product.UserResponse"
-                type: object
+            - $ref: '#/definitions/controllers.H'
+            - properties:
+                data:
+                  $ref: '#/definitions/product.UserResponse'
+              type: object
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/controllers.H"
+            $ref: '#/definitions/controllers.H'
       summary: ユーザー新規登録
       tags:
-        - me
+      - me
   /recipeFavorites:
     delete:
       consumes:
-        - application/json
+      - application/json
       description: レシピをお気に入り解除する際のリクエスト
       parameters:
-        - description: user_id, recipe_id は必須
-          in: body
-          name: recipeFavorite
-          required: true
-          schema:
-            $ref: "#/definitions/domain.RecipeFavorites"
+      - description: user_id, recipe_id は必須
+        in: body
+        name: recipeFavorite
+        required: true
+        schema:
+          $ref: '#/definitions/domain.RecipeFavorites'
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/controllers.H"
+            $ref: '#/definitions/controllers.H'
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/controllers.H"
+            $ref: '#/definitions/controllers.H'
       summary: ユーザーがレシピをお気に入り解除
       tags:
-        - recipeFavorites
+      - recipeFavorites
     get:
       consumes:
-        - application/x-json-stream
+      - application/x-json-stream
       description: This API return list of recipes of favorite.
       parameters:
-        - description: User ID
-          in: query
-          name: user_id
-          required: true
-          type: integer
+      - description: User ID
+        in: query
+        name: user_id
+        required: true
+        type: integer
       responses:
         "200":
           description: OK
           schema:
             items:
-              $ref: "#/definitions/domain.RecipeFavoritesForGet"
+              $ref: '#/definitions/domain.RecipeFavoritesForGet'
             type: array
         "404":
           description: Not Found
           schema:
-            $ref: "#/definitions/usecase.ResultStatus"
+            $ref: '#/definitions/usecase.ResultStatus'
       summary: Get list of recipes of favorite.
       tags:
-        - recipeFavorites
+      - recipeFavorites
     post:
       consumes:
-        - application/json
+      - application/json
       description: レシピをお気に入り登録する際のリクエスト
       parameters:
-        - description: user_id, recipe_id は必須
-          in: body
-          name: recipeFavorite
-          required: true
-          schema:
-            $ref: "#/definitions/domain.RecipeFavorites"
+      - description: user_id, recipe_id は必須
+        in: body
+        name: recipeFavorite
+        required: true
+        schema:
+          $ref: '#/definitions/domain.RecipeFavorites'
       responses:
         "200":
           description: OK
           schema:
             allOf:
-              - $ref: "#/definitions/controllers.H"
-              - properties:
-                  data:
-                    $ref: "#/definitions/domain.RecipeFavoritesForGet"
-                type: object
+            - $ref: '#/definitions/controllers.H'
+            - properties:
+                data:
+                  $ref: '#/definitions/domain.RecipeFavoritesForGet'
+              type: object
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/controllers.H"
+            $ref: '#/definitions/controllers.H'
       summary: ユーザーがレシピをお気に入り登録
       tags:
-        - recipeFavorites
+      - recipeFavorites
   /recipeIngredients:
     get:
       consumes:
-        - application/x-json-stream
+      - application/x-json-stream
       description: レシピの材料一覧を取得するエンドポイント
       parameters:
-        - description: Recipe ID
-          in: query
-          name: recipe_id
-          required: true
-          type: integer
+      - description: Recipe ID
+        in: query
+        name: recipe_id
+        required: true
+        type: integer
       responses:
         "200":
           description: OK
           schema:
             items:
-              $ref: "#/definitions/domain.RecipeIngredientsForGet"
+              $ref: '#/definitions/domain.RecipeIngredientsForGet'
             type: array
         "404":
           description: Not Found
           schema:
-            $ref: "#/definitions/usecase.ResultStatus"
+            $ref: '#/definitions/usecase.ResultStatus'
       summary: レシピの材料一覧を取得
       tags:
-        - recipeIngredients
+      - recipeIngredients
     post:
       consumes:
-        - application/x-json-stream
+      - application/x-json-stream
       description: This API regist recipe ingredients and return this results data.
       parameters:
-        - description: RecipeID
-          in: formData
-          name: recipe_id
-          required: true
-          type: integer
-        - description: Name
-          in: formData
-          name: name
-          required: true
-          type: string
-        - description: Description
-          in: formData
-          name: description
-          type: string
+      - description: RecipeID
+        in: formData
+        name: recipe_id
+        required: true
+        type: integer
+      - description: Name
+        in: formData
+        name: name
+        required: true
+        type: string
+      - description: Description
+        in: formData
+        name: description
+        type: string
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/domain.RecipeIngredientsForGet"
+            $ref: '#/definitions/domain.RecipeIngredientsForGet'
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/usecase.ResultStatus"
+            $ref: '#/definitions/usecase.ResultStatus'
       summary: Regist recipe ingredients.
       tags:
-        - recipeIngredients
+      - recipeIngredients
   /recipeLinks:
     post:
       consumes:
-        - application/x-json-stream
+      - application/x-json-stream
       description: This API regist recipe links and return this results data.
       parameters:
-        - description: Recipe ID
-          in: formData
-          name: recipe_id
-          required: true
-          type: integer
-        - description: URL
-          in: formData
-          name: url
-          required: true
-          type: string
+      - description: Recipe ID
+        in: formData
+        name: recipe_id
+        required: true
+        type: integer
+      - description: URL
+        in: formData
+        name: url
+        required: true
+        type: string
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/domain.RecipeLinksForGet"
+            $ref: '#/definitions/domain.RecipeLinksForGet'
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/usecase.ResultStatus"
+            $ref: '#/definitions/usecase.ResultStatus'
       summary: Regist recipe links.
       tags:
-        - recipeLinks
+      - recipeLinks
   /recipeSteps:
     get:
       consumes:
-        - application/x-json-stream
+      - application/x-json-stream
       description: レシピの手順一覧を取得するエンドポイント
       parameters:
-        - description: Recipe ID
-          in: query
-          name: recipe_id
-          required: true
-          type: integer
+      - description: Recipe ID
+        in: query
+        name: recipe_id
+        required: true
+        type: integer
       responses:
         "200":
           description: OK
           schema:
             items:
-              $ref: "#/definitions/domain.RecipeStepsForGet"
+              $ref: '#/definitions/domain.RecipeStepsForGet'
             type: array
         "404":
           description: Not Found
           schema:
-            $ref: "#/definitions/usecase.ResultStatus"
+            $ref: '#/definitions/usecase.ResultStatus'
       summary: レシピの手順一覧を取得
       tags:
-        - recipeSteps
+      - recipeSteps
     post:
       consumes:
-        - application/x-json-stream
+      - application/x-json-stream
       description: This API regist recipe steps and return this results data.
       parameters:
-        - description: Recipe ID
-          in: formData
-          name: recipe_id
-          required: true
-          type: integer
-        - description: Title
-          in: formData
-          name: title
-          required: true
-          type: string
-        - description: Description
-          in: formData
-          name: description
-          type: string
-        - description: Step Number
-          in: formData
-          name: step_number
-          type: integer
+      - description: Recipe ID
+        in: formData
+        name: recipe_id
+        required: true
+        type: integer
+      - description: Title
+        in: formData
+        name: title
+        required: true
+        type: string
+      - description: Description
+        in: formData
+        name: description
+        type: string
+      - description: Step Number
+        in: formData
+        name: step_number
+        type: integer
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/domain.RecipeStepsForGet"
+            $ref: '#/definitions/domain.RecipeStepsForGet'
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/usecase.ResultStatus"
+            $ref: '#/definitions/usecase.ResultStatus'
       summary: Regist recipe steps.
       tags:
-        - recipeSteps
+      - recipeSteps
   /recipes:
     get:
-      consumes:
-        - application/x-json-stream
-      description: This API return all recipe list.
+      description: レシピリストを取得する
+      parameters:
+      - description: type=chefFollowとすることでフォローしているシェフの情報を取得する
+        in: query
+        name: type
+        required: true
+        type: string
       responses:
         "200":
           description: OK
           schema:
-            items:
-              $ref: "#/definitions/domain.RecipesForGet"
-            type: array
-        "404":
-          description: Not Found
+            $ref: '#/definitions/controllers.H'
+        "400":
+          description: Bad Request
           schema:
-            $ref: "#/definitions/usecase.ResultStatus"
-      summary: Get recipe list.
+            $ref: '#/definitions/controllers.H'
+      summary: レシピリストの取得
       tags:
-        - recipes
+      - recipes
+  /recipes/{id}:
+    get:
+      description: レシピ情報を取得する
+      parameters:
+      - description: レシピのPK
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.H'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.H'
+      summary: レシピ情報の取得
+      tags:
+      - recipes
   /recommend/recipes:
     get:
       consumes:
-        - application/x-json-stream
+      - application/x-json-stream
       description: 過去3日間でお気に入り登録の多かったレシピを取得
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/domain.RecipesForGet"
+            $ref: '#/definitions/domain.RecipesForGet'
         "404":
           description: Not Found
           schema:
-            $ref: "#/definitions/usecase.ResultStatus"
+            $ref: '#/definitions/usecase.ResultStatus'
       summary: 話題のレシピ
       tags:
-        - recommend
+      - recommend
   /self/login:
     get:
       description: ユーザーログインのエンドポイント
       parameters:
-        - description: GoogleアカウントのユーザーID
-          in: query
-          name: service_user_id
-          required: true
-          type: string
+      - description: GoogleアカウントのユーザーID
+        in: query
+        name: service_user_id
+        required: true
+        type: string
       responses:
         "200":
           description: OK
           schema:
             allOf:
-              - $ref: "#/definitions/controllers.H"
-              - properties:
-                  data:
-                    $ref: "#/definitions/product.UserResponse"
-                type: object
+            - $ref: '#/definitions/controllers.H'
+            - properties:
+                data:
+                  $ref: '#/definitions/product.UserResponse'
+              type: object
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/controllers.H"
+            $ref: '#/definitions/controllers.H'
       summary: ユーザーログイン
       tags:
-        - me
+      - me
   /shoppingItems:
     get:
       consumes:
-        - application/x-json-stream
+      - application/x-json-stream
       description: This API return list of recipes shopping items by Recipe ID.
       parameters:
-        - description: Recipe ID
-          in: query
-          name: recipe_id
-          required: true
-          type: integer
+      - description: Recipe ID
+        in: query
+        name: recipe_id
+        required: true
+        type: integer
       responses:
         "200":
           description: OK
           schema:
             items:
-              $ref: "#/definitions/domain.ShoppingItemsForGet"
+              $ref: '#/definitions/domain.ShoppingItemsForGet'
             type: array
         "404":
           description: Not Found
           schema:
-            $ref: "#/definitions/usecase.ResultStatus"
+            $ref: '#/definitions/usecase.ResultStatus'
       summary: Get recipes shopping items.
       tags:
-        - shoppingItems
+      - shoppingItems
     post:
       consumes:
-        - application/x-json-stream
-      description:
-        This API regist shopping items at recipe and return this results
+      - application/x-json-stream
+      description: This API regist shopping items at recipe and return this results
         data.
       parameters:
-        - description: User ID
-          in: formData
-          name: user_id
-          type: integer
-        - description: Recipe Ingredient ID
-          in: formData
-          name: recipe_ingredient_id
-          type: integer
-        - description: IsDone
-          in: formData
-          name: id_done
-          type: boolean
+      - description: User ID
+        in: formData
+        name: user_id
+        type: integer
+      - description: Recipe Ingredient ID
+        in: formData
+        name: recipe_ingredient_id
+        type: integer
+      - description: IsDone
+        in: formData
+        name: id_done
+        type: boolean
       responses:
         "202":
           description: Accepted
           schema:
-            $ref: "#/definitions/domain.ShoppingItemsForGet"
+            $ref: '#/definitions/domain.ShoppingItemsForGet'
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/usecase.ResultStatus"
+            $ref: '#/definitions/usecase.ResultStatus'
       summary: Regist recipes shopping items.
       tags:
-        - shoppingItems
+      - shoppingItems
   /shoppingItems/{id}:
     delete:
       consumes:
-        - application/x-json-stream
+      - application/x-json-stream
       description: This API delete shopping items.
       parameters:
-        - description: ID
-          in: path
-          name: id
-          required: true
-          type: string
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
       responses:
         "200":
           description: OK
@@ -807,157 +871,155 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/usecase.ResultStatus"
+            $ref: '#/definitions/usecase.ResultStatus'
       summary: Delete shopping items.
       tags:
-        - shoppingItems
+      - shoppingItems
     patch:
       consumes:
-        - application/x-json-stream
-      description:
-        This API update state of done at shopping items and return this
+      - application/x-json-stream
+      description: This API update state of done at shopping items and return this
         results data.
       parameters:
-        - description: ID
-          in: path
-          name: id
-          required: true
-          type: string
-        - description: User ID
-          in: formData
-          name: user_id
-          required: true
-          type: integer
-        - description: Recipe Ingredient ID
-          in: formData
-          name: recipe_ingredient_id
-          required: true
-          type: integer
-        - description: IsDone
-          in: formData
-          name: id_done
-          type: boolean
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: User ID
+        in: formData
+        name: user_id
+        required: true
+        type: integer
+      - description: Recipe Ingredient ID
+        in: formData
+        name: recipe_ingredient_id
+        required: true
+        type: integer
+      - description: IsDone
+        in: formData
+        name: id_done
+        type: boolean
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/domain.ShoppingItemsForGet"
+            $ref: '#/definitions/domain.ShoppingItemsForGet'
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/usecase.ResultStatus"
+            $ref: '#/definitions/usecase.ResultStatus'
       summary: Update state of done.
       tags:
-        - shoppingItems
+      - shoppingItems
   /userRecipes:
     post:
       consumes:
-        - application/x-json-stream
+      - application/x-json-stream
       description: This API regist user recipes and return this results data.
       parameters:
-        - description: Title
-          in: formData
-          name: title
-          required: true
-          type: string
-        - description: Description
-          in: formData
-          name: description
-          type: string
-        - description: Servings
-          in: formData
-          name: servings
-          required: true
-          type: integer
-        - description: isDraft
-          in: formData
-          name: is_draft
-          type: boolean
+      - description: Title
+        in: formData
+        name: title
+        required: true
+        type: string
+      - description: Description
+        in: formData
+        name: description
+        type: string
+      - description: Servings
+        in: formData
+        name: servings
+        required: true
+        type: integer
+      - description: isDraft
+        in: formData
+        name: is_draft
+        type: boolean
       responses:
         "202":
           description: Accepted
           schema:
-            $ref: "#/definitions/domain.UserRecipesForGet"
+            $ref: '#/definitions/domain.UserRecipesForGet'
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/usecase.ResultStatus"
+            $ref: '#/definitions/usecase.ResultStatus'
       summary: Regist user recipes.
       tags:
-        - userRecipes
+      - userRecipes
   /userShoppingItems:
     get:
       consumes:
-        - application/x-json-stream
+      - application/x-json-stream
       description: This API return list of users shopping items by User ID.
       parameters:
-        - description: User ID
-          in: query
-          name: user_id
-          required: true
-          type: integer
+      - description: User ID
+        in: query
+        name: user_id
+        required: true
+        type: integer
       responses:
         "200":
           description: OK
           schema:
             items:
-              $ref: "#/definitions/domain.UserShoppingItemsForGet"
+              $ref: '#/definitions/domain.UserShoppingItemsForGet'
             type: array
         "404":
           description: Not Found
           schema:
-            $ref: "#/definitions/usecase.ResultStatus"
+            $ref: '#/definitions/usecase.ResultStatus'
       summary: Get users shopping items.
       tags:
-        - userShoppingItems
+      - userShoppingItems
     post:
       consumes:
-        - application/x-json-stream
-      description:
-        This API regist shopping items yourself and return this results
+      - application/x-json-stream
+      description: This API regist shopping items yourself and return this results
         data.
       parameters:
-        - description: User ID
-          in: formData
-          name: user_id
-          required: true
-          type: integer
-        - description: Title
-          in: formData
-          name: title
-          required: true
-          type: string
-        - description: Description
-          in: formData
-          name: description
-          type: string
-        - description: isDone
-          in: formData
-          name: is_done
-          type: boolean
+      - description: User ID
+        in: formData
+        name: user_id
+        required: true
+        type: integer
+      - description: Title
+        in: formData
+        name: title
+        required: true
+        type: string
+      - description: Description
+        in: formData
+        name: description
+        type: string
+      - description: isDone
+        in: formData
+        name: is_done
+        type: boolean
       responses:
         "202":
           description: Accepted
           schema:
-            $ref: "#/definitions/domain.UserShoppingItemsForGet"
+            $ref: '#/definitions/domain.UserShoppingItemsForGet'
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/usecase.ResultStatus"
+            $ref: '#/definitions/usecase.ResultStatus'
       summary: Regist users shopping items.
       tags:
-        - userShoppingItems
+      - userShoppingItems
   /userShoppingItems/{id}:
     delete:
       consumes:
-        - application/x-json-stream
+      - application/x-json-stream
       description: This API delete user shopping items.
       parameters:
-        - description: ID
-          in: path
-          name: id
-          required: true
-          type: string
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
       responses:
         "200":
           description: OK
@@ -966,73 +1028,72 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/usecase.ResultStatus"
+            $ref: '#/definitions/usecase.ResultStatus'
       summary: Delete shopping items.
       tags:
-        - userShoppingItems
+      - userShoppingItems
     patch:
       consumes:
-        - application/x-json-stream
-      description:
-        This API update state of done at user shopping items and return
+      - application/x-json-stream
+      description: This API update state of done at user shopping items and return
         this results data.
       parameters:
-        - description: ID
-          in: path
-          name: id
-          required: true
-          type: string
-        - description: User ID
-          in: formData
-          name: user_id
-          required: true
-          type: integer
-        - description: Title
-          in: formData
-          name: title
-          required: true
-          type: string
-        - description: Description
-          in: formData
-          name: description
-          type: string
-        - description: isDone
-          in: formData
-          name: is_done
-          type: boolean
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: User ID
+        in: formData
+        name: user_id
+        required: true
+        type: integer
+      - description: Title
+        in: formData
+        name: title
+        required: true
+        type: string
+      - description: Description
+        in: formData
+        name: description
+        type: string
+      - description: isDone
+        in: formData
+        name: is_done
+        type: boolean
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/domain.UserShoppingItemsForGet"
+            $ref: '#/definitions/domain.UserShoppingItemsForGet'
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/usecase.ResultStatus"
+            $ref: '#/definitions/usecase.ResultStatus'
       summary: Update state of done.
       tags:
-        - userShoppingItems
+      - userShoppingItems
   /users/{id}:
     get:
       consumes:
-        - application/x-json-stream
+      - application/x-json-stream
       description: get user info
       parameters:
-        - description: User ID
-          in: path
-          name: id
-          required: true
-          type: string
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/domain.Users"
+            $ref: '#/definitions/domain.Users'
         "404":
           description: Not Found
           schema:
-            $ref: "#/definitions/usecase.ResultStatus"
+            $ref: '#/definitions/usecase.ResultStatus'
       summary: product users
       tags:
-        - users
+      - users
 swagger: "2.0"
