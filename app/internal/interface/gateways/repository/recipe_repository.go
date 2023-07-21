@@ -10,6 +10,14 @@ import (
 
 type RecipeRepository struct{}
 
+func (rr *RecipeRepository) FirstByWatchID(db *gorm.DB, watchID string) (*domain.Recipes, error) {
+	recipe := &domain.Recipes{}
+	if err := db.Where("watch_id = ?", watchID).First(&recipe).Error; err != nil {
+		return &domain.Recipes{}, fmt.Errorf("Not found: %w", errors.New("recipe is not found"))
+	}
+	return recipe, nil
+}
+
 func (rr *RecipeRepository) Find(db *gorm.DB) ([]*domain.Recipes, error) {
 	recipes := []*domain.Recipes{}
 	db.Find(&recipes)
@@ -71,6 +79,13 @@ func (rr *RecipeRepository) FirstByID(db *gorm.DB, id int) (*domain.Recipes, err
 func (rr *RecipeRepository) Create(db *gorm.DB, recipe *domain.Recipes) (*domain.Recipes, error) {
 	if err := db.Create(recipe).Error; err != nil {
 		return &domain.Recipes{}, fmt.Errorf("failed recipe create: %w", err)
+	}
+	return recipe, nil
+}
+
+func (rr *RecipeRepository) Save(db *gorm.DB, recipe *domain.Recipes) (*domain.Recipes, error) {
+	if err := db.Save(recipe).Error; err != nil {
+		return &domain.Recipes{}, fmt.Errorf("failed recipe save: %w", err)
 	}
 	return recipe, nil
 }

@@ -3,7 +3,6 @@ package product
 import (
 	"fmt"
 	"net/http"
-	"strconv"
 
 	"github.com/qin-team-recipe/02-recipe-api/constants"
 	"github.com/qin-team-recipe/02-recipe-api/internal/interface/controllers"
@@ -104,9 +103,10 @@ func (rc *RecipesController) getLatestRecipesFromChefsFollows(ctx controllers.Co
 // @router			/recipes/{id} [get]
 func (rc *RecipesController) Get(ctx controllers.Context) {
 
-	id, _ := strconv.Atoi(ctx.Param("id"))
+	// id, _ := strconv.Atoi(ctx.Param("id"))
+	watchID := ctx.Param("watchID")
 
-	recipe, res := rc.Interactor.Get(id)
+	recipe, res := rc.Interactor.Get(watchID)
 	if res.Error != nil {
 		ctx.JSON(res.Code, controllers.NewH(res.Error.Error(), nil))
 		return

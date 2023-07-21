@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-const alphabet = "abcdefghijklnmopqrstuvwxyz"
+const alphabet = "ABCDEFGHIJKLNMOPQRSTUVWXYZabcdefghijklnmopqrstuvwxyz"
 const fullKeyword = "ABCDEFGHIJKLNMOPQRSTUVWXYZabcdefghijklnmopqrstuvwxyz0123456789"
 const full = "ABCDEFGHIJKLNMOPQRSTUVWXYZabcdefghijklnmopqrstuvwxyz0123456789!#$%&+-=?/._"
 

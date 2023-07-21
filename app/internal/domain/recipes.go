@@ -2,10 +2,12 @@ package domain
 
 type Recipes struct {
 	ID          int     `json:"id"`
+	WatchID     string  `json:"watch_id"`
 	Title       string  `json:"title" binding:"required"`
 	Description *string `json:"description"`
 	Servings    int     `json:"servings" binding:"required,min=1"`
 	IsDraft     bool    `json:"is_draft"`
+	IsLimited   bool    `json:"is_limited"`
 	CreatedAt   int64   `json:"created_at"`
 	UpdatedAt   int64   `json:"updated_at"`
 	DeletedAt   *int64  `json:"deleted_at"`
@@ -13,10 +15,12 @@ type Recipes struct {
 
 type RecipesForGet struct {
 	ID          int     `json:"id"`
+	WatchID     string  `json:"watch_id"`
 	Title       string  `json:"title"`
 	Description *string `json:"description"`
 	Servings    int     `json:"servings"`
 	IsDraft     bool    `json:"is_draft"`
+	IsLimited   bool    `json:"is_limited"`
 
 	FavoritesCount int `json:"favorites_count"`
 
@@ -28,9 +32,11 @@ type RecipesForGet struct {
 func (r *Recipes) BuildForGet() *RecipesForGet {
 	return &RecipesForGet{
 		ID:          r.ID,
+		WatchID:     r.WatchID,
 		Title:       r.Title,
 		Description: r.Description,
 		Servings:    r.Servings,
 		IsDraft:     r.IsDraft,
+		IsLimited:   r.IsLimited,
 	}
 }

@@ -50,8 +50,8 @@ func (r *Routing) setCors(cors *middleware.Cors) {
 //	@description	This is a Team02's API Docs at Qin.
 //	@termsOfService	http://swagger.io/terms/
 
-//	@host		localhost:8080
-//	@BasePath	/api/v1
+// @host		localhost:8080
+// @BasePath	/api/v1
 func (r *Routing) setRouting() {
 
 	authenticatesController := product.NewAuthenticatesController(r.Google)
@@ -59,6 +59,7 @@ func (r *Routing) setRouting() {
 	chefFollowsController := product.NewChefFollowsController(r.DB)
 	chefRecipesController := product.NewChefRecipesController(r.DB)
 	meController := product.NewMeController(product.MeControllerProvider{DB: r.DB, Google: r.Google, Jwt: r.Jwt})
+	limitedRecipesController := product.NewLimitedRecipesController(r.DB)
 	recommendsController := product.NewRecommendsController(r.DB)
 	recipesController := product.NewRecipesController(r.DB)
 	recipeFavoritesController := product.NewRecipeFavoritesController(r.DB)
@@ -177,7 +178,7 @@ func (r *Routing) setRouting() {
 			recipesController.GetList(ctx, r.Jwt)
 		})
 
-		v1.GET("/recipes/:id", func(ctx *gin.Context) {
+		v1.GET("/recipes/:watchID", func(ctx *gin.Context) {
 			recipesController.Get(ctx)
 		})
 
@@ -320,6 +321,10 @@ func (r *Routing) setRouting() {
 		})
 		v1Auth.DELETE("/chefFollows", func(ctx *gin.Context) {
 			chefFollowsController.Delete(ctx)
+		})
+
+		v1Auth.PATCH("/limitedRecipes", func(ctx *gin.Context) {
+			limitedRecipesController.Patch(ctx)
 		})
 
 		/*

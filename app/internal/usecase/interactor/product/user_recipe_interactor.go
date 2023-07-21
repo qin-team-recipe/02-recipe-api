@@ -9,6 +9,7 @@ import (
 	"github.com/qin-team-recipe/02-recipe-api/internal/usecase"
 	"github.com/qin-team-recipe/02-recipe-api/internal/usecase/gateway"
 	"github.com/qin-team-recipe/02-recipe-api/internal/usecase/repository"
+	"github.com/qin-team-recipe/02-recipe-api/utils"
 	"gorm.io/gorm"
 )
 
@@ -120,6 +121,15 @@ func (ri *UserRecipeInteractor) createRecipe(db *gorm.DB, recipe *domain.Recipes
 
 	recipe.CreatedAt = currentTime
 	recipe.UpdatedAt = currentTime
+
+	recipe.WatchID = utils.RandomString(15)
+	for {
+		_, err := ri.Recipe.FirstByWatchID(db, recipe.WatchID)
+		if err != nil {
+			break
+		}
+		recipe.WatchID = utils.RandomString(15)
+	}
 
 	newRecipe, err := ri.Recipe.Create(db, recipe)
 	if err != nil {

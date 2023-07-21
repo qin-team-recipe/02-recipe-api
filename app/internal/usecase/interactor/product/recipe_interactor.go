@@ -32,9 +32,9 @@ func (ri *RecipeInteractor) GetList(userID int, q string) ([]*domain.RecipesForG
 		return []*domain.RecipesForGet{}, usecase.NewResultStatus(http.StatusBadRequest, err)
 	}
 
-	builtRecipe, _ := ri.buildList(db, recipes)
+	builtRecipes, _ := ri.buildList(db, recipes)
 
-	return builtRecipe, usecase.NewResultStatus(http.StatusOK, nil)
+	return builtRecipes, usecase.NewResultStatus(http.StatusOK, nil)
 }
 
 func (ri *RecipeInteractor) GetLatestRecipesFromChefsFollows(userID int) ([]*domain.RecipesForGet, *usecase.ResultStatus) {
@@ -99,10 +99,10 @@ func (ri *RecipeInteractor) GetRecommendRecipeList() ([]*domain.RecipesForGet, *
 	return builtRecipes, usecase.NewResultStatus(http.StatusOK, nil)
 }
 
-func (ri *RecipeInteractor) Get(id int) (*domain.RecipesForGet, *usecase.ResultStatus) {
+func (ri *RecipeInteractor) Get(watchID string) (*domain.RecipesForGet, *usecase.ResultStatus) {
 	db := ri.DB.Connect()
 
-	recipe, err := ri.Recipe.FirstByID(db, id)
+	recipe, err := ri.Recipe.FirstByWatchID(db, watchID)
 	if err != nil {
 		return &domain.RecipesForGet{}, usecase.NewResultStatus(http.StatusNotFound, err)
 	}
