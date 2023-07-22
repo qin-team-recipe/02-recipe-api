@@ -129,12 +129,16 @@ definitions:
         type: integer
       is_draft:
         type: boolean
+      is_limited:
+        type: boolean
       servings:
         type: integer
       title:
         type: string
       user:
         $ref: '#/definitions/domain.UsersForGet'
+      watch_id:
+        type: string
     type: object
   domain.ShoppingItemsForGet:
     properties:
@@ -218,6 +222,11 @@ definitions:
     properties:
       login_url:
         type: string
+    type: object
+  product.LimitedRecipeRequest:
+    properties:
+      recipe_id:
+        type: integer
     type: object
   product.UserResponse:
     properties:
@@ -410,6 +419,28 @@ paths:
       summary: Get unique chef.
       tags:
       - chef
+  /limited_recipes:
+    patch:
+      description: レシピを非公開状態にする
+      parameters:
+      - description: レシピのWatchID
+        in: body
+        name: watch_id
+        required: true
+        schema:
+          $ref: '#/definitions/product.LimitedRecipeRequest'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.H'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.H'
+      summary: レシピの非公開状態にする
+      tags:
+      - recipes
   /me:
     delete:
       description: ユーザーアカウントの削除のエンドポイント
@@ -737,9 +768,9 @@ paths:
     get:
       description: レシピ情報を取得する
       parameters:
-      - description: レシピのPK
+      - description: レシピのWatchID
         in: path
-        name: id
+        name: watch_id
         required: true
         type: string
       responses:

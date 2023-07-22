@@ -97,7 +97,7 @@ func (rc *RecipesController) getLatestRecipesFromChefsFollows(ctx controllers.Co
 // @summary		レシピ情報の取得
 // @description	レシピ情報を取得する
 // @tags			recipes
-// @Param			id	path		string	true	"レシピのPK"
+// @Param			watch_id	path		string	true	"レシピのWatchID"
 // @Success		200		{object}	controllers.H
 // @Failure		400		{object}	controllers.H
 // @router			/recipes/{id} [get]

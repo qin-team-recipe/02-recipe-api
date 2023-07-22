@@ -13,26 +13,25 @@ type LimitedRecipeInteractor struct {
 	Recipe repository.RecipeRepository
 }
 
-type LimitedRecipeResponse struct {
-	IsLimited bool `json:"is_limited"`
-}
-
-func (li *LimitedRecipeInteractor) Save(recipeID int) (*LimitedRecipeResponse, *usecase.ResultStatus) {
+func (li *LimitedRecipeInteractor) Save(recipeID int) *usecase.ResultStatus {
 	db := li.DB.Connect()
 
 	recipe, err := li.Recipe.FirstByID(db, recipeID)
 	if err != nil {
-		return &LimitedRecipeResponse{}, usecase.NewResultStatus(http.StatusBadRequest, err)
+		return usecase.NewResultStatus(http.StatusBadRequest, err)
 	}
 
-	recipe.IsLimited = true
+	switch recipe.IsLimited {
+	case true:
+		recipe.IsLimited = false
+	case false:
+		recipe.IsLimited = true
+	}
 
-	updatedRecipe, err := li.Recipe.Save(db, recipe)
+	_, err = li.Recipe.Save(db, recipe)
 	if err != nil {
-		return &LimitedRecipeResponse{}, usecase.NewResultStatus(http.StatusBadRequest, err)
+		return usecase.NewResultStatus(http.StatusBadRequest, err)
 	}
 
-	return &LimitedRecipeResponse{
-		IsLimited: updatedRecipe.IsLimited,
-	}, usecase.NewResultStatus(http.StatusOK, nil)
+	return usecase.NewResultStatus(http.StatusNoContent, nil)
 }

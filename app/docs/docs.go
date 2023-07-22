@@ -289,6 +289,40 @@ const docTemplate = `{
                 }
             }
         },
+        "/limited_recipes": {
+            "patch": {
+                "description": "レシピを非公開状態にする",
+                "tags": [
+                    "recipes"
+                ],
+                "summary": "レシピの非公開状態にする",
+                "parameters": [
+                    {
+                        "description": "レシピのWatchID",
+                        "name": "watch_id",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/product.LimitedRecipeRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.H"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.H"
+                        }
+                    }
+                }
+            }
+        },
         "/me": {
             "get": {
                 "description": "ユーザー情報の取得のエンドポイント",
@@ -801,8 +835,8 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "レシピのPK",
-                        "name": "id",
+                        "description": "レシピのWatchID",
+                        "name": "watch_id",
                         "in": "path",
                         "required": true
                     }
@@ -1538,6 +1572,9 @@ const docTemplate = `{
                 "is_draft": {
                     "type": "boolean"
                 },
+                "is_limited": {
+                    "type": "boolean"
+                },
                 "servings": {
                     "type": "integer"
                 },
@@ -1546,6 +1583,9 @@ const docTemplate = `{
                 },
                 "user": {
                     "$ref": "#/definitions/domain.UsersForGet"
+                },
+                "watch_id": {
+                    "type": "string"
                 }
             }
         },
@@ -1674,6 +1714,14 @@ const docTemplate = `{
             "properties": {
                 "login_url": {
                     "type": "string"
+                }
+            }
+        },
+        "product.LimitedRecipeRequest": {
+            "type": "object",
+            "properties": {
+                "recipe_id": {
+                    "type": "integer"
                 }
             }
         },

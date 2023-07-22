@@ -27,6 +27,13 @@ func NewLimitedRecipesController(db gateways.DB) *LimitedRecipesController {
 	}
 }
 
+// @summary		レシピの非公開状態にする
+// @description	レシピを非公開状態にする
+// @tags			recipes
+// @Param			watch_id	body	product.LimitedRecipeRequest		true	"レシピのWatchID"
+// @Success		200		{object}	controllers.H
+// @Failure		400		{object}	controllers.H
+// @router			/limited_recipes [patch]
 func (lc *LimitedRecipesController) Patch(ctx controllers.Context) {
 
 	l := &LimitedRecipeRequest{}
@@ -36,11 +43,11 @@ func (lc *LimitedRecipesController) Patch(ctx controllers.Context) {
 		return
 	}
 
-	code, res := lc.Interactor.Save(l.RecipeID)
+	res := lc.Interactor.Save(l.RecipeID)
 	if res.Error != nil {
 		ctx.JSON(res.Code, controllers.NewH(res.Error.Error(), nil))
 		return
 	}
 
-	ctx.JSON(res.Code, controllers.NewH("success", code))
+	ctx.JSON(res.Code, controllers.NewH("success", nil))
 }

@@ -31,12 +31,12 @@ func (mi *MeInteractor) LoginUser(serviceUserID string) (UserResponse, *usecase.
 
 	userOauthCretificate, err := mi.UserOauthCertification.FirstByServiceUserID(db, serviceUserID)
 	if err != nil {
-		return UserResponse{}, usecase.NewResultStatus(http.StatusNotFound, err)
+		return UserResponse{}, usecase.NewResultStatus(http.StatusBadRequest, err)
 	}
 
 	user, err := mi.User.FirstByID(db, userOauthCretificate.UserID)
 	if err != nil {
-		return UserResponse{}, usecase.NewResultStatus(http.StatusNotFound, err)
+		return UserResponse{}, usecase.NewResultStatus(http.StatusBadRequest, err)
 	}
 
 	jwtToken, payload, err := mi.Jwt.CreateToken(user.ID)
@@ -63,7 +63,7 @@ func (mi *MeInteractor) Get(userID int) (*domain.Users, *usecase.ResultStatus) {
 
 	user, err := mi.User.FirstByID(db, userID)
 	if err != nil {
-		return &domain.Users{}, usecase.NewResultStatus(http.StatusNotFound, err)
+		return &domain.Users{}, usecase.NewResultStatus(http.StatusBadRequest, err)
 	}
 
 	return user, usecase.NewResultStatus(http.StatusOK, nil)

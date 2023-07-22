@@ -323,6 +323,10 @@ func (r *Routing) setRouting() {
 			chefFollowsController.Delete(ctx)
 		})
 
+		/*
+		 * limited recipes
+		 *
+		 */
 		v1Auth.PATCH("/limitedRecipes", func(ctx *gin.Context) {
 			limitedRecipesController.Patch(ctx)
 		})

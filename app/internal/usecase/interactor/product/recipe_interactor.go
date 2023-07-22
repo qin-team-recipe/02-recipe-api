@@ -104,10 +104,13 @@ func (ri *RecipeInteractor) Get(watchID string) (*domain.RecipesForGet, *usecase
 
 	recipe, err := ri.Recipe.FirstByWatchID(db, watchID)
 	if err != nil {
-		return &domain.RecipesForGet{}, usecase.NewResultStatus(http.StatusNotFound, err)
+		return &domain.RecipesForGet{}, usecase.NewResultStatus(http.StatusBadRequest, err)
 	}
 
-	builtRecipe, _ := ri.build(db, recipe)
+	builtRecipe, err := ri.build(db, recipe)
+	if err != nil {
+		return &domain.RecipesForGet{}, usecase.NewResultStatus(http.StatusBadRequest, err)
+	}
 
 	return builtRecipe, usecase.NewResultStatus(http.StatusOK, nil)
 }
@@ -129,6 +132,13 @@ func (ri *RecipeInteractor) buildList(db *gorm.DB, recipes []*domain.Recipes) ([
 
 func (ri *RecipeInteractor) build(db *gorm.DB, recipe *domain.Recipes) (*domain.RecipesForGet, error) {
 	builtRecipe := recipe.BuildForGet()
+
+	if builtRecipe.IsDraft {
+		return &domain.RecipesForGet{}, errors.New("下書き状態のレシピです")
+	}
+	if builtRecipe.IsLimited {
+		return &domain.RecipesForGet{}, errors.New("非公開のレシピです")
+	}
 
 	builtRecipe.FavoritesCount = ri.RecipeFavorite.CountByRecipeID(db, builtRecipe.ID)
 
