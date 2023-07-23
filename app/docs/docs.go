@@ -425,11 +425,11 @@ const docTemplate = `{
         },
         "/publishStatuses": {
             "patch": {
-                "description": "レシピを非公開状態にする",
+                "description": "レシピの公開状態を更新する",
                 "tags": [
                     "recipes"
                 ],
-                "summary": "レシピの非公開状態にする",
+                "summary": "レシピの公開状態の更新",
                 "parameters": [
                     {
                         "description": "レシピのIDとステータスを含む",
@@ -1572,11 +1572,8 @@ const docTemplate = `{
                 "is_draft": {
                     "type": "boolean"
                 },
-                "is_limited": {
-                    "type": "boolean"
-                },
-                "is_private": {
-                    "type": "boolean"
+                "published_status": {
+                    "type": "string"
                 },
                 "servings": {
                     "type": "integer"

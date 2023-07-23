@@ -28,8 +28,8 @@ func NewPublishStatusesController(db gateways.DB) *PublichStatusesController {
 	}
 }
 
-// @summary		レシピの非公開状態にする
-// @description	レシピを非公開状態にする
+// @summary		レシピの公開状態の更新
+// @description	レシピの公開状態を更新する
 // @tags			recipes
 // @Param		publish_status_reqest	body	product.PublishStatusRequest		true	"レシピのIDとステータスを含む"
 // @Success		200		{object}	controllers.H
