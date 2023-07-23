@@ -43,7 +43,7 @@ func NewMeController(p MeControllerProvider) *MeController {
 // @Param			service_user_id	query		string	true	"GoogleアカウントのユーザーID"
 // @Success		200				{object}	controllers.H{data=product.UserResponse}
 // @Failure		400				{object}	controllers.H
-// @router			/self/login [get]
+// @router			/login [get]
 func (mc *MeController) LoginUser(ctx controllers.Context) {
 
 	serviceUserID := ctx.Query("service_user_id")
@@ -82,7 +82,7 @@ func (mc *MeController) Get(ctx controllers.Context) {
 // @Param		social_user_account	body	domain.SocialUserAccount	true	"登録するGoogleアカウント"
 // @Success		200			{object}	controllers.H{data=product.UserResponse}
 // @Failure		400			{object}	controllers.H
-// @router		/me/register [post]
+// @router		/register [post]
 func (mc *MeController) Post(ctx controllers.Context) {
 
 	u := &domain.SocialUserAccount{}

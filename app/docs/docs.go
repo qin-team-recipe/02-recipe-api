@@ -289,6 +289,50 @@ const docTemplate = `{
                 }
             }
         },
+        "/login": {
+            "get": {
+                "description": "ユーザーログインのエンドポイント",
+                "tags": [
+                    "me"
+                ],
+                "summary": "ユーザーログイン",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "GoogleアカウントのユーザーID",
+                        "name": "service_user_id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/product.UserResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.H"
+                        }
+                    }
+                }
+            }
+        },
         "/me": {
             "get": {
                 "description": "ユーザー情報の取得のエンドポイント",
@@ -366,52 +410,6 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/controllers.H"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/controllers.H"
-                        }
-                    }
-                }
-            }
-        },
-        "/me/register": {
-            "post": {
-                "description": "ユーザー新規登録のエンドポイント",
-                "tags": [
-                    "me"
-                ],
-                "summary": "ユーザー新規登録",
-                "parameters": [
-                    {
-                        "description": "登録するGoogleアカウント",
-                        "name": "social_user_account",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/domain.SocialUserAccount"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/controllers.H"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/product.UserResponse"
-                                        }
-                                    }
-                                }
-                            ]
                         }
                     },
                     "400": {
@@ -883,20 +881,22 @@ const docTemplate = `{
                 }
             }
         },
-        "/self/login": {
-            "get": {
-                "description": "ユーザーログインのエンドポイント",
+        "/register": {
+            "post": {
+                "description": "ユーザー新規登録のエンドポイント",
                 "tags": [
                     "me"
                 ],
-                "summary": "ユーザーログイン",
+                "summary": "ユーザー新規登録",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "GoogleアカウントのユーザーID",
-                        "name": "service_user_id",
-                        "in": "query",
-                        "required": true
+                        "description": "登録するGoogleアカウント",
+                        "name": "social_user_account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.SocialUserAccount"
+                        }
                     }
                 ],
                 "responses": {

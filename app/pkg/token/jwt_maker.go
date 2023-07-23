@@ -73,6 +73,9 @@ func extractBearerToken(header string) (string, error) {
 }
 
 func (j *JwtMaker) VerifyJwtToken(token string) (*Payload, error) {
+	if _, err := extractBearerToken(token); err != nil {
+		return nil, err
+	}
 	payload, err := j.parseToken(token)
 	if err != nil {
 		return nil, err

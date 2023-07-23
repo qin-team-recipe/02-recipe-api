@@ -421,6 +421,32 @@ paths:
       summary: Get unique chef.
       tags:
       - chef
+  /login:
+    get:
+      description: ユーザーログインのエンドポイント
+      parameters:
+      - description: GoogleアカウントのユーザーID
+        in: query
+        name: service_user_id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/controllers.H'
+            - properties:
+                data:
+                  $ref: '#/definitions/product.UserResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.H'
+      summary: ユーザーログイン
+      tags:
+      - me
   /me:
     delete:
       description: ユーザーアカウントの削除のエンドポイント
@@ -474,33 +500,6 @@ paths:
           schema:
             $ref: '#/definitions/controllers.H'
       summary: ユーザー情報の変更
-      tags:
-      - me
-  /me/register:
-    post:
-      description: ユーザー新規登録のエンドポイント
-      parameters:
-      - description: 登録するGoogleアカウント
-        in: body
-        name: social_user_account
-        required: true
-        schema:
-          $ref: '#/definitions/domain.SocialUserAccount'
-      responses:
-        "200":
-          description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/controllers.H'
-            - properties:
-                data:
-                  $ref: '#/definitions/product.UserResponse'
-              type: object
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/controllers.H'
-      summary: ユーザー新規登録
       tags:
       - me
   /publishStatuses:
@@ -804,15 +803,16 @@ paths:
       summary: 話題のレシピ
       tags:
       - recommend
-  /self/login:
-    get:
-      description: ユーザーログインのエンドポイント
+  /register:
+    post:
+      description: ユーザー新規登録のエンドポイント
       parameters:
-      - description: GoogleアカウントのユーザーID
-        in: query
-        name: service_user_id
+      - description: 登録するGoogleアカウント
+        in: body
+        name: social_user_account
         required: true
-        type: string
+        schema:
+          $ref: '#/definitions/domain.SocialUserAccount'
       responses:
         "200":
           description: OK
@@ -827,7 +827,7 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/controllers.H'
-      summary: ユーザーログイン
+      summary: ユーザー新規登録
       tags:
       - me
   /shoppingItems:
