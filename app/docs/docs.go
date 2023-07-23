@@ -289,40 +289,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/limited_recipes": {
-            "patch": {
-                "description": "レシピを非公開状態にする",
-                "tags": [
-                    "recipes"
-                ],
-                "summary": "レシピの非公開状態にする",
-                "parameters": [
-                    {
-                        "description": "レシピのWatchID",
-                        "name": "watch_id",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/product.LimitedRecipeRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/controllers.H"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/controllers.H"
-                        }
-                    }
-                }
-            }
-        },
         "/me": {
             "get": {
                 "description": "ユーザー情報の取得のエンドポイント",
@@ -446,6 +412,40 @@ const docTemplate = `{
                                     }
                                 }
                             ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.H"
+                        }
+                    }
+                }
+            }
+        },
+        "/publishStatuses": {
+            "patch": {
+                "description": "レシピを非公開状態にする",
+                "tags": [
+                    "recipes"
+                ],
+                "summary": "レシピの非公開状態にする",
+                "parameters": [
+                    {
+                        "description": "レシピのIDとステータスを含む",
+                        "name": "publish_status_reqest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/product.PublishStatusRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.H"
                         }
                     },
                     "400": {
@@ -1575,6 +1575,9 @@ const docTemplate = `{
                 "is_limited": {
                     "type": "boolean"
                 },
+                "is_private": {
+                    "type": "boolean"
+                },
                 "servings": {
                     "type": "integer"
                 },
@@ -1717,11 +1720,14 @@ const docTemplate = `{
                 }
             }
         },
-        "product.LimitedRecipeRequest": {
+        "product.PublishStatusRequest": {
             "type": "object",
             "properties": {
                 "recipe_id": {
                     "type": "integer"
+                },
+                "status": {
+                    "type": "string"
                 }
             }
         },

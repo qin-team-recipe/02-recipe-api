@@ -131,6 +131,8 @@ definitions:
         type: boolean
       is_limited:
         type: boolean
+      is_private:
+        type: boolean
       servings:
         type: integer
       title:
@@ -223,10 +225,12 @@ definitions:
       login_url:
         type: string
     type: object
-  product.LimitedRecipeRequest:
+  product.PublishStatusRequest:
     properties:
       recipe_id:
         type: integer
+      status:
+        type: string
     type: object
   product.UserResponse:
     properties:
@@ -419,28 +423,6 @@ paths:
       summary: Get unique chef.
       tags:
       - chef
-  /limited_recipes:
-    patch:
-      description: レシピを非公開状態にする
-      parameters:
-      - description: レシピのWatchID
-        in: body
-        name: watch_id
-        required: true
-        schema:
-          $ref: '#/definitions/product.LimitedRecipeRequest'
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/controllers.H'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/controllers.H'
-      summary: レシピの非公開状態にする
-      tags:
-      - recipes
   /me:
     delete:
       description: ユーザーアカウントの削除のエンドポイント
@@ -523,6 +505,28 @@ paths:
       summary: ユーザー新規登録
       tags:
       - me
+  /publishStatuses:
+    patch:
+      description: レシピを非公開状態にする
+      parameters:
+      - description: レシピのIDとステータスを含む
+        in: body
+        name: publish_status_reqest
+        required: true
+        schema:
+          $ref: '#/definitions/product.PublishStatusRequest'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.H'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.H'
+      summary: レシピの非公開状態にする
+      tags:
+      - recipes
   /recipeFavorites:
     delete:
       consumes:

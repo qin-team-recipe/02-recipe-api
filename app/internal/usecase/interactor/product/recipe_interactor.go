@@ -6,6 +6,7 @@ import (
 	"sort"
 
 	"github.com/qin-team-recipe/02-recipe-api/internal/domain"
+	"github.com/qin-team-recipe/02-recipe-api/internal/domain/enum"
 	"github.com/qin-team-recipe/02-recipe-api/internal/usecase"
 	"github.com/qin-team-recipe/02-recipe-api/internal/usecase/gateway"
 	"github.com/qin-team-recipe/02-recipe-api/internal/usecase/repository"
@@ -124,6 +125,13 @@ func (ri *RecipeInteractor) buildList(db *gorm.DB, recipes []*domain.Recipes) ([
 			continue
 		}
 
+		var limited enum.Status = enum.Limited
+
+		switch builtRecipe.PublishedStatus {
+		case limited.Value():
+			continue
+		}
+
 		builtRecipes = append(builtRecipes, builtRecipe)
 	}
 
@@ -136,7 +144,11 @@ func (ri *RecipeInteractor) build(db *gorm.DB, recipe *domain.Recipes) (*domain.
 	if builtRecipe.IsDraft {
 		return &domain.RecipesForGet{}, errors.New("下書き状態のレシピです")
 	}
-	if builtRecipe.IsLimited {
+
+	var private enum.Status = enum.Private
+
+	switch builtRecipe.PublishedStatus {
+	case private.Value():
 		return &domain.RecipesForGet{}, errors.New("非公開のレシピです")
 	}
 

@@ -77,6 +77,7 @@ func (rr *RecipeRepository) FirstByID(db *gorm.DB, id int) (*domain.Recipes, err
 }
 
 func (rr *RecipeRepository) Create(db *gorm.DB, recipe *domain.Recipes) (*domain.Recipes, error) {
+	recipe.PublishedStatus = "public"
 	if err := db.Create(recipe).Error; err != nil {
 		return &domain.Recipes{}, fmt.Errorf("failed recipe create: %w", err)
 	}

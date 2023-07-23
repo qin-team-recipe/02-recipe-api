@@ -10,17 +10,18 @@ import (
 	"github.com/qin-team-recipe/02-recipe-api/internal/usecase/interactor/product"
 )
 
-type LimitedRecipesController struct {
-	Interactor product.LimitedRecipeInteractor
+type PublichStatusesController struct {
+	Interactor product.PublishStatusInteractor
 }
 
-type LimitedRecipeRequest struct {
-	RecipeID int `json:"recipe_id"`
+type PublishStatusRequest struct {
+	RecipeID int    `json:"recipe_id"`
+	Status   string `json:"status"`
 }
 
-func NewLimitedRecipesController(db gateways.DB) *LimitedRecipesController {
-	return &LimitedRecipesController{
-		Interactor: product.LimitedRecipeInteractor{
+func NewPublishStatusesController(db gateways.DB) *PublichStatusesController {
+	return &PublichStatusesController{
+		Interactor: product.PublishStatusInteractor{
 			DB:     &gateways.DBRepository{DB: db},
 			Recipe: &repository.RecipeRepository{},
 		},
@@ -30,20 +31,20 @@ func NewLimitedRecipesController(db gateways.DB) *LimitedRecipesController {
 // @summary		レシピの非公開状態にする
 // @description	レシピを非公開状態にする
 // @tags			recipes
-// @Param			watch_id	body	product.LimitedRecipeRequest		true	"レシピのWatchID"
+// @Param		publish_status_reqest	body	product.PublishStatusRequest		true	"レシピのIDとステータスを含む"
 // @Success		200		{object}	controllers.H
 // @Failure		400		{object}	controllers.H
-// @router			/limited_recipes [patch]
-func (lc *LimitedRecipesController) Patch(ctx controllers.Context) {
+// @router			/publishStatuses [patch]
+func (lc *PublichStatusesController) Patch(ctx controllers.Context) {
 
-	l := &LimitedRecipeRequest{}
+	l := &PublishStatusRequest{}
 
 	if err := ctx.BindJSON(l); err != nil {
 		ctx.JSON(http.StatusBadRequest, controllers.NewH(fmt.Sprintf("failed bind json: %s", err.Error()), nil))
 		return
 	}
 
-	res := lc.Interactor.Save(l.RecipeID)
+	res := lc.Interactor.Save(l.RecipeID, l.Status)
 	if res.Error != nil {
 		ctx.JSON(res.Code, controllers.NewH(res.Error.Error(), nil))
 		return
