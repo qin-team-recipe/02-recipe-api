@@ -32,10 +32,10 @@ func (rr *RecipeRepository) FindByQuery(db *gorm.DB, userID int, q string) ([]*d
 
 	query := db.
 		Joins("left outer join chef_recipes as cr on recipes.id = cr.recipe_id").
-		Where("0 < cr.chef_id")
+		Where("0 < cr.chef_id and recipes.published_status = ?", "public")
 
 	if q != "" {
-		query = query.Where("title like ? or description like ?", q, q)
+		query = query.Where("recipe.title like ? or recipe.description like ?", q, q)
 	}
 	if 0 < userID {
 		query = query.
