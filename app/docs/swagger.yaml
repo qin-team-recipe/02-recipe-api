@@ -129,12 +129,16 @@ definitions:
         type: integer
       is_draft:
         type: boolean
+      published_status:
+        type: string
       servings:
         type: integer
       title:
         type: string
       user:
         $ref: '#/definitions/domain.UsersForGet'
+      watch_id:
+        type: string
     type: object
   domain.ShoppingItemsForGet:
     properties:
@@ -217,6 +221,13 @@ definitions:
   product.AuthenticateResponse:
     properties:
       login_url:
+        type: string
+    type: object
+  product.PublishStatusRequest:
+    properties:
+      recipe_id:
+        type: integer
+      status:
         type: string
     type: object
   product.UserResponse:
@@ -492,6 +503,28 @@ paths:
       summary: ユーザー新規登録
       tags:
       - me
+  /publishStatuses:
+    patch:
+      description: レシピの公開状態を更新する
+      parameters:
+      - description: レシピのIDとステータスを含む
+        in: body
+        name: publish_status_reqest
+        required: true
+        schema:
+          $ref: '#/definitions/product.PublishStatusRequest'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.H'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.H'
+      summary: レシピの公開状態の更新
+      tags:
+      - recipes
   /recipeFavorites:
     delete:
       consumes:
@@ -737,9 +770,9 @@ paths:
     get:
       description: レシピ情報を取得する
       parameters:
-      - description: レシピのPK
+      - description: レシピのWatchID
         in: path
-        name: id
+        name: watch_id
         required: true
         type: string
       responses:
