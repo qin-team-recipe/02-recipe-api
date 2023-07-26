@@ -14,6 +14,8 @@ func NewCors(cfg *config.Config) *Cors {
 	c := &Cors{}
 	// DefaultConfig returns a generic default configuration mapped to localhost.
 	corsConfig := cors.DefaultConfig()
+	corsConfig.AllowHeaders = []string{"Authorization", "Content-Type"}
+	corsConfig.ExposeHeaders = []string{"Authorization"}
 	corsConfig.AllowOrigins = cfg.Cors.AllowOrigins
 
 	c.Config = cors.New(corsConfig)
