@@ -50,6 +50,15 @@ func (rr *RecipeRepository) FindByQuery(db *gorm.DB, userID int, q string) ([]*d
 	return recipes, nil
 }
 
+// func (rr *RecipeRepository) FindByChefID(db *gorm.DB, chefID int) ([]*domain.Recipes, error) {
+// 	recipes := []*domain.Recipes{}
+// 	db.Where("chef_id = ?", chefID).Find(&recipes)
+// 	if len(recipes) <= 0 {
+// 		return []*domain.Recipes{}, fmt.Errorf("Not found: %w", errors.New("recipes is not found"))
+// 	}
+// 	return recipes, nil
+// }
+
 func (rr *RecipeRepository) FindByUserID(db *gorm.DB, userID int) ([]*domain.Recipes, error) {
 	recipes := []*domain.Recipes{}
 	db.Where("user_id = ?", userID).Find(&recipes)

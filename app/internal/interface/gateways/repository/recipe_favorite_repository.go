@@ -20,7 +20,45 @@ func (rr *RecipeFavoriteRepository) FindByUserID(db *gorm.DB, userID int) ([]*do
 	return recipeFavorites, nil
 }
 
-func (rr *RecipeFavoriteRepository) FindBybyNumberOfFavoriteSubscriptions(db *gorm.DB) (map[int]int64, error) {
+func (rr *RecipeFavoriteRepository) FindByChefRecipeIDsAndNumberOfFavoriteSubscriptions(db *gorm.DB, recipeIDs []int) (map[int]int64, error) {
+	recipeFavorites := []*domain.RecipeFavorites{}
+
+	currentTime := time.Now().Unix()
+	beforeCurrentTime := time.Now().AddDate(0, 0, -30).Unix()
+
+	type Result struct {
+		RecipeID int
+		Count    int64
+	}
+
+	results := []Result{}
+
+	if err := db.Table("recipe_favorites").
+		Select("recipe_id, count(recipe_id) as count").
+		Where("recipe_id in ?", recipeIDs).
+		Where("? < created_at and created_at < ?", beforeCurrentTime, currentTime).
+		Group("recipe_id").Limit(5).Find(&results).Error; err != nil {
+		fmt.Println("err: ", err)
+	}
+
+	counts := map[int]int64{}
+
+	for _, result := range results {
+		recipeFavorite := &domain.RecipeFavorites{
+			RecipeID: result.RecipeID,
+		}
+		recipeFavorites = append(recipeFavorites, recipeFavorite)
+
+		counts[result.RecipeID] = result.Count
+	}
+
+	if len(counts) <= 0 {
+		return map[int]int64{}, errors.New("見つかりません")
+	}
+	return counts, nil
+}
+
+func (rr *RecipeFavoriteRepository) FindByNumberOfFavoriteSubscriptions(db *gorm.DB) (map[int]int64, error) {
 	recipeFavorites := []*domain.RecipeFavorites{}
 
 	currentTime := time.Now().Unix()

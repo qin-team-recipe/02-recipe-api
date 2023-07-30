@@ -79,7 +79,7 @@ func (ri *RecipeInteractor) GetRecommendRecipeList() ([]*domain.RecipesForGet, *
 	db := ri.DB.Connect()
 
 	// 直近三日のRecipeIDごとの数が多いRecipeIDとCountを取得する
-	recipeFavoritesCounts, err := ri.RecipeFavorite.FindBybyNumberOfFavoriteSubscriptions(db)
+	recipeFavoritesCounts, err := ri.RecipeFavorite.FindByNumberOfFavoriteSubscriptions(db)
 	if err != nil {
 		return []*domain.RecipesForGet{}, usecase.NewResultStatus(http.StatusBadRequest, errors.New("注目されているレシピはありません"))
 	}
