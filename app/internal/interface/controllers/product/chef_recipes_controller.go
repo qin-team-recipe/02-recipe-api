@@ -24,13 +24,13 @@ func NewChefRecipesController(db gateways.DB) *ChefRecipesController {
 	}
 }
 
-// @summary		Get recipe list.
-// @description	This API return all recipe list.
-// @tags			recipes
+// @summary		シェフのレシピのリストを取得.
+// @description	シェフのレシピのリストを取得する
+// @tags			chefRecipes
 // @accept			application/x-json-stream
-// @Success		200	{array}		domain.RecipesForGet
+// @Success		200	{array}		product.ChefRecipeResponse
 // @Failure		404	{object}	usecase.ResultStatus
-// @router			/recipes [get]
+// @router			/chefRecipes [get]
 func (rc *ChefRecipesController) GetList(ctx controllers.Context) {
 
 	t := ctx.Query("type")
