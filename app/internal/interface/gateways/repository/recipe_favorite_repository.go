@@ -20,11 +20,8 @@ func (rr *RecipeFavoriteRepository) FindByUserID(db *gorm.DB, userID int) ([]*do
 	return recipeFavorites, nil
 }
 
-func (rr *RecipeFavoriteRepository) FindByChefRecipeIDsAndNumberOfFavoriteSubscriptions(db *gorm.DB, recipeIDs []int) (map[int]int64, error) {
+func (rr *RecipeFavoriteRepository) FindByChefRecipeIDsAndNumberOfFavoriteSubscriptions(db *gorm.DB, chefID, cursor int) (map[int]int64, error) {
 	recipeFavorites := []*domain.RecipeFavorites{}
-
-	currentTime := time.Now().Unix()
-	beforeCurrentTime := time.Now().AddDate(0, 0, -30).Unix()
 
 	type Result struct {
 		RecipeID int
@@ -33,11 +30,17 @@ func (rr *RecipeFavoriteRepository) FindByChefRecipeIDsAndNumberOfFavoriteSubscr
 
 	results := []Result{}
 
-	if err := db.Table("recipe_favorites").
-		Select("recipe_id, count(recipe_id) as count").
-		Where("recipe_id in ?", recipeIDs).
-		Where("? < created_at and created_at < ?", beforeCurrentTime, currentTime).
-		Group("recipe_id").Limit(5).Find(&results).Error; err != nil {
+	query := db.Table("recipe_favorites").
+		Select("recipe_favorites.recipe_id, count(recipe_favorites.recipe_id) as count").
+		Joins("left outer join chef_recipes on chef_recipes.recipe_id = recipe_favorites.recipe_id").
+		Where("chef_recipes.chef_id = ?", chefID).
+		Group("recipe_favorites.recipe_id").Limit(5)
+
+	if 0 < cursor {
+		query.Where("recipe_favorites.recipe_id > ?", cursor)
+	}
+
+	if err := query.Find(&results).Error; err != nil {
 		fmt.Println("err: ", err)
 	}
 
@@ -53,7 +56,7 @@ func (rr *RecipeFavoriteRepository) FindByChefRecipeIDsAndNumberOfFavoriteSubscr
 	}
 
 	if len(counts) <= 0 {
-		return map[int]int64{}, errors.New("見つかりません")
+		return map[int]int64{}, errors.New("お気に入り登録されているレシピは見つかりません")
 	}
 	return counts, nil
 }
@@ -87,7 +90,7 @@ func (rr *RecipeFavoriteRepository) FindByNumberOfFavoriteSubscriptions(db *gorm
 	}
 
 	if len(counts) <= 0 {
-		return map[int]int64{}, errors.New("見つかりません")
+		return map[int]int64{}, errors.New("お気に入り登録されているレシピは見つかりません")
 	}
 	return counts, nil
 }

@@ -80,21 +80,7 @@ func (ri *ChefRecipeInteractor) getRecipesByFavorites(db *gorm.DB, chefID, curso
 	// ChefIDを元にお気に入り上位を取得する
 	// chef_recipes, recipe_favoritesを[chef_recipe.recipe_id == recipe_favorites.recipe_id]でjoinする
 	// chef_idに紐付くものをカウント計算する
-	chefRecipes, err := ri.ChefRecipe.FindByChefID(db, chefID, cursor)
-	if err != nil {
-		return ChefRecipeResponse{
-			Lists:    []*domain.ChefRecipesForGet{},
-			PageInfo: usecase.PageInfo{},
-		}, usecase.NewResultStatus(http.StatusBadRequest, err)
-	}
-
-	chefRecipeIDs := []int{}
-
-	for _, chefRecipe := range chefRecipes {
-		chefRecipeIDs = append(chefRecipeIDs, chefRecipe.RecipeID)
-	}
-
-	recipeFavorites, err := ri.RecipeFavorite.FindByChefRecipeIDsAndNumberOfFavoriteSubscriptions(db, chefRecipeIDs)
+	recipeFavorites, err := ri.RecipeFavorite.FindByChefRecipeIDsAndNumberOfFavoriteSubscriptions(db, chefID, cursor)
 	if err != nil {
 		return ChefRecipeResponse{
 			Lists:    []*domain.ChefRecipesForGet{},
@@ -129,14 +115,13 @@ func (ri *ChefRecipeInteractor) getRecipesByFavorites(db *gorm.DB, chefID, curso
 	}, usecase.NewResultStatus(http.StatusOK, nil)
 }
 
-func (ri *ChefRecipeInteractor) buildList(db *gorm.DB, resipes []*domain.Recipes) ([]*domain.ChefRecipesForGet, error) {
+func (ri *ChefRecipeInteractor) buildList(db *gorm.DB, recipes []*domain.Recipes) ([]*domain.ChefRecipesForGet, error) {
 	builtRecipes := []*domain.ChefRecipesForGet{}
-	for _, reresipe := range resipes {
-		builtRecipe, err := ri.build(db, reresipe)
+	for _, recipe := range recipes {
+		builtRecipe, err := ri.build(db, recipe)
 		if err != nil {
 			continue
 		}
-
 		builtRecipes = append(builtRecipes, builtRecipe)
 	}
 
