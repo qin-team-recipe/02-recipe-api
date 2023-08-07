@@ -37,9 +37,10 @@ func NewChefsController(p ChefsControllerProvider) *ChefsController {
 //	@description	シェフ一覧を取得する
 //	@tags			chef
 //	@accept			application/x-json-stream
-//	@param			q	query		string	false	"任意のWHERE文"
-//	@Success		200	{object}	controllers.H{data=[]product.ChefList}
-//	@Failure		404	{object}	controllers.H{data=usecase.ResultStatus}
+//	@param			q		query		string	false	"任意のWHERE文"
+//	@param			cursor	query		int		true	"現在取得中の末尾カーソル"
+//	@Success		200		{object}	controllers.H{data=[]product.ChefList}
+//	@Failure		404		{object}	controllers.H{data=usecase.ResultStatus}
 //	@router			/chefs [get]
 func (cc *ChefsController) GetList(ctx controllers.Context) {
 	q := ctx.Query("q")

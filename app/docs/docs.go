@@ -316,6 +316,13 @@ const docTemplate = `{
                         "description": "任意のWHERE文",
                         "name": "q",
                         "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "現在取得中の末尾カーソル",
+                        "name": "cursor",
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
