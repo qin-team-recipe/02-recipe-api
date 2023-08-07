@@ -33,13 +33,13 @@ func NewChefsController(p ChefsControllerProvider) *ChefsController {
 	}
 }
 
-//	@summary		Get chef list.
-//	@description	This API return all chef list.
+//	@summary		シェフ一覧取得
+//	@description	シェフ一覧を取得する
 //	@tags			chef
 //	@accept			application/x-json-stream
-//	@param			q	query		string	true	"検索ワード"
-//	@Success		200	{array}		domain.ChefsForGet
-//	@Failure		404	{object}	usecase.ResultStatus
+//	@param			q	query		string	false	"任意のWHERE文"
+//	@Success		200	{object}	controllers.H{data=[]product.ChefList}
+//	@Failure		404	{object}	controllers.H{data=usecase.ResultStatus}
 //	@router			/chefs [get]
 func (cc *ChefsController) GetList(ctx controllers.Context) {
 	q := ctx.Query("q")
@@ -53,13 +53,13 @@ func (cc *ChefsController) GetList(ctx controllers.Context) {
 	ctx.JSON(res.Code, controllers.NewH("success", chefs))
 }
 
-//	@summary		Get unique chef.
-//	@description	This API return unique chef by screenName.
+//	@summary		シェフ取得
+//	@description	screenNameで指定されたシェフの情報を取得する
 //	@tags			chef
 //	@accept			application/x-json-stream
 //	@param			screenName	path		string	true	"screenName"
-//	@Success		200			{object}	domain.ChefsForGet
-//	@Failure		404			{object}	usecase.ResultStatus
+//	@Success		200			{object}	controllers.H{data=domain.ChefsForGet}
+//	@Failure		404			{object}	controllers.H{data=usecase.ResultStatus}
 //	@router			/chefs/{screenName} [get]
 func (cc *ChefsController) Get(ctx controllers.Context) {
 

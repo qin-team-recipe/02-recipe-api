@@ -31,13 +31,13 @@ func NewRecipeFavoritesController(db gateways.DB) *RecipeFavoritesController {
 	}
 }
 
-//	@summary		Get list of recipes of favorite.
-//	@description	This API return list of recipes of favorite.
+//	@summary		ユーザーのお気に入りレシピ一覧取得
+//	@description	ユーザーのお気に入りレシピ一覧を取得する際のリクエスト
 //	@tags			recipeFavorites
 //	@accept			application/x-json-stream
 //	@param			user_id	query		int	true	"User ID"
-//	@Success		200		{array}		domain.RecipeFavoritesForGet
-//	@Failure		404		{object}	usecase.ResultStatus
+//	@Success		200		{object}	controllers.H{data=[]domain.RecipeFavoritesForGet}
+//	@Failure		404		{object}	controllers.H{data=usecase.ResultStatus}
 //	@router			/recipeFavorites [get]
 func (rc *RecipeFavoritesController) GetList(ctx controllers.Context) {
 
@@ -57,7 +57,7 @@ func (rc *RecipeFavoritesController) GetList(ctx controllers.Context) {
 //	@accept			json
 //	@Param			recipeFavorite	body		domain.RecipeFavorites	true	"user_id, recipe_id は必須"
 //	@Success		200				{object}	controllers.H{data=domain.RecipeFavoritesForGet}
-//	@Failure		400				{object}	controllers.H
+//	@Failure		400				{object}	controllers.H{data=usecase.ResultStatus}
 //	@router			/recipeFavorites [post]
 func (rc *RecipeFavoritesController) Post(ctx controllers.Context) {
 
@@ -83,8 +83,8 @@ func (rc *RecipeFavoritesController) Post(ctx controllers.Context) {
 //	@tags			recipeFavorites
 //	@accept			json
 //	@Param			recipeFavorite	body		domain.RecipeFavorites	true	"user_id, recipe_id は必須"
-//	@Success		200				{object}	controllers.H
-//	@Failure		400				{object}	controllers.H
+//	@Success		200				{object}	controllers.H{data=usecase.ResultStatus}
+//	@Failure		400				{object}	controllers.H{data=usecase.ResultStatus}
 //	@router			/recipeFavorites [delete]
 func (rc *RecipeFavoritesController) Delete(ctx controllers.Context) {
 	f := &domain.RecipeFavorites{}

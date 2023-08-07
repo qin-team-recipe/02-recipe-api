@@ -31,13 +31,13 @@ func NewRecipesController(db gateways.DB) *RecipesController {
 	}
 }
 
-// @summary		レシピリストの取得
-// @description	レシピリストを取得する
-// @tags			recipes
-// @Param			type	query		string	true	"type=chefFollowとすることでフォローしているシェフの情報を取得する"
-// @Success		200		{object}	controllers.H
-// @Failure		400		{object}	controllers.H
-// @router			/recipes [get]
+// // @summary		レシピリストの取得
+// // @description	レシピリストを取得する
+// // @tags			recipes
+// // @Param			type	query		string	true	"type=chefFollowとすることでフォローしているシェフの情報を取得する"
+// // @Success		200		{object}	controllers.H{data=[]domain.RecipesForGet}
+// // @Failure		400		{object}	controllers.H{data=usecase.ResultStatus}
+// // @router			/recipes [get]
 func (rc *RecipesController) GetList(ctx controllers.Context, jwt token.Maker) {
 
 	ty := ctx.Query("type")
@@ -69,6 +69,13 @@ func (rc *RecipesController) GetList(ctx controllers.Context, jwt token.Maker) {
 	ctx.JSON(res.Code, controllers.NewH("success", recipes))
 }
 
+// // @summary		新着レシピ一覧取得
+// // @description	フォロー中シェフの新着レシピリストの取得
+// // @tags			recipes
+// // @Param			type	query		string	true	"type=latestとすることでフォローしているシェフの新着レシピ情報を取得する"
+// // @Success		200		{object}	controllers.H{data=[]domain.RecipesForGet}
+// // @Failure		400		{object}	controllers.H{data=usecase.ResultStatus}
+// // @router			/recipes [get]
 func (rc *RecipesController) getLatestRecipesFromChefsFollows(ctx controllers.Context, jwt token.Maker) {
 	authToken := ctx.GetHeader(constants.AuthorizationHeaderKey)
 
@@ -94,13 +101,13 @@ func (rc *RecipesController) getLatestRecipesFromChefsFollows(ctx controllers.Co
 	ctx.JSON(res.Code, controllers.NewH("success", recipes))
 }
 
-// @summary		レシピ情報の取得
-// @description	レシピ情報を取得する
-// @tags			recipes
-// @Param			watch_id	path		string	true	"レシピのWatchID"
-// @Success		200		{object}	controllers.H
-// @Failure		400		{object}	controllers.H
-// @router			/recipes/{id} [get]
+//	@summary		レシピ情報の取得
+//	@description	レシピ情報を取得する
+//	@tags			recipes
+//	@Param			watch_id	path		string	true	"レシピのWatchID"
+//	@Success		200			{object}	controllers.H{data=domain.RecipesForGet}
+//	@Failure		400			{object}	controllers.H{data=usecase.ResultStatus}
+//	@router			/recipes/{id} [get]
 func (rc *RecipesController) Get(ctx controllers.Context) {
 
 	// id, _ := strconv.Atoi(ctx.Param("id"))

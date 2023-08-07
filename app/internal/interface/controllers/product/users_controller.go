@@ -25,13 +25,13 @@ func NewUsersController(p *UsersControllerProvider) *UsersController {
 	}
 }
 
-//	@summary		product users
-//	@description	get user info
+//	@summary		テストAPI
+//	@description	test taro を返却
 //	@tags			users
 //	@accept			application/x-json-stream
 //	@param			id	path		string	true	"User ID"
-//	@success		200	{object}	domain.Users
-//	@failure		404	{object}	usecase.ResultStatus
+//	@success		200	{object}	controllers.H{data=domain.Users}
+//	@failure		404	{object}	controllers.H{data=usecase.ResultStatus}
 //	@router			/users/{id} [get]
 func (uc *UsersController) Get(ctx controllers.Context) {
 	user, res := uc.Interactor.Get()

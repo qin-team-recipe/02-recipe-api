@@ -25,14 +25,14 @@ func NewRecipeLinksController(db gateways.DB) *RecipeLinksController {
 	}
 }
 
-//	@summary		Regist recipe links.
-//	@description	This API regist recipe links and return this results data.
+//	@summary		レシピURLを登録する
+//	@description	レシピURLを登録し、結果を返却する
 //	@tags			recipeLinks
 //	@accept			application/x-json-stream
 //	@param			recipe_id	formData	int		true	"Recipe ID"
 //	@param			url			formData	string	true	"URL"
-//	@Success		200			{object}	domain.RecipeLinksForGet
-//	@Failure		400			{object}	usecase.ResultStatus
+//	@Success		200			{object}	controllers.H{data=domain.RecipeLinksForGet}
+//	@Failure		400			{object}	controllers.H{data=usecase.ResultStatus}
 //	@router			/recipeLinks [post]
 func (rc *RecipeLinksController) Post(ctx controllers.Context) {
 

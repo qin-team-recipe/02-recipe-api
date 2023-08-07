@@ -31,8 +31,8 @@ func NewRecipeStepsController(db gateways.DB) *RecipeStepsController {
 //	@tags			recipeSteps
 //	@accept			application/x-json-stream
 //	@param			recipe_id	query		int	true	"Recipe ID"
-//	@Success		200			{array}		domain.RecipeStepsForGet
-//	@Failure		404			{object}	usecase.ResultStatus
+//	@Success		200			{object}	controllers.H{data=[]domain.RecipeStepsForGet}
+//	@Failure		404			{object}	controllers.H{data=usecase.ResultStatus}
 //	@router			/recipeSteps [get]
 func (rc *RecipeStepsController) GetList(ctx controllers.Context) {
 	recipeID, _ := strconv.Atoi(ctx.Query("recipe_id"))
@@ -46,16 +46,16 @@ func (rc *RecipeStepsController) GetList(ctx controllers.Context) {
 }
 
 
-//	@summary		Regist recipe steps.
-//	@description	This API regist recipe steps and return this results data.
+//	@summary		レシピ手順登録
+//	@description	レシピ手順を登録し、結果を返却する
 //	@tags			recipeSteps
 //	@accept			application/x-json-stream
 //	@param			recipe_id	formData	int		true	"Recipe ID"
-//	@param			title		formData	string	true	"Title"
-//	@param			description	formData	string	false	"Description"
-//	@param			step_number	formData	int		false	"Step Number"
-//	@Success		200			{object}	domain.RecipeStepsForGet
-//	@Failure		400			{object}	usecase.ResultStatus
+//	@param			title		formData	string	true	"タイトル"
+//	@param			description	formData	string	false	"説明"
+//	@param			step_number	formData	int		false	"ステップNo"
+//	@Success		200			{object}	controllers.H{data=domain.RecipeStepsForGet}
+//	@Failure		400			{object}	controllers.H{data=usecase.ResultStatus}
 //	@router			/recipeSteps [post]
 func (rc *RecipeStepsController) Post(ctx controllers.Context) {
 
