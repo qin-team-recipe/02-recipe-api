@@ -31,13 +31,13 @@ func NewRecipesController(db gateways.DB) *RecipesController {
 	}
 }
 
-// // @summary		レシピリストの取得
-// // @description	レシピリストを取得する
-// // @tags			recipes
-// // @Param			type	query		string	true	"type=chefFollowとすることでフォローしているシェフの情報を取得する"
-// // @Success		200		{object}	controllers.H{data=[]domain.RecipesForGet}
-// // @Failure		400		{object}	controllers.H{data=usecase.ResultStatus}
-// // @router			/recipes [get]
+//	@summary		レシピリストの取得
+//	@description	レシピリストを取得する
+//	@tags			recipes
+//	@Param			type	query		string	false	"type=chefFollowとすることでフォローしているシェフの情報を取得する"
+//	@Success		200		{object}	controllers.H{data=[]domain.RecipesForGet}
+//	@Failure		400		{object}	controllers.H{data=usecase.ResultStatus}
+//	@router			/recipes [get]
 func (rc *RecipesController) GetList(ctx controllers.Context, jwt token.Maker) {
 
 	ty := ctx.Query("type")
