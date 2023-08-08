@@ -18,13 +18,26 @@ func (cr *ChefRecipeRepository) FirstByRecipeID(db *gorm.DB, recipeID int) (*dom
 	return chefRecipe, nil
 }
 
-func (cr *ChefRecipeRepository) FindInByChefIDs(db *gorm.DB, ids []int) ([]*domain.ChefRecipes, error) {
-	chefRecipe := []*domain.ChefRecipes{}
-	db.Where("chef_id in ?", ids).Order("created_at desc").Limit(10).Find(&chefRecipe)
-	if len(chefRecipe) <= 0 {
+func (cr *ChefRecipeRepository) FindByChefID(db *gorm.DB, chefID, cursor int) ([]*domain.ChefRecipes, error) {
+	chefRecipes := []*domain.ChefRecipes{}
+	query := db.Where("chef_id = ?", chefID)
+	if 0 < cursor {
+		query = query.Where("? < id", cursor).Order("created_at desc")
+	}
+	query.Find(&chefRecipes)
+	if len(chefRecipes) <= 0 {
 		return []*domain.ChefRecipes{}, fmt.Errorf("chefRecipe is not found: %w", errors.New("フォローしているシェフはまだレシピを作成していません"))
 	}
-	return chefRecipe, nil
+	return chefRecipes, nil
+}
+
+func (cr *ChefRecipeRepository) FindInByChefIDs(db *gorm.DB, ids []int) ([]*domain.ChefRecipes, error) {
+	chefRecipes := []*domain.ChefRecipes{}
+	db.Where("chef_id in ?", ids).Order("created_at desc").Limit(10).Find(&chefRecipes)
+	if len(chefRecipes) <= 0 {
+		return []*domain.ChefRecipes{}, fmt.Errorf("chefRecipe is not found: %w", errors.New("フォローしているシェフはまだレシピを作成していません"))
+	}
+	return chefRecipes, nil
 }
 
 func (cr *ChefRecipeRepository) Create(db *gorm.DB, chefRecipe *domain.ChefRecipes) (*domain.ChefRecipes, error) {

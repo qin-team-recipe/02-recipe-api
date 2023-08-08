@@ -300,6 +300,35 @@ const docTemplate = `{
                 }
             }
         },
+        "/chefRecipes": {
+            "get": {
+                "description": "シェフのレシピのリストを取得する",
+                "consumes": [
+                    "application/x-json-stream"
+                ],
+                "tags": [
+                    "chefRecipes"
+                ],
+                "summary": "シェフのレシピのリストを取得.",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/product.ChefRecipeResponse"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/usecase.ResultStatus"
+                        }
+                    }
+                }
+            }
+        },
         "/chefs": {
             "get": {
                 "description": "シェフ一覧を取得する",
@@ -2226,6 +2255,23 @@ const docTemplate = `{
                 }
             }
         },
+        "domain.ChefRecipesForGet": {
+            "type": "object",
+            "properties": {
+                "chef_id": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "recipe": {
+                    "$ref": "#/definitions/domain.RecipesForGet"
+                },
+                "recipe_id": {
+                    "type": "integer"
+                }
+            }
+        },
         "domain.ChefsForGet": {
             "type": "object",
             "properties": {
@@ -2511,13 +2557,13 @@ const docTemplate = `{
                 }
             }
         },
-        "product.ChefList": {
+        "product.ChefRecipeResponse": {
             "type": "object",
             "properties": {
                 "lists": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/domain.ChefsForGet"
+                        "$ref": "#/definitions/domain.ChefRecipesForGet"
                     }
                 },
                 "page_info": {
@@ -2558,6 +2604,9 @@ const docTemplate = `{
                 },
                 "has_previous_page": {
                     "type": "boolean"
+                },
+                "length": {
+                    "type": "integer"
                 },
                 "start_cursor": {
                     "type": "string"

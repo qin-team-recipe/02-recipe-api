@@ -1,6 +1,8 @@
 package product
 
 import (
+	"strconv"
+
 	"github.com/qin-team-recipe/02-recipe-api/internal/interface/controllers"
 	"github.com/qin-team-recipe/02-recipe-api/internal/interface/gateways"
 	"github.com/qin-team-recipe/02-recipe-api/internal/interface/gateways/repository"
@@ -14,22 +16,27 @@ type ChefRecipesController struct {
 func NewChefRecipesController(db gateways.DB) *ChefRecipesController {
 	return &ChefRecipesController{
 		Interactor: product.ChefRecipeInteractor{
-			DB:         &gateways.DBRepository{DB: db},
-			Recipe:     &repository.RecipeRepository{},
-			ChefRecipe: &repository.ChefRecipeRepository{},
+			DB:             &gateways.DBRepository{DB: db},
+			ChefRecipe:     &repository.ChefRecipeRepository{},
+			Recipe:         &repository.RecipeRepository{},
+			RecipeFavorite: &repository.RecipeFavoriteRepository{},
 		},
 	}
 }
-
-//	@summary		特定シェフのレシピ一覧取得
-//	@description	※このAPIは未完成で、現在は全レシピの一覧を取得しています
-//	@tags			recipes
-//	@accept			application/x-json-stream
-//	@Success		200	{object}	controllers.H{data=[]domain.RecipesForGet}
-//	@Failure		404	{object}	controllers.H{data=usecase.ResultStatus}
-//	@router			/recipes [get]
+// @summary		シェフのレシピのリストを取得.
+// @description	シェフのレシピのリストを取得する
+// @tags			chefRecipes
+// @accept			application/x-json-stream
+// @Success		200	{array}		product.ChefRecipeResponse
+// @Failure		404	{object}	usecase.ResultStatus
+// @router			/chefRecipes [get]
 func (rc *ChefRecipesController) GetList(ctx controllers.Context) {
-	recipes, res := rc.Interactor.GetList()
+
+	t := ctx.Query("type")
+	chefID, _ := strconv.Atoi(ctx.Query("chef_id"))
+	cursor, _ := strconv.Atoi(ctx.Query("cursor"))
+
+	recipes, res := rc.Interactor.GetList(t, chefID, cursor)
 	if res.Error != nil {
 		ctx.JSON(res.Code, controllers.NewH(res.Error.Error(), nil))
 		return

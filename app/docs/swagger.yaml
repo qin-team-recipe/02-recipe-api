@@ -39,6 +39,17 @@ definitions:
       url:
         type: string
     type: object
+  domain.ChefRecipesForGet:
+    properties:
+      chef_id:
+        type: integer
+      id:
+        type: integer
+      recipe:
+        $ref: '#/definitions/domain.RecipesForGet'
+      recipe_id:
+        type: integer
+    type: object
   domain.ChefsForGet:
     properties:
       chef_links:
@@ -223,11 +234,11 @@ definitions:
       login_url:
         type: string
     type: object
-  product.ChefList:
+  product.ChefRecipeResponse:
     properties:
       lists:
         items:
-          $ref: '#/definitions/domain.ChefsForGet'
+          $ref: '#/definitions/domain.ChefRecipesForGet'
         type: array
       page_info:
         $ref: '#/definitions/usecase.PageInfo'
@@ -254,6 +265,8 @@ definitions:
         type: boolean
       has_previous_page:
         type: boolean
+      length:
+        type: integer
       start_cursor:
         type: string
     type: object
@@ -428,6 +441,25 @@ paths:
       summary: ユーザーがシェフをフォロー登録
       tags:
       - chefFollows
+  /chefRecipes:
+    get:
+      consumes:
+      - application/x-json-stream
+      description: シェフのレシピのリストを取得する
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/product.ChefRecipeResponse'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/usecase.ResultStatus'
+      summary: シェフのレシピのリストを取得.
+      tags:
+      - chefRecipes
   /chefs:
     get:
       consumes:

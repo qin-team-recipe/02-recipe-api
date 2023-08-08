@@ -20,7 +20,48 @@ func (rr *RecipeFavoriteRepository) FindByUserID(db *gorm.DB, userID int) ([]*do
 	return recipeFavorites, nil
 }
 
-func (rr *RecipeFavoriteRepository) FindBybyNumberOfFavoriteSubscriptions(db *gorm.DB) (map[int]int64, error) {
+func (rr *RecipeFavoriteRepository) FindByChefRecipeIDsAndNumberOfFavoriteSubscriptions(db *gorm.DB, chefID, cursor int) (map[int]int64, error) {
+	recipeFavorites := []*domain.RecipeFavorites{}
+
+	type Result struct {
+		RecipeID int
+		Count    int64
+	}
+
+	results := []Result{}
+
+	query := db.Table("recipe_favorites").
+		Select("recipe_favorites.recipe_id, count(recipe_favorites.recipe_id) as count").
+		Joins("left outer join chef_recipes on chef_recipes.recipe_id = recipe_favorites.recipe_id").
+		Where("chef_recipes.chef_id = ?", chefID).
+		Group("recipe_favorites.recipe_id").Limit(5)
+
+	if 0 < cursor {
+		query.Where("recipe_favorites.recipe_id > ?", cursor)
+	}
+
+	if err := query.Find(&results).Error; err != nil {
+		fmt.Println("err: ", err)
+	}
+
+	counts := map[int]int64{}
+
+	for _, result := range results {
+		recipeFavorite := &domain.RecipeFavorites{
+			RecipeID: result.RecipeID,
+		}
+		recipeFavorites = append(recipeFavorites, recipeFavorite)
+
+		counts[result.RecipeID] = result.Count
+	}
+
+	if len(counts) <= 0 {
+		return map[int]int64{}, errors.New("お気に入り登録されているレシピは見つかりません")
+	}
+	return counts, nil
+}
+
+func (rr *RecipeFavoriteRepository) FindByNumberOfFavoriteSubscriptions(db *gorm.DB) (map[int]int64, error) {
 	recipeFavorites := []*domain.RecipeFavorites{}
 
 	currentTime := time.Now().Unix()
@@ -49,7 +90,7 @@ func (rr *RecipeFavoriteRepository) FindBybyNumberOfFavoriteSubscriptions(db *go
 	}
 
 	if len(counts) <= 0 {
-		return map[int]int64{}, errors.New("見つかりません")
+		return map[int]int64{}, errors.New("お気に入り登録されているレシピは見つかりません")
 	}
 	return counts, nil
 }
