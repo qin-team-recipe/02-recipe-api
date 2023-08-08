@@ -23,7 +23,6 @@ func NewChefRecipesController(db gateways.DB) *ChefRecipesController {
 		},
 	}
 }
-
 // @summary		シェフのレシピのリストを取得.
 // @description	シェフのレシピのリストを取得する
 // @tags			chefRecipes

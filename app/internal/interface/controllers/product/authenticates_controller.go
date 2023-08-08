@@ -22,7 +22,7 @@ func NewAuthenticatesController(g gateways.Google) *AuthenticatesController {
 //	@description	Googleアカウントログイン認証に必要なURLの発行.
 //	@tags			authenticates
 //	@Success		200	{object}	controllers.H{data=product.AuthenticateResponse}
-//	@Failure		400	{object}	controllers.H
+//	@Failure		400	{object}	controllers.H{data=usecase.ResultStatus}
 //	@router			/authenticates/google [get]
 func (ac *AuthenticatesController) GetGoogle(ctx controllers.Context) {
 	googleUrl, res := ac.Interactor.GetAuthCodeURL()
@@ -38,7 +38,7 @@ func (ac *AuthenticatesController) GetGoogle(ctx controllers.Context) {
 //	@tags			authenticates
 //	@Param			code	query		string	true	"Googleから返却される署名（code）"
 //	@Success		200		{object}	controllers.H{data=domain.SocialUserAccount}
-//	@Failure		400		{object}	controllers.H
+//	@Failure		400		{object}	controllers.H{data=usecase.ResultStatus}
 //	@router			/authenticates/google/userinfo [get]
 func (ac *AuthenticatesController) GetGoogleUserInfo(ctx controllers.Context) {
 

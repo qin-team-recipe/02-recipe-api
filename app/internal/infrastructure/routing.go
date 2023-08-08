@@ -50,8 +50,8 @@ func (r *Routing) setCors(cors *middleware.Cors) {
 //	@description	This is a Team02's API Docs at Qin.
 //	@termsOfService	http://swagger.io/terms/
 
-// @host		localhost:8080
-// @BasePath	/api/v1
+//	@host		localhost:8080
+//	@BasePath	/api/v1
 func (r *Routing) setRouting() {
 
 	authenticatesController := product.NewAuthenticatesController(r.Google)

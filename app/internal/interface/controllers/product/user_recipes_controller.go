@@ -55,16 +55,16 @@ func (uc *UserRecipesController) Get(ctx controllers.Context) {
 	// ctx.JSON(res.Code, controllers.NewH("success", userRecipe))
 }
 
-//	@summary		Regist user recipes.
-//	@description	This API regist user recipes and return this results data.
+//	@summary		一般シェフレシピ登録
+//	@description	一般シェフのレシピを登録し、結果を返却する
 //	@tags			userRecipes
 //	@accept			application/x-json-stream
-//	@param			title		formData	string	true	"Title"
-//	@param			description	formData	string	false	"Description"
-//	@param			servings	formData	int		true	"Servings"
-//	@param			is_draft	formData	boolean	false	"isDraft"
-//	@Success		202			{object}	domain.UserRecipesForGet
-//	@Failure		400			{object}	usecase.ResultStatus
+//	@param			title		formData	string	true	"タイトル"
+//	@param			description	formData	string	false	"説明"
+//	@param			servings	formData	int		true	"対象人数"
+//	@param			is_draft	formData	boolean	false	"下書きフラグ"
+//	@Success		202			{object}	controllers.H{data=domain.UserRecipesForGet}
+//	@Failure		400			{object}	controllers.H{data=usecase.ResultStatus}
 //	@router			/userRecipes [post]
 func (rc *UserRecipesController) Post(ctx controllers.Context) {
 
