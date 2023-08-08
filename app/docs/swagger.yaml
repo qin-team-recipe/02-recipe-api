@@ -234,6 +234,15 @@ definitions:
       login_url:
         type: string
     type: object
+  product.ChefList:
+    properties:
+      lists:
+        items:
+          $ref: '#/definitions/domain.ChefsForGet'
+        type: array
+      page_info:
+        $ref: '#/definitions/usecase.PageInfo'
+    type: object
   product.ChefRecipeResponse:
     properties:
       lists:
@@ -970,35 +979,6 @@ paths:
       summary: レシピ手順登録
       tags:
       - recipeSteps
-  /recipes:
-    get:
-      consumes:
-      - application/x-json-stream
-      description: ※このAPIは未完成で、現在は全レシピの一覧を取得しています
-      responses:
-        "200":
-          description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/controllers.H'
-            - properties:
-                data:
-                  items:
-                    $ref: '#/definitions/domain.RecipesForGet'
-                  type: array
-              type: object
-        "404":
-          description: Not Found
-          schema:
-            allOf:
-            - $ref: '#/definitions/controllers.H'
-            - properties:
-                data:
-                  $ref: '#/definitions/usecase.ResultStatus'
-              type: object
-      summary: 特定シェフのレシピ一覧取得
-      tags:
-      - recipes
   /recipes/{id}:
     get:
       description: レシピ情報を取得する

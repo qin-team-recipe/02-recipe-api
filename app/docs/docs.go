@@ -1234,59 +1234,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/recipes": {
-            "get": {
-                "description": "※このAPIは未完成で、現在は全レシピの一覧を取得しています",
-                "consumes": [
-                    "application/x-json-stream"
-                ],
-                "tags": [
-                    "recipes"
-                ],
-                "summary": "特定シェフのレシピ一覧取得",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/controllers.H"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/definitions/domain.RecipesForGet"
-                                            }
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/controllers.H"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/usecase.ResultStatus"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                }
-            }
-        },
         "/recipes/{id}": {
             "get": {
                 "description": "レシピ情報を取得する",
@@ -2554,6 +2501,20 @@ const docTemplate = `{
             "properties": {
                 "login_url": {
                     "type": "string"
+                }
+            }
+        },
+        "product.ChefList": {
+            "type": "object",
+            "properties": {
+                "lists": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/domain.ChefsForGet"
+                    }
+                },
+                "page_info": {
+                    "$ref": "#/definitions/usecase.PageInfo"
                 }
             }
         },
