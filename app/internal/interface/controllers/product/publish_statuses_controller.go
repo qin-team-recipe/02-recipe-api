@@ -28,13 +28,13 @@ func NewPublishStatusesController(db gateways.DB) *PublichStatusesController {
 	}
 }
 
-// @summary		レシピの公開状態の更新
-// @description	レシピの公開状態を更新する
-// @tags			recipes
-// @Param		publish_status_reqest	body	product.PublishStatusRequest		true	"レシピのIDとステータスを含む"
-// @Success		200		{object}	controllers.H
-// @Failure		400		{object}	controllers.H
-// @router			/publishStatuses [patch]
+//	@summary		レシピの公開状態の更新
+//	@description	レシピの公開状態を更新する
+//	@tags			recipes
+//	@Param			publish_status_reqest	body		product.PublishStatusRequest	true	"レシピのIDとステータスを含む"
+//	@Success		200						{object}	controllers.H{data=usecase.ResultStatus}
+//	@Failure		400						{object}	controllers.H{data=usecase.ResultStatus}
+//	@router			/publishStatuses [patch]
 func (lc *PublichStatusesController) Patch(ctx controllers.Context) {
 
 	l := &PublishStatusRequest{}

@@ -25,13 +25,13 @@ func NewUserShoppingItemsController(db gateways.DB) *UserShoppingItemsController
 	}
 }
 
-//	@summary		Get users shopping items.
-//	@description	This API return list of users shopping items by User ID.
+//	@summary		買い物リストアイテム一覧取得
+//	@description	ユーザーのIDに紐づく買い物リストを取得する
 //	@tags			userShoppingItems
 //	@accept			application/x-json-stream
 //	@param			user_id	query		int	true	"User ID"
-//	@Success		200		{array}		domain.UserShoppingItemsForGet
-//	@Failure		404		{object}	usecase.ResultStatus
+//	@Success		200		{object}	controllers.H{data=[]domain.UserShoppingItemsForGet}
+//	@Failure		404		{object}	controllers.H{data=usecase.ResultStatus}
 //	@router			/userShoppingItems [get]
 func (uc *UserShoppingItemsController) GetList(ctx controllers.Context) {
 	userID, _ := strconv.Atoi(ctx.Query("user_id"))
@@ -44,16 +44,16 @@ func (uc *UserShoppingItemsController) GetList(ctx controllers.Context) {
 	ctx.JSON(res.Code, controllers.NewH("success", userShoppingItems))
 }
 
-//	@summary		Regist users shopping items.
-//	@description	This API regist shopping items yourself and return this results data.
+//	@summary		買い物リストアイテム登録
+//	@description	買い物リストにアイテムを登録し、結果を返却する
 //	@tags			userShoppingItems
 //	@accept			application/x-json-stream
 //	@param			user_id		formData	int		true	"User ID"
-//	@param			title		formData	string	true	"Title"
-//	@param			description	formData	string	false	"Description"
-//	@param			is_done		formData	boolean	false	"isDone"
-//	@Success		202			{object}	domain.UserShoppingItemsForGet
-//	@Failure		400			{object}	usecase.ResultStatus
+//	@param			title		formData	string	true	"タイトル"
+//	@param			description	formData	string	false	"説明"
+//	@param			is_done		formData	boolean	false	"チェック状態"
+//	@Success		202			{object}	controllers.H{data=domain.UserShoppingItemsForGet}
+//	@Failure		400			{object}	controllers.H{data=usecase.ResultStatus}
 //	@router			/userShoppingItems [post]
 func (uc *UserShoppingItemsController) Post(ctx controllers.Context) {
 
@@ -72,17 +72,17 @@ func (uc *UserShoppingItemsController) Post(ctx controllers.Context) {
 	ctx.JSON(res.Code, controllers.NewH("success", userShoppingItem))
 }
 
-//	@summary		Update state of done.
-//	@description	This API update state of done at user shopping items and return this results data.
+//	@summary		買い物リストアイテム更新
+//	@description	買い物リストアイテムの情報を更新し、結果を返却する
 //	@tags			userShoppingItems
 //	@accept			application/x-json-stream
 //	@param			id			path		string	true	"ID"
 //	@param			user_id		formData	int		true	"User ID"
-//	@param			title		formData	string	true	"Title"
-//	@param			description	formData	string	false	"Description"
-//	@param			is_done		formData	boolean	false	"isDone"
-//	@Success		200			{object}	domain.UserShoppingItemsForGet
-//	@Failure		400			{object}	usecase.ResultStatus
+//	@param			title		formData	string	true	"タイトル"
+//	@param			description	formData	string	false	"説明"
+//	@param			is_done		formData	boolean	false	"チェック状態"
+//	@Success		200			{object}	controllers.H{data=domain.UserShoppingItemsForGet}
+//	@Failure		400			{object}	controllers.H{data=usecase.ResultStatus}
 //	@router			/userShoppingItems/{id} [patch]
 func (uc *UserShoppingItemsController) Patch(ctx controllers.Context) {
 	id, _ := strconv.Atoi(ctx.Param("id"))
@@ -104,13 +104,13 @@ func (uc *UserShoppingItemsController) Patch(ctx controllers.Context) {
 	ctx.JSON(res.Code, controllers.NewH("success", userShoppingItem))
 }
 
-//	@summary		Delete shopping items.
-//	@description	This API delete user shopping items.
+//	@summary		買い物リストアイテム削除
+//	@description	買い物リストアイテムを削除する
 //	@tags			userShoppingItems
 //	@accept			application/x-json-stream
 //	@param			id	path		string	true	"ID"
-//	@Success		200	{nil}		nil
-//	@Failure		400	{object}	usecase.ResultStatus
+//	@Success		200	{object}	controllers.H{data=usecase.ResultStatus}
+//	@Failure		400	{object}	controllers.H{data=usecase.ResultStatus}
 //	@router			/userShoppingItems/{id} [delete]
 func (uc *UserShoppingItemsController) Delete(ctx controllers.Context) {
 	id, _ := strconv.Atoi(ctx.Param("id"))

@@ -46,7 +46,19 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/controllers.H"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/usecase.ResultStatus"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -90,7 +102,19 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/controllers.H"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/usecase.ResultStatus"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -98,14 +122,14 @@ const docTemplate = `{
         },
         "/chefFollows": {
             "get": {
-                "description": "This API return the list of following chefs by user.",
+                "description": "ユーザーがフォロー中のシェフの一覧を取得する",
                 "consumes": [
                     "application/x-json-stream"
                 ],
                 "tags": [
                     "chefFollows"
                 ],
-                "summary": "Get following chef list.",
+                "summary": "フォロー中のシェフ一覧取得",
                 "parameters": [
                     {
                         "type": "integer",
@@ -119,16 +143,40 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/domain.ChefFollowsForGet"
-                            }
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/domain.ChefFollowsForGet"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/usecase.ResultStatus"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/usecase.ResultStatus"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -175,7 +223,19 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/controllers.H"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/usecase.ResultStatus"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -204,13 +264,37 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/controllers.H"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/usecase.ResultStatus"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/controllers.H"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/usecase.ResultStatus"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -247,19 +331,25 @@ const docTemplate = `{
         },
         "/chefs": {
             "get": {
-                "description": "This API return all chef list.",
+                "description": "シェフ一覧を取得する",
                 "consumes": [
                     "application/x-json-stream"
                 ],
                 "tags": [
                     "chef"
                 ],
-                "summary": "Get chef list.",
+                "summary": "シェフ一覧取得",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "検索ワード",
+                        "description": "任意のWHERE文",
                         "name": "q",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "現在取得中の末尾カーソル",
+                        "name": "cursor",
                         "in": "query",
                         "required": true
                     }
@@ -268,16 +358,40 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/domain.ChefsForGet"
-                            }
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/product.ChefList"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/usecase.ResultStatus"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/usecase.ResultStatus"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -285,14 +399,14 @@ const docTemplate = `{
         },
         "/chefs/{screenName}": {
             "get": {
-                "description": "This API return unique chef by screenName.",
+                "description": "screenNameで指定されたシェフの情報を取得する",
                 "consumes": [
                     "application/x-json-stream"
                 ],
                 "tags": [
                     "chef"
                 ],
-                "summary": "Get unique chef.",
+                "summary": "シェフ取得",
                 "parameters": [
                     {
                         "type": "string",
@@ -306,13 +420,37 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/domain.ChefsForGet"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/domain.ChefsForGet"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/usecase.ResultStatus"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/usecase.ResultStatus"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -356,7 +494,19 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/controllers.H"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/usecase.ResultStatus"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -391,7 +541,19 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/controllers.H"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/usecase.ResultStatus"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -406,13 +568,37 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/controllers.H"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/usecase.ResultStatus"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/controllers.H"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/usecase.ResultStatus"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -438,13 +624,37 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/controllers.H"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/domain.UsersForGet"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/controllers.H"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/usecase.ResultStatus"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -472,13 +682,37 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/controllers.H"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/usecase.ResultStatus"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/controllers.H"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/usecase.ResultStatus"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -486,14 +720,14 @@ const docTemplate = `{
         },
         "/recipeFavorites": {
             "get": {
-                "description": "This API return list of recipes of favorite.",
+                "description": "ユーザーのお気に入りレシピ一覧を取得する際のリクエスト",
                 "consumes": [
                     "application/x-json-stream"
                 ],
                 "tags": [
                     "recipeFavorites"
                 ],
-                "summary": "Get list of recipes of favorite.",
+                "summary": "ユーザーのお気に入りレシピ一覧取得",
                 "parameters": [
                     {
                         "type": "integer",
@@ -507,16 +741,40 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/domain.RecipeFavoritesForGet"
-                            }
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/domain.RecipeFavoritesForGet"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/usecase.ResultStatus"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/usecase.ResultStatus"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -563,7 +821,19 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/controllers.H"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/usecase.ResultStatus"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -592,13 +862,37 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/controllers.H"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/usecase.ResultStatus"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/controllers.H"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/usecase.ResultStatus"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -627,29 +921,53 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/domain.RecipeIngredientsForGet"
-                            }
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/domain.RecipeIngredientsForGet"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/usecase.ResultStatus"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/usecase.ResultStatus"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
             },
             "post": {
-                "description": "This API regist recipe ingredients and return this results data.",
+                "description": "レシピ材料を登録して結果を返却する",
                 "consumes": [
                     "application/x-json-stream"
                 ],
                 "tags": [
                     "recipeIngredients"
                 ],
-                "summary": "Regist recipe ingredients.",
+                "summary": "レシピ材料登録",
                 "parameters": [
                     {
                         "type": "integer",
@@ -660,14 +978,14 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Name",
+                        "description": "材料名",
                         "name": "name",
                         "in": "formData",
                         "required": true
                     },
                     {
                         "type": "string",
-                        "description": "Description",
+                        "description": "材料説明",
                         "name": "description",
                         "in": "formData"
                     }
@@ -676,13 +994,37 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/domain.RecipeIngredientsForGet"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/domain.RecipeIngredientsForGet"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/usecase.ResultStatus"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/usecase.ResultStatus"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -690,14 +1032,14 @@ const docTemplate = `{
         },
         "/recipeLinks": {
             "post": {
-                "description": "This API regist recipe links and return this results data.",
+                "description": "レシピURLを登録し、結果を返却する",
                 "consumes": [
                     "application/x-json-stream"
                 ],
                 "tags": [
                     "recipeLinks"
                 ],
-                "summary": "Regist recipe links.",
+                "summary": "レシピURLを登録する",
                 "parameters": [
                     {
                         "type": "integer",
@@ -718,13 +1060,37 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/domain.RecipeLinksForGet"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/domain.RecipeLinksForGet"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/usecase.ResultStatus"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/usecase.ResultStatus"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -753,29 +1119,53 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/domain.RecipeStepsForGet"
-                            }
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/domain.RecipeStepsForGet"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/usecase.ResultStatus"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/usecase.ResultStatus"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
             },
             "post": {
-                "description": "This API regist recipe steps and return this results data.",
+                "description": "レシピ手順を登録し、結果を返却する",
                 "consumes": [
                     "application/x-json-stream"
                 ],
                 "tags": [
                     "recipeSteps"
                 ],
-                "summary": "Regist recipe steps.",
+                "summary": "レシピ手順登録",
                 "parameters": [
                     {
                         "type": "integer",
@@ -786,20 +1176,20 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Title",
+                        "description": "タイトル",
                         "name": "title",
                         "in": "formData",
                         "required": true
                     },
                     {
                         "type": "string",
-                        "description": "Description",
+                        "description": "説明",
                         "name": "description",
                         "in": "formData"
                     },
                     {
                         "type": "integer",
-                        "description": "Step Number",
+                        "description": "ステップNo",
                         "name": "step_number",
                         "in": "formData"
                     }
@@ -808,13 +1198,37 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/domain.RecipeStepsForGet"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/domain.RecipeStepsForGet"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/usecase.ResultStatus"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/usecase.ResultStatus"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -832,21 +1246,47 @@ const docTemplate = `{
                         "type": "string",
                         "description": "type=chefFollowとすることでフォローしているシェフの情報を取得する",
                         "name": "type",
-                        "in": "query",
-                        "required": true
+                        "in": "query"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/controllers.H"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/domain.RecipesForGet"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/controllers.H"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/usecase.ResultStatus"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -872,13 +1312,90 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/controllers.H"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/domain.RecipesForGet"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/controllers.H"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/usecase.ResultStatus"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/recommend/chefs": {
+            "get": {
+                "description": "直近3日間の獲得フォロワー数の上位10人を取得",
+                "consumes": [
+                    "application/x-json-stream"
+                ],
+                "tags": [
+                    "recommend"
+                ],
+                "summary": "注目のシェフ",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/domain.ChefsForGet"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/usecase.ResultStatus"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -898,13 +1415,40 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/domain.RecipesForGet"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/domain.RecipesForGet"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/usecase.ResultStatus"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/usecase.ResultStatus"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -950,7 +1494,19 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/controllers.H"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/usecase.ResultStatus"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -958,14 +1514,14 @@ const docTemplate = `{
         },
         "/shoppingItems": {
             "get": {
-                "description": "This API return list of recipes shopping items by Recipe ID.",
+                "description": "指定されたレシピIDに紐づく買い物リストを取得する",
                 "consumes": [
                     "application/x-json-stream"
                 ],
                 "tags": [
                     "shoppingItems"
                 ],
-                "summary": "Get recipes shopping items.",
+                "summary": "買い物リスト取得",
                 "parameters": [
                     {
                         "type": "integer",
@@ -979,60 +1535,111 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/domain.ShoppingItemsForGet"
-                            }
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/domain.ShoppingItemsForGet"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/usecase.ResultStatus"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/usecase.ResultStatus"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
             },
             "post": {
-                "description": "This API regist shopping items at recipe and return this results data.",
+                "description": "買い物リストアイテムを登録し、結果を返却する",
                 "consumes": [
                     "application/x-json-stream"
                 ],
                 "tags": [
                     "shoppingItems"
                 ],
-                "summary": "Regist recipes shopping items.",
+                "summary": "買い物リストアイテム登録",
                 "parameters": [
                     {
                         "type": "integer",
                         "description": "User ID",
                         "name": "user_id",
-                        "in": "formData"
+                        "in": "formData",
+                        "required": true
                     },
                     {
                         "type": "integer",
-                        "description": "Recipe Ingredient ID",
+                        "description": "レシピ材料ID",
                         "name": "recipe_ingredient_id",
-                        "in": "formData"
+                        "in": "formData",
+                        "required": true
                     },
                     {
                         "type": "boolean",
-                        "description": "IsDone",
+                        "description": "チェック状態",
                         "name": "id_done",
-                        "in": "formData"
+                        "in": "formData",
+                        "required": true
                     }
                 ],
                 "responses": {
                     "202": {
                         "description": "Accepted",
                         "schema": {
-                            "$ref": "#/definitions/domain.ShoppingItemsForGet"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/domain.ShoppingItemsForGet"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/usecase.ResultStatus"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/usecase.ResultStatus"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -1040,14 +1647,14 @@ const docTemplate = `{
         },
         "/shoppingItems/{id}": {
             "delete": {
-                "description": "This API delete shopping items.",
+                "description": "買い物リストアイテムを削除し、結果を返却する",
                 "consumes": [
                     "application/x-json-stream"
                 ],
                 "tags": [
                     "shoppingItems"
                 ],
-                "summary": "Delete shopping items.",
+                "summary": "買い物リストアイテム削除",
                 "parameters": [
                     {
                         "type": "string",
@@ -1061,26 +1668,50 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "nil"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/usecase.ResultStatus"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/usecase.ResultStatus"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/usecase.ResultStatus"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
             },
             "patch": {
-                "description": "This API update state of done at shopping items and return this results data.",
+                "description": "買い物リストアイテムのチェック状態を更新し、結果を返却する",
                 "consumes": [
                     "application/x-json-stream"
                 ],
                 "tags": [
                     "shoppingItems"
                 ],
-                "summary": "Update state of done.",
+                "summary": "買い物リストアイテム更新",
                 "parameters": [
                     {
                         "type": "string",
@@ -1114,13 +1745,37 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/domain.ShoppingItemsForGet"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/domain.ShoppingItemsForGet"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/usecase.ResultStatus"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/usecase.ResultStatus"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -1128,38 +1783,38 @@ const docTemplate = `{
         },
         "/userRecipes": {
             "post": {
-                "description": "This API regist user recipes and return this results data.",
+                "description": "一般シェフのレシピを登録し、結果を返却する",
                 "consumes": [
                     "application/x-json-stream"
                 ],
                 "tags": [
                     "userRecipes"
                 ],
-                "summary": "Regist user recipes.",
+                "summary": "一般シェフレシピ登録",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Title",
+                        "description": "タイトル",
                         "name": "title",
                         "in": "formData",
                         "required": true
                     },
                     {
                         "type": "string",
-                        "description": "Description",
+                        "description": "説明",
                         "name": "description",
                         "in": "formData"
                     },
                     {
                         "type": "integer",
-                        "description": "Servings",
+                        "description": "対象人数",
                         "name": "servings",
                         "in": "formData",
                         "required": true
                     },
                     {
                         "type": "boolean",
-                        "description": "isDraft",
+                        "description": "下書きフラグ",
                         "name": "is_draft",
                         "in": "formData"
                     }
@@ -1168,13 +1823,37 @@ const docTemplate = `{
                     "202": {
                         "description": "Accepted",
                         "schema": {
-                            "$ref": "#/definitions/domain.UserRecipesForGet"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/domain.UserRecipesForGet"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/usecase.ResultStatus"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/usecase.ResultStatus"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -1182,14 +1861,14 @@ const docTemplate = `{
         },
         "/userShoppingItems": {
             "get": {
-                "description": "This API return list of users shopping items by User ID.",
+                "description": "ユーザーのIDに紐づく買い物リストを取得する",
                 "consumes": [
                     "application/x-json-stream"
                 ],
                 "tags": [
                     "userShoppingItems"
                 ],
-                "summary": "Get users shopping items.",
+                "summary": "買い物リストアイテム一覧取得",
                 "parameters": [
                     {
                         "type": "integer",
@@ -1203,29 +1882,53 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/domain.UserShoppingItemsForGet"
-                            }
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/domain.UserShoppingItemsForGet"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/usecase.ResultStatus"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/usecase.ResultStatus"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
             },
             "post": {
-                "description": "This API regist shopping items yourself and return this results data.",
+                "description": "買い物リストにアイテムを登録し、結果を返却する",
                 "consumes": [
                     "application/x-json-stream"
                 ],
                 "tags": [
                     "userShoppingItems"
                 ],
-                "summary": "Regist users shopping items.",
+                "summary": "買い物リストアイテム登録",
                 "parameters": [
                     {
                         "type": "integer",
@@ -1236,20 +1939,20 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Title",
+                        "description": "タイトル",
                         "name": "title",
                         "in": "formData",
                         "required": true
                     },
                     {
                         "type": "string",
-                        "description": "Description",
+                        "description": "説明",
                         "name": "description",
                         "in": "formData"
                     },
                     {
                         "type": "boolean",
-                        "description": "isDone",
+                        "description": "チェック状態",
                         "name": "is_done",
                         "in": "formData"
                     }
@@ -1258,13 +1961,37 @@ const docTemplate = `{
                     "202": {
                         "description": "Accepted",
                         "schema": {
-                            "$ref": "#/definitions/domain.UserShoppingItemsForGet"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/domain.UserShoppingItemsForGet"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/usecase.ResultStatus"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/usecase.ResultStatus"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -1272,14 +1999,14 @@ const docTemplate = `{
         },
         "/userShoppingItems/{id}": {
             "delete": {
-                "description": "This API delete user shopping items.",
+                "description": "買い物リストアイテムを削除する",
                 "consumes": [
                     "application/x-json-stream"
                 ],
                 "tags": [
                     "userShoppingItems"
                 ],
-                "summary": "Delete shopping items.",
+                "summary": "買い物リストアイテム削除",
                 "parameters": [
                     {
                         "type": "string",
@@ -1293,26 +2020,50 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "nil"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/usecase.ResultStatus"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/usecase.ResultStatus"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/usecase.ResultStatus"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
             },
             "patch": {
-                "description": "This API update state of done at user shopping items and return this results data.",
+                "description": "買い物リストアイテムの情報を更新し、結果を返却する",
                 "consumes": [
                     "application/x-json-stream"
                 ],
                 "tags": [
                     "userShoppingItems"
                 ],
-                "summary": "Update state of done.",
+                "summary": "買い物リストアイテム更新",
                 "parameters": [
                     {
                         "type": "string",
@@ -1330,20 +2081,20 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Title",
+                        "description": "タイトル",
                         "name": "title",
                         "in": "formData",
                         "required": true
                     },
                     {
                         "type": "string",
-                        "description": "Description",
+                        "description": "説明",
                         "name": "description",
                         "in": "formData"
                     },
                     {
                         "type": "boolean",
-                        "description": "isDone",
+                        "description": "チェック状態",
                         "name": "is_done",
                         "in": "formData"
                     }
@@ -1352,13 +2103,37 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/domain.UserShoppingItemsForGet"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/domain.UserShoppingItemsForGet"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/usecase.ResultStatus"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/usecase.ResultStatus"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -1366,14 +2141,14 @@ const docTemplate = `{
         },
         "/users/{id}": {
             "get": {
-                "description": "get user info",
+                "description": "test taro を返却",
                 "consumes": [
                     "application/x-json-stream"
                 ],
                 "tags": [
                     "users"
                 ],
-                "summary": "product users",
+                "summary": "テストAPI",
                 "parameters": [
                     {
                         "type": "string",
@@ -1387,13 +2162,37 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/domain.Users"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/domain.Users"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/usecase.ResultStatus"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/usecase.ResultStatus"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -1760,6 +2559,20 @@ const docTemplate = `{
             "properties": {
                 "login_url": {
                     "type": "string"
+                }
+            }
+        },
+        "product.ChefList": {
+            "type": "object",
+            "properties": {
+                "lists": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/domain.ChefsForGet"
+                    }
+                },
+                "page_info": {
+                    "$ref": "#/definitions/usecase.PageInfo"
                 }
             }
         },
