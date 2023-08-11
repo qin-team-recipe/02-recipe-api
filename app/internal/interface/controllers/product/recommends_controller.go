@@ -1,6 +1,8 @@
 package product
 
 import (
+	"strconv"
+
 	"github.com/qin-team-recipe/02-recipe-api/internal/interface/controllers"
 	"github.com/qin-team-recipe/02-recipe-api/internal/interface/gateways"
 	"github.com/qin-team-recipe/02-recipe-api/internal/interface/gateways/repository"
@@ -35,7 +37,9 @@ func NewRecommendsController(db gateways.DB) *RecommendsController {
 
 func (rc *RecommendsController) GetRecommendChefList(ctx controllers.Context) {
 
-	chefs, res := rc.ChefInteractor.GetRecommendChefList()
+	cursor, _ := strconv.Atoi(ctx.Query("cursor"))
+
+	chefs, res := rc.ChefInteractor.GetRecommendChefList(cursor)
 	if res.Error != nil {
 		ctx.JSON(res.Code, controllers.NewH(res.Error.Error(), nil))
 		return
@@ -44,16 +48,18 @@ func (rc *RecommendsController) GetRecommendChefList(ctx controllers.Context) {
 	ctx.JSON(res.Code, controllers.NewH("success", chefs))
 }
 
-//	@summary		話題のレシピ
-//	@description	過去3日間でお気に入り登録の多かったレシピを取得
-//	@tags			recommend
-//	@accept			application/x-json-stream
-//	@Success		200	{object}	domain.RecipesForGet
-//	@Failure		404	{object}	usecase.ResultStatus
-//	@router			/recommend/recipes [get]
+// @summary		話題のレシピ
+// @description	過去3日間でお気に入り登録の多かったレシピを取得
+// @tags			recommend
+// @accept			application/x-json-stream
+// @Success		200	{object}	domain.RecipesForGet
+// @Failure		404	{object}	usecase.ResultStatus
+// @router			/recommend/recipes [get]
 func (rc *RecommendsController) GetRecommendRecipeList(ctx controllers.Context) {
 
-	recipes, res := rc.RecipeInteractor.GetRecommendRecipeList()
+	cursor, _ := strconv.Atoi(ctx.Query("cursor"))
+
+	recipes, res := rc.RecipeInteractor.GetRecommendRecipeList(cursor)
 	if res.Error != nil {
 		ctx.JSON(res.Code, controllers.NewH(res.Error.Error(), nil))
 		return

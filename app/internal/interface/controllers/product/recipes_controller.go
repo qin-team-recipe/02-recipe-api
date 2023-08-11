@@ -3,6 +3,7 @@ package product
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/qin-team-recipe/02-recipe-api/constants"
 	"github.com/qin-team-recipe/02-recipe-api/internal/interface/controllers"
@@ -60,8 +61,9 @@ func (rc *RecipesController) GetList(ctx controllers.Context, jwt token.Maker) {
 	}
 
 	q := ctx.Query("q")
+	cursor, _ := strconv.Atoi(ctx.Query("cursor"))
 
-	recipes, res := rc.Interactor.GetList(userID, q)
+	recipes, res := rc.Interactor.GetList(userID, q, cursor)
 	if res.Error != nil {
 		ctx.JSON(res.Code, controllers.NewH(res.Error.Error(), nil))
 		return
@@ -86,7 +88,9 @@ func (rc *RecipesController) getLatestRecipesFromChefsFollows(ctx controllers.Co
 		return
 	}
 
-	recipes, res := rc.Interactor.GetLatestRecipesFromChefsFollows(userID)
+	cursor, _ := strconv.Atoi(ctx.Query("cursor"))
+
+	recipes, res := rc.Interactor.GetLatestRecipesFromChefsFollows(userID, cursor)
 	if res.Error != nil {
 		ctx.JSON(res.Code, controllers.NewH(res.Error.Error(), nil))
 		return

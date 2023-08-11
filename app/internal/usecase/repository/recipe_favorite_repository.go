@@ -7,7 +7,7 @@ import (
 
 type RecipeFavoriteRepository interface {
 	FindByUserID(db *gorm.DB, userID int) ([]*domain.RecipeFavorites, error)
-	FindByNumberOfFavoriteSubscriptions(db *gorm.DB) (map[int]int64, error)
+	FindByNumberOfFavoriteSubscriptions(db *gorm.DB, cursor int) (map[int]int64, error)
 	FindByChefRecipeIDsAndNumberOfFavoriteSubscriptions(db *gorm.DB, chefID int, cursor int) (map[int]int64, error)
 	FirstByUserIDAndRecipeID(db *gorm.DB, userID, recipeID int) (*domain.RecipeFavorites, error)
 	Create(db *gorm.DB, favorite *domain.RecipeFavorites) (*domain.RecipeFavorites, error)
