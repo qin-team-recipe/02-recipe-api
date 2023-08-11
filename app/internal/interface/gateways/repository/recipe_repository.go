@@ -27,7 +27,7 @@ func (rr *RecipeRepository) Find(db *gorm.DB) ([]*domain.Recipes, error) {
 	return recipes, nil
 }
 
-func (rr *RecipeRepository) FindByQuery(db *gorm.DB, userID int, q string) ([]*domain.Recipes, error) {
+func (rr *RecipeRepository) FindByQuery(db *gorm.DB, userID, cursor int, q string) ([]*domain.Recipes, error) {
 	recipes := []*domain.Recipes{}
 
 	query := db.
@@ -41,6 +41,10 @@ func (rr *RecipeRepository) FindByQuery(db *gorm.DB, userID int, q string) ([]*d
 		query = query.
 			Joins("left outer join user_recipes as ur on recipes.id = ur.recipe_id").
 			Or("ur.user_id = ?", userID)
+	}
+
+	if 0 < cursor {
+		query = query.Where("recipes.id < ?", cursor)
 	}
 
 	query.Order("created_at desc").Find(&recipes)

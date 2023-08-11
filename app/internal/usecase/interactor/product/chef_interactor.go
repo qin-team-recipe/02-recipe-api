@@ -91,12 +91,12 @@ func (ci *ChefInteractor) Get(userID int, screenName string) (*domain.ChefsForGe
 
 // おすすめのシェフリストを取得
 // レコメンドの条件
-func (ci *ChefInteractor) GetRecommendChefList() ([]*domain.ChefsForGet, *usecase.ResultStatus) {
+func (ci *ChefInteractor) GetRecommendChefList(cursor int) ([]*domain.ChefsForGet, *usecase.ResultStatus) {
 
 	db := ci.DB.Connect()
 
 	// 直近三日のChefIDごとの数が多いChefFollowsを取得する
-	chefFollowsCounts, err := ci.ChefFollow.FindBybyNumberOfFollowSubscriptions(db)
+	chefFollowsCounts, err := ci.ChefFollow.FindBybyNumberOfFollowSubscriptions(db, cursor)
 	if err != nil {
 		return []*domain.ChefsForGet{}, usecase.NewResultStatus(http.StatusBadRequest, err)
 	}
