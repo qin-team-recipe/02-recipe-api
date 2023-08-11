@@ -259,6 +259,15 @@ definitions:
       status:
         type: string
     type: object
+  product.RecipeResponse:
+    properties:
+      lists:
+        items:
+          $ref: '#/definitions/domain.RecipesForGet'
+        type: array
+      page_info:
+        $ref: '#/definitions/usecase.PageInfo'
+    type: object
   product.UserResponse:
     properties:
       token:
@@ -995,9 +1004,7 @@ paths:
             - $ref: '#/definitions/controllers.H'
             - properties:
                 data:
-                  items:
-                    $ref: '#/definitions/domain.RecipesForGet'
-                  type: array
+                  $ref: '#/definitions/product.RecipeResponse'
               type: object
         "400":
           description: Bad Request
@@ -1084,9 +1091,7 @@ paths:
             - $ref: '#/definitions/controllers.H'
             - properties:
                 data:
-                  items:
-                    $ref: '#/definitions/domain.RecipesForGet'
-                  type: array
+                  $ref: '#/definitions/product.RecipeResponse'
               type: object
         "404":
           description: Not Found

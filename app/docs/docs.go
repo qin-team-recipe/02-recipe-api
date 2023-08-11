@@ -1261,10 +1261,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/definitions/domain.RecipesForGet"
-                                            }
+                                            "$ref": "#/definitions/product.RecipeResponse"
                                         }
                                     }
                                 }
@@ -1423,10 +1420,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/definitions/domain.RecipesForGet"
-                                            }
+                                            "$ref": "#/definitions/product.RecipeResponse"
                                         }
                                     }
                                 }
@@ -2598,6 +2592,20 @@ const docTemplate = `{
                 },
                 "status": {
                     "type": "string"
+                }
+            }
+        },
+        "product.RecipeResponse": {
+            "type": "object",
+            "properties": {
+                "lists": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/domain.RecipesForGet"
+                    }
+                },
+                "page_info": {
+                    "$ref": "#/definitions/usecase.PageInfo"
                 }
             }
         },

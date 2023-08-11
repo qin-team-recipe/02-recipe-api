@@ -59,7 +59,7 @@ func (rc *RecommendsController) GetRecommendChefList(ctx controllers.Context) {
 // @description	過去3日間でお気に入り登録の多かったレシピを取得
 // @tags			recommend
 // @accept			application/x-json-stream
-// @Success		200	{object}	controllers.H{data=[]domain.RecipesForGet}
+// @Success		200	{object}	controllers.H{data=product.RecipeResponse}
 // @Failure		404	{object}	controllers.H{data=usecase.ResultStatus}
 // @router			/recommend/recipes [get]
 func (rc *RecommendsController) GetRecommendRecipeList(ctx controllers.Context) {
