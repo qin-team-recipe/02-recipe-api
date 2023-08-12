@@ -3,6 +3,7 @@ package product
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/qin-team-recipe/02-recipe-api/constants"
 	"github.com/qin-team-recipe/02-recipe-api/internal/domain"
@@ -31,19 +32,22 @@ func NewRecipeFavoritesController(db gateways.DB) *RecipeFavoritesController {
 	}
 }
 
-//	@summary		ユーザーのお気に入りレシピ一覧取得
-//	@description	ユーザーのお気に入りレシピ一覧を取得する際のリクエスト
-//	@tags			recipeFavorites
-//	@accept			application/x-json-stream
-//	@param			user_id	query		int	true	"User ID"
-//	@Success		200		{object}	controllers.H{data=[]domain.RecipeFavoritesForGet}
-//	@Failure		404		{object}	controllers.H{data=usecase.ResultStatus}
-//	@router			/recipeFavorites [get]
+// @summary		ユーザーのお気に入りレシピ一覧取得
+// @description	ユーザーのお気に入りレシピ一覧を取得する際のリクエスト
+// @tags			recipeFavorites
+// @accept			application/x-json-stream
+// @param			user_id	query		int	true	"User ID"
+// @Success		200		{object}	controllers.H{data=[]domain.RecipeFavoritesForGet}
+// @Failure		404		{object}	controllers.H{data=usecase.ResultStatus}
+// @router			/recipeFavorites [get]
 func (rc *RecipeFavoritesController) GetList(ctx controllers.Context) {
 
 	authPayload := ctx.MustGet(constants.AuthorizationPayloadKey).(*token.Payload)
 
-	recipeFavorites, res := rc.Interactor.GetList(authPayload.Audience)
+	cursor, _ := strconv.Atoi(ctx.Query("cursor"))
+	limit, _ := strconv.Atoi(ctx.Query("limit"))
+
+	recipeFavorites, res := rc.Interactor.GetList(authPayload.Audience, cursor, limit)
 	if res.Error != nil {
 		ctx.JSON(res.Code, controllers.NewH(res.Error.Error(), nil))
 		return
@@ -51,14 +55,14 @@ func (rc *RecipeFavoritesController) GetList(ctx controllers.Context) {
 	ctx.JSON(res.Code, controllers.NewH("success", recipeFavorites))
 }
 
-//	@summary		ユーザーがレシピをお気に入り登録
-//	@description	レシピをお気に入り登録する際のリクエスト
-//	@tags			recipeFavorites
-//	@accept			json
-//	@Param			recipeFavorite	body		domain.RecipeFavorites	true	"user_id, recipe_id は必須"
-//	@Success		200				{object}	controllers.H{data=domain.RecipeFavoritesForGet}
-//	@Failure		400				{object}	controllers.H{data=usecase.ResultStatus}
-//	@router			/recipeFavorites [post]
+// @summary		ユーザーがレシピをお気に入り登録
+// @description	レシピをお気に入り登録する際のリクエスト
+// @tags			recipeFavorites
+// @accept			json
+// @Param			recipeFavorite	body		domain.RecipeFavorites	true	"user_id, recipe_id は必須"
+// @Success		200				{object}	controllers.H{data=domain.RecipeFavoritesForGet}
+// @Failure		400				{object}	controllers.H{data=usecase.ResultStatus}
+// @router			/recipeFavorites [post]
 func (rc *RecipeFavoritesController) Post(ctx controllers.Context) {
 
 	f := &domain.RecipeFavorites{}
@@ -78,14 +82,14 @@ func (rc *RecipeFavoritesController) Post(ctx controllers.Context) {
 
 }
 
-//	@summary		ユーザーがレシピをお気に入り解除
-//	@description	レシピをお気に入り解除する際のリクエスト
-//	@tags			recipeFavorites
-//	@accept			json
-//	@Param			recipeFavorite	body		domain.RecipeFavorites	true	"user_id, recipe_id は必須"
-//	@Success		200				{object}	controllers.H{data=usecase.ResultStatus}
-//	@Failure		400				{object}	controllers.H{data=usecase.ResultStatus}
-//	@router			/recipeFavorites [delete]
+// @summary		ユーザーがレシピをお気に入り解除
+// @description	レシピをお気に入り解除する際のリクエスト
+// @tags			recipeFavorites
+// @accept			json
+// @Param			recipeFavorite	body		domain.RecipeFavorites	true	"user_id, recipe_id は必須"
+// @Success		200				{object}	controllers.H{data=usecase.ResultStatus}
+// @Failure		400				{object}	controllers.H{data=usecase.ResultStatus}
+// @router			/recipeFavorites [delete]
 func (rc *RecipeFavoritesController) Delete(ctx controllers.Context) {
 	f := &domain.RecipeFavorites{}
 
