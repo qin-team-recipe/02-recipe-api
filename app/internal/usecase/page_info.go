@@ -10,9 +10,9 @@ type PageInfo struct {
 	EndCursor       string `json:"end_cursor"`
 }
 
-func NewPageInfo(lenght, cursor, endCursor, startCursor int) PageInfo {
+func NewPageInfo(limit, lenght, cursor, endCursor, startCursor int) PageInfo {
 	return PageInfo{
-		HasNextPage:     10 < lenght,
+		HasNextPage:     limit < lenght,
 		HasPreviousPage: 0 < cursor,
 		StartCursor:     strconv.Itoa(startCursor),
 		EndCursor:       strconv.Itoa(endCursor),

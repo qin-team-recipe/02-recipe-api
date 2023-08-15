@@ -43,7 +43,7 @@ func (ri *RecipeFavoriteInteractor) GetList(userID, cursor, limit int) (RecipeFa
 
 	return RecipeFavoriteResponse{
 		Lists:    builtRecipeFavorites,
-		PageInfo: usecase.NewPageInfo(len(builtRecipeFavorites), cursor, builtRecipeFavorites[len(builtRecipeFavorites)-1].ID, builtRecipeFavorites[0].ID),
+		PageInfo: usecase.NewPageInfo(10, len(builtRecipeFavorites), cursor, builtRecipeFavorites[len(builtRecipeFavorites)-1].ID, builtRecipeFavorites[0].ID),
 	}, usecase.NewResultStatus(http.StatusOK, nil)
 }
 

@@ -11,9 +11,20 @@ import (
 
 type ChefFollowRepository struct{}
 
-func (cr *ChefFollowRepository) FindByUserID(db *gorm.DB, userID int) ([]*domain.ChefFollows, error) {
+func (cr *ChefFollowRepository) FindByUserID(db *gorm.DB, userID, cursor, limit int) ([]*domain.ChefFollows, error) {
 	chefFollows := []*domain.ChefFollows{}
-	db.Where("user_id = ?", userID).Find(&chefFollows)
+
+	query := db.Where("user_id = ?", userID).Order("created_at desc")
+
+	if 0 < cursor {
+		query = query.Where("id < ?", cursor)
+	}
+
+	if 0 < limit {
+		query = query.Limit(limit)
+	}
+
+	query.Find(&chefFollows)
 	if len(chefFollows) <= 0 {
 		return []*domain.ChefFollows{}, errors.New("chefFollows is not found")
 	}

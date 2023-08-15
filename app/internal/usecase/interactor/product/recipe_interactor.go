@@ -41,7 +41,7 @@ func (ri *RecipeInteractor) GetList(userID int, q string, cursor int) (RecipeRes
 
 	return RecipeResponse{
 		Lists:    builtRecipes,
-		PageInfo: usecase.NewPageInfo(len(builtRecipes), cursor, builtRecipes[len(builtRecipes)-1].ID, builtRecipes[0].ID),
+		PageInfo: usecase.NewPageInfo(10, len(builtRecipes), cursor, builtRecipes[len(builtRecipes)-1].ID, builtRecipes[0].ID),
 	}, usecase.NewResultStatus(http.StatusOK, nil)
 }
 
@@ -49,7 +49,7 @@ func (ri *RecipeInteractor) GetLatestRecipesFromChefsFollows(userID, cursor int)
 
 	db := ri.DB.Connect()
 	// フォローしているシェフの取得
-	chefFollows, err := ri.ChefFollow.FindByUserID(db, userID)
+	chefFollows, err := ri.ChefFollow.FindByUserID(db, userID, 0, -1)
 	if err != nil {
 		return RecipeResponse{}, usecase.NewResultStatus(http.StatusBadRequest, err)
 	}
@@ -79,7 +79,7 @@ func (ri *RecipeInteractor) GetLatestRecipesFromChefsFollows(userID, cursor int)
 	builtRecipes, _ := ri.buildList(db, recipes)
 	return RecipeResponse{
 		Lists:    builtRecipes,
-		PageInfo: usecase.NewPageInfo(len(builtRecipes), cursor, builtRecipes[len(builtRecipes)-1].ID, builtRecipes[0].ID),
+		PageInfo: usecase.NewPageInfo(10, len(builtRecipes), cursor, builtRecipes[len(builtRecipes)-1].ID, builtRecipes[0].ID),
 	}, usecase.NewResultStatus(http.StatusOK, nil)
 }
 
@@ -109,7 +109,7 @@ func (ri *RecipeInteractor) GetRecommendRecipeList(cursor int) (RecipeResponse, 
 
 	return RecipeResponse{
 		Lists:    builtRecipes,
-		PageInfo: usecase.NewPageInfo(len(builtRecipes), cursor, builtRecipes[len(builtRecipes)-1].ID, builtRecipes[0].ID),
+		PageInfo: usecase.NewPageInfo(10, len(builtRecipes), cursor, builtRecipes[len(builtRecipes)-1].ID, builtRecipes[0].ID),
 	}, usecase.NewResultStatus(http.StatusOK, nil)
 }
 
