@@ -30,6 +30,10 @@ type RecipeFavoriteResponse struct {
 func (ri *RecipeFavoriteInteractor) GetList(userID, cursor, limit int) (RecipeFavoriteResponse, *usecase.ResultStatus) {
 	db := ri.DB.Connect()
 
+	if limit <= 0 {
+		limit = 10
+	}
+
 	recipeFavorites, err := ri.RecipeFavorite.FindByUserID(db, userID, cursor, limit+1)
 	if err != nil {
 		return RecipeFavoriteResponse{}, usecase.NewResultStatus(http.StatusNotFound, err)

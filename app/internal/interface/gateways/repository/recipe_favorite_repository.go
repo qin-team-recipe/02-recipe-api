@@ -14,10 +14,10 @@ type RecipeFavoriteRepository struct{}
 func (rr *RecipeFavoriteRepository) FindByUserID(db *gorm.DB, userID, cursor, limit int) ([]*domain.RecipeFavorites, error) {
 	recipeFavorites := []*domain.RecipeFavorites{}
 
-	query := db.Where("user_id = ?", userID).Order("created_at").Limit(limit)
+	query := db.Where("user_id = ?", userID).Order("created_at desc").Limit(limit)
 
 	if 0 < cursor {
-		query = query.Where("user_id < ?", cursor)
+		query = query.Where("id < ?", cursor)
 	}
 
 	query.Find(&recipeFavorites)
