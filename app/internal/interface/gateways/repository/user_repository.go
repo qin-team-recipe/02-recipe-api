@@ -42,7 +42,9 @@ func (ur *UserRepository) Save(db *gorm.DB, u *domain.Users) (*domain.Users, err
 
 func (ur *UserRepository) Delete(db *gorm.DB, u *domain.Users) error {
 
-	u.DeletedAt = time.Now().Unix()
+	deletedAt := time.Now().Unix()
+
+	u.DeletedAt = &deletedAt
 
 	if err := db.Save(u).Error; err != nil {
 		return err

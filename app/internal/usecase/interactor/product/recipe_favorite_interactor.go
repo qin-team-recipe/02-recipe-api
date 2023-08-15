@@ -22,17 +22,29 @@ type RecipeFavoriteInteractor struct {
 	UserRecipe     repository.UserRecipeRepository
 }
 
-func (ri *RecipeFavoriteInteractor) GetList(userID int) ([]*domain.RecipeFavoritesForGet, *usecase.ResultStatus) {
+type RecipeFavoriteResponse struct {
+	Lists    []*domain.RecipeFavoritesForGet `json:"lists"`
+	PageInfo usecase.PageInfo                `json:"page_info"`
+}
+
+func (ri *RecipeFavoriteInteractor) GetList(userID, cursor, limit int) (RecipeFavoriteResponse, *usecase.ResultStatus) {
 	db := ri.DB.Connect()
 
-	recipeFavorites, err := ri.RecipeFavorite.FindByUserID(db, userID)
+	if limit <= 0 {
+		limit = 10
+	}
+
+	recipeFavorites, err := ri.RecipeFavorite.FindByUserID(db, userID, cursor, limit+1)
 	if err != nil {
-		return []*domain.RecipeFavoritesForGet{}, usecase.NewResultStatus(http.StatusNotFound, err)
+		return RecipeFavoriteResponse{}, usecase.NewResultStatus(http.StatusNotFound, err)
 	}
 
 	builtRecipeFavorites, _ := ri.buildList(db, recipeFavorites)
 
-	return builtRecipeFavorites, usecase.NewResultStatus(http.StatusOK, nil)
+	return RecipeFavoriteResponse{
+		Lists:    builtRecipeFavorites,
+		PageInfo: usecase.NewPageInfo(len(builtRecipeFavorites), cursor, builtRecipeFavorites[len(builtRecipeFavorites)-1].ID, builtRecipeFavorites[0].ID),
+	}, usecase.NewResultStatus(http.StatusOK, nil)
 }
 
 func (ri *RecipeFavoriteInteractor) Create(f *domain.RecipeFavorites) (*domain.RecipeFavoritesForGet, *usecase.ResultStatus) {

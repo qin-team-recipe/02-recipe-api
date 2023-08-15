@@ -7,7 +7,7 @@ type Users struct {
 	Email       string `json:"email"`
 	CreatedAt   int64  `json:"created_at"`
 	UpdatedAt   int64  `json:"updated_at"`
-	DeletedAt   int64  `json:"deleted_at"`
+	DeletedAt   *int64 `json:"deleted_at"`
 }
 
 type UsersForGet struct {

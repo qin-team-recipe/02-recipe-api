@@ -11,9 +11,16 @@ import (
 
 type RecipeFavoriteRepository struct{}
 
-func (rr *RecipeFavoriteRepository) FindByUserID(db *gorm.DB, userID int) ([]*domain.RecipeFavorites, error) {
+func (rr *RecipeFavoriteRepository) FindByUserID(db *gorm.DB, userID, cursor, limit int) ([]*domain.RecipeFavorites, error) {
 	recipeFavorites := []*domain.RecipeFavorites{}
-	db.Where("user_id = ?", userID).Find(&recipeFavorites)
+
+	query := db.Where("user_id = ?", userID).Order("created_at desc").Limit(limit)
+
+	if 0 < cursor {
+		query = query.Where("id < ?", cursor)
+	}
+
+	query.Find(&recipeFavorites)
 	if len(recipeFavorites) <= 0 {
 		return []*domain.RecipeFavorites{}, errors.New("recipeFavorites is not found")
 	}
