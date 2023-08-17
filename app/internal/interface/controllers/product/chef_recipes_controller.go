@@ -27,8 +27,11 @@ func NewChefRecipesController(db gateways.DB) *ChefRecipesController {
 //	@description	シェフのレシピのリストを取得する
 //	@tags			chefRecipes
 //	@accept			application/x-json-stream
-//	@Success		200	{array}		product.ChefRecipeResponse
-//	@Failure		404	{object}	usecase.ResultStatus
+//	@param			type	query		string	true	"latest:新着レシピ|favorites:人気レシピ"
+//	@param			chef_id	query		int		true	"シェフID"
+//	@param			cursor	query		int		true	"ページネーションのカーソル"
+//	@Success		200		{object}	product.ChefRecipeResponse
+//	@Failure		404		{object}	usecase.ResultStatus
 //	@router			/chefRecipes [get]
 func (rc *ChefRecipesController) GetList(ctx controllers.Context) {
 
