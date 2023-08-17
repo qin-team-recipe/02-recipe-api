@@ -23,27 +23,35 @@ type RecipeInteractor struct {
 	UserRecipe     repository.UserRecipeRepository
 }
 
+type RecipeResponse struct {
+	Lists    []*domain.RecipesForGet `json:"lists"`
+	PageInfo usecase.PageInfo        `json:"page_info"`
+}
+
 // 単なるレシピのリストの取得
-func (ri *RecipeInteractor) GetList(userID int, q string) ([]*domain.RecipesForGet, *usecase.ResultStatus) {
+func (ri *RecipeInteractor) GetList(userID int, q string, cursor int) (RecipeResponse, *usecase.ResultStatus) {
 	db := ri.DB.Connect()
 
-	recipes, err := ri.Recipe.FindByQuery(db, userID, q)
+	recipes, err := ri.Recipe.FindByQuery(db, userID, cursor, q)
 	if err != nil {
-		return []*domain.RecipesForGet{}, usecase.NewResultStatus(http.StatusBadRequest, err)
+		return RecipeResponse{}, usecase.NewResultStatus(http.StatusBadRequest, err)
 	}
 
 	builtRecipes, _ := ri.buildList(db, recipes)
 
-	return builtRecipes, usecase.NewResultStatus(http.StatusOK, nil)
+	return RecipeResponse{
+		Lists:    builtRecipes,
+		PageInfo: usecase.NewPageInfo(len(builtRecipes), cursor, builtRecipes[len(builtRecipes)-1].ID, builtRecipes[0].ID),
+	}, usecase.NewResultStatus(http.StatusOK, nil)
 }
 
-func (ri *RecipeInteractor) GetLatestRecipesFromChefsFollows(userID int) ([]*domain.RecipesForGet, *usecase.ResultStatus) {
+func (ri *RecipeInteractor) GetLatestRecipesFromChefsFollows(userID, cursor int) (RecipeResponse, *usecase.ResultStatus) {
 
 	db := ri.DB.Connect()
-
+	// フォローしているシェフの取得
 	chefFollows, err := ri.ChefFollow.FindByUserID(db, userID)
 	if err != nil {
-		return []*domain.RecipesForGet{}, usecase.NewResultStatus(http.StatusBadRequest, err)
+		return RecipeResponse{}, usecase.NewResultStatus(http.StatusBadRequest, err)
 	}
 
 	followIDs := []int{}
@@ -53,7 +61,7 @@ func (ri *RecipeInteractor) GetLatestRecipesFromChefsFollows(userID int) ([]*dom
 
 	chefRecipes, err := ri.ChefRecipe.FindInByChefIDs(db, followIDs)
 	if err != nil {
-		return []*domain.RecipesForGet{}, usecase.NewResultStatus(http.StatusBadRequest, err)
+		return RecipeResponse{}, usecase.NewResultStatus(http.StatusBadRequest, err)
 	}
 
 	recipeIDs := []int{}
@@ -63,25 +71,28 @@ func (ri *RecipeInteractor) GetLatestRecipesFromChefsFollows(userID int) ([]*dom
 
 	recipes, err := ri.Recipe.FindInRecipeIDs(db, recipeIDs)
 	if err != nil {
-		return []*domain.RecipesForGet{}, usecase.NewResultStatus(http.StatusBadRequest, err)
+		return RecipeResponse{}, usecase.NewResultStatus(http.StatusBadRequest, err)
 	}
 
 	sort.Slice(recipes, func(i, j int) bool { return recipes[i].CreatedAt > recipes[j].CreatedAt })
 
 	builtRecipes, _ := ri.buildList(db, recipes)
-	return builtRecipes, usecase.NewResultStatus(http.StatusOK, nil)
+	return RecipeResponse{
+		Lists:    builtRecipes,
+		PageInfo: usecase.NewPageInfo(len(builtRecipes), cursor, builtRecipes[len(builtRecipes)-1].ID, builtRecipes[0].ID),
+	}, usecase.NewResultStatus(http.StatusOK, nil)
 }
 
 // 注目のレシピのリストを取得
 // レコメンドの条件
-func (ri *RecipeInteractor) GetRecommendRecipeList() ([]*domain.RecipesForGet, *usecase.ResultStatus) {
+func (ri *RecipeInteractor) GetRecommendRecipeList(cursor int) (RecipeResponse, *usecase.ResultStatus) {
 
 	db := ri.DB.Connect()
 
 	// 直近三日のRecipeIDごとの数が多いRecipeIDとCountを取得する
-	recipeFavoritesCounts, err := ri.RecipeFavorite.FindByNumberOfFavoriteSubscriptions(db)
+	recipeFavoritesCounts, err := ri.RecipeFavorite.FindByNumberOfFavoriteSubscriptions(db, cursor)
 	if err != nil {
-		return []*domain.RecipesForGet{}, usecase.NewResultStatus(http.StatusBadRequest, errors.New("注目されているレシピはありません"))
+		return RecipeResponse{}, usecase.NewResultStatus(http.StatusBadRequest, errors.New("注目されているレシピはありません"))
 	}
 
 	recipeIDs := []int{}
@@ -91,12 +102,15 @@ func (ri *RecipeInteractor) GetRecommendRecipeList() ([]*domain.RecipesForGet, *
 
 	recipes, err := ri.Recipe.FindInRecipeIDs(db, recipeIDs)
 	if err != nil {
-		return []*domain.RecipesForGet{}, usecase.NewResultStatus(http.StatusBadRequest, err)
+		return RecipeResponse{}, usecase.NewResultStatus(http.StatusBadRequest, err)
 	}
 
 	builtRecipes, _ := ri.buildList(db, recipes)
 
-	return builtRecipes, usecase.NewResultStatus(http.StatusOK, nil)
+	return RecipeResponse{
+		Lists:    builtRecipes,
+		PageInfo: usecase.NewPageInfo(len(builtRecipes), cursor, builtRecipes[len(builtRecipes)-1].ID, builtRecipes[0].ID),
+	}, usecase.NewResultStatus(http.StatusOK, nil)
 }
 
 func (ri *RecipeInteractor) Get(watchID string) (*domain.RecipesForGet, *usecase.ResultStatus) {

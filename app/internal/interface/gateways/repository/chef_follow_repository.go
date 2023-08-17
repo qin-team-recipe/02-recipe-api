@@ -20,7 +20,7 @@ func (cr *ChefFollowRepository) FindByUserID(db *gorm.DB, userID int) ([]*domain
 	return chefFollows, nil
 }
 
-func (cr *ChefFollowRepository) FindBybyNumberOfFollowSubscriptions(db *gorm.DB) (map[int]int64, error) {
+func (cr *ChefFollowRepository) FindBybyNumberOfFollowSubscriptions(db *gorm.DB, cursor int) (map[int]int64, error) {
 
 	currentTime := time.Now().Unix()
 	beforeCurrentTime := time.Now().AddDate(0, 0, -30).Unix()
@@ -32,8 +32,18 @@ func (cr *ChefFollowRepository) FindBybyNumberOfFollowSubscriptions(db *gorm.DB)
 
 	results := []Result{}
 
-	if err := db.Table("chef_follows").Select("chef_id, count(chef_id) as count").Where("? < created_at and created_at < ?", beforeCurrentTime, currentTime).Group("chef_id").Limit(5).Find(&results).Error; err != nil {
+	query := db.
+		Table("chef_follows").
+		Select("chef_id, count(chef_id) as count").
+		Where("? < created_at and created_at < ?", beforeCurrentTime, currentTime).
+		Group("chef_id")
 
+	if 0 < cursor {
+		query = query.Where("chef_id < ?", cursor)
+	}
+
+	if err := query.Limit(5).Find(&results).Error; err != nil {
+		fmt.Println(err)
 	}
 
 	counts := map[int]int64{}

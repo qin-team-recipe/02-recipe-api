@@ -11,9 +11,16 @@ import (
 
 type RecipeFavoriteRepository struct{}
 
-func (rr *RecipeFavoriteRepository) FindByUserID(db *gorm.DB, userID int) ([]*domain.RecipeFavorites, error) {
+func (rr *RecipeFavoriteRepository) FindByUserID(db *gorm.DB, userID, cursor, limit int) ([]*domain.RecipeFavorites, error) {
 	recipeFavorites := []*domain.RecipeFavorites{}
-	db.Where("user_id = ?", userID).Find(&recipeFavorites)
+
+	query := db.Where("user_id = ?", userID).Order("created_at desc").Limit(limit)
+
+	if 0 < cursor {
+		query = query.Where("id < ?", cursor)
+	}
+
+	query.Find(&recipeFavorites)
 	if len(recipeFavorites) <= 0 {
 		return []*domain.RecipeFavorites{}, errors.New("recipeFavorites is not found")
 	}
@@ -61,7 +68,7 @@ func (rr *RecipeFavoriteRepository) FindByChefRecipeIDsAndNumberOfFavoriteSubscr
 	return counts, nil
 }
 
-func (rr *RecipeFavoriteRepository) FindByNumberOfFavoriteSubscriptions(db *gorm.DB) (map[int]int64, error) {
+func (rr *RecipeFavoriteRepository) FindByNumberOfFavoriteSubscriptions(db *gorm.DB, cursor int) (map[int]int64, error) {
 	recipeFavorites := []*domain.RecipeFavorites{}
 
 	currentTime := time.Now().Unix()
@@ -74,7 +81,17 @@ func (rr *RecipeFavoriteRepository) FindByNumberOfFavoriteSubscriptions(db *gorm
 
 	results := []Result{}
 
-	if err := db.Table("recipe_favorites").Select("recipe_id, count(recipe_id) as count").Where("? < created_at and created_at < ?", beforeCurrentTime, currentTime).Group("recipe_id").Limit(5).Find(&results).Error; err != nil {
+	query := db.
+		Table("recipe_favorites").
+		Select("recipe_id, count(recipe_id) as count").
+		Where("? < created_at and created_at < ?", beforeCurrentTime, currentTime).
+		Group("recipe_id").Limit(5)
+
+	if 0 < cursor {
+		query = query.Where("recipe_id < ?", cursor)
+	}
+
+	if err := query.Find(&results).Error; err != nil {
 		fmt.Println("err: ", err)
 	}
 

@@ -1,6 +1,8 @@
 package product
 
 import (
+	"strconv"
+
 	"github.com/qin-team-recipe/02-recipe-api/internal/interface/controllers"
 	"github.com/qin-team-recipe/02-recipe-api/internal/interface/gateways"
 	"github.com/qin-team-recipe/02-recipe-api/internal/interface/gateways/repository"
@@ -42,7 +44,9 @@ func NewRecommendsController(db gateways.DB) *RecommendsController {
 //	@router			/recommends/chefs [get]
 func (rc *RecommendsController) GetRecommendChefList(ctx controllers.Context) {
 
-	chefs, res := rc.ChefInteractor.GetRecommendChefList()
+	cursor, _ := strconv.Atoi(ctx.Query("cursor"))
+
+	chefs, res := rc.ChefInteractor.GetRecommendChefList(cursor)
 	if res.Error != nil {
 		ctx.JSON(res.Code, controllers.NewH(res.Error.Error(), nil))
 		return
@@ -60,7 +64,9 @@ func (rc *RecommendsController) GetRecommendChefList(ctx controllers.Context) {
 //	@router			/recommends/recipes [get]
 func (rc *RecommendsController) GetRecommendRecipeList(ctx controllers.Context) {
 
-	recipes, res := rc.RecipeInteractor.GetRecommendRecipeList()
+	cursor, _ := strconv.Atoi(ctx.Query("cursor"))
+
+	recipes, res := rc.RecipeInteractor.GetRecommendRecipeList(cursor)
 	if res.Error != nil {
 		ctx.JSON(res.Code, controllers.NewH(res.Error.Error(), nil))
 		return

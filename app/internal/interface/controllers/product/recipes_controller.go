@@ -3,6 +3,7 @@ package product
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/qin-team-recipe/02-recipe-api/constants"
 	"github.com/qin-team-recipe/02-recipe-api/internal/interface/controllers"
@@ -31,13 +32,13 @@ func NewRecipesController(db gateways.DB) *RecipesController {
 	}
 }
 
-// // @summary		レシピリストの取得
-// // @description	レシピリストを取得する
-// // @tags			recipes
-// // @Param			type	query		string	true	"type=chefFollowとすることでフォローしているシェフの情報を取得する"
-// // @Success		200		{object}	controllers.H{data=[]domain.RecipesForGet}
-// // @Failure		400		{object}	controllers.H{data=usecase.ResultStatus}
-// // @router			/recipes [get]
+// @summary		レシピリストの取得
+// @description	レシピリストを取得する
+// @tags			recipes
+// @Param			type	query		string	false	"type=chefFollowとすることでフォローしているシェフの情報を取得する"
+// @Success		200		{object}	controllers.H{data=product.RecipeResponse}
+// @Failure		400		{object}	controllers.H{data=usecase.ResultStatus}
+// @router			/recipes [get]
 func (rc *RecipesController) GetList(ctx controllers.Context, jwt token.Maker) {
 
 	ty := ctx.Query("type")
@@ -60,8 +61,9 @@ func (rc *RecipesController) GetList(ctx controllers.Context, jwt token.Maker) {
 	}
 
 	q := ctx.Query("q")
+	cursor, _ := strconv.Atoi(ctx.Query("cursor"))
 
-	recipes, res := rc.Interactor.GetList(userID, q)
+	recipes, res := rc.Interactor.GetList(userID, q, cursor)
 	if res.Error != nil {
 		ctx.JSON(res.Code, controllers.NewH(res.Error.Error(), nil))
 		return
@@ -73,7 +75,7 @@ func (rc *RecipesController) GetList(ctx controllers.Context, jwt token.Maker) {
 // // @description	フォロー中シェフの新着レシピリストの取得
 // // @tags			recipes
 // // @Param			type	query		string	true	"type=latestとすることでフォローしているシェフの新着レシピ情報を取得する"
-// // @Success		200		{object}	controllers.H{data=[]domain.RecipesForGet}
+// // @Success		200		{object}	controllers.H{data=product.RecipeResponse}
 // // @Failure		400		{object}	controllers.H{data=usecase.ResultStatus}
 // // @router			/recipes [get]
 func (rc *RecipesController) getLatestRecipesFromChefsFollows(ctx controllers.Context, jwt token.Maker) {
@@ -93,7 +95,9 @@ func (rc *RecipesController) getLatestRecipesFromChefsFollows(ctx controllers.Co
 		return
 	}
 
-	recipes, res := rc.Interactor.GetLatestRecipesFromChefsFollows(userID)
+	cursor, _ := strconv.Atoi(ctx.Query("cursor"))
+
+	recipes, res := rc.Interactor.GetLatestRecipesFromChefsFollows(userID, cursor)
 	if res.Error != nil {
 		ctx.JSON(res.Code, controllers.NewH(res.Error.Error(), nil))
 		return
@@ -101,13 +105,13 @@ func (rc *RecipesController) getLatestRecipesFromChefsFollows(ctx controllers.Co
 	ctx.JSON(res.Code, controllers.NewH("success", recipes))
 }
 
-//	@summary		レシピ情報の取得
-//	@description	レシピ情報を取得する
-//	@tags			recipes
-//	@Param			watch_id	path		string	true	"レシピのWatchID"
-//	@Success		200			{object}	controllers.H{data=domain.RecipesForGet}
-//	@Failure		400			{object}	controllers.H{data=usecase.ResultStatus}
-//	@router			/recipes/{id} [get]
+// @summary		レシピ情報の取得
+// @description	レシピ情報を取得する
+// @tags			recipes
+// @Param			watch_id	path		string	true	"レシピのWatchID"
+// @Success		200			{object}	controllers.H{data=domain.RecipesForGet}
+// @Failure		400			{object}	controllers.H{data=usecase.ResultStatus}
+// @router			/recipes/{id} [get]
 func (rc *RecipesController) Get(ctx controllers.Context) {
 
 	// id, _ := strconv.Atoi(ctx.Param("id"))

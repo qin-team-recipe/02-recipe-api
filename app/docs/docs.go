@@ -1254,6 +1254,61 @@ const docTemplate = `{
                 }
             }
         },
+        "/recipes": {
+            "get": {
+                "description": "レシピリストを取得する",
+                "tags": [
+                    "recipes"
+                ],
+                "summary": "レシピリストの取得",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "type=chefFollowとすることでフォローしているシェフの情報を取得する",
+                        "name": "type",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/product.RecipeResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controllers.H"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/usecase.ResultStatus"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
         "/recipes/{id}": {
             "get": {
                 "description": "レシピ情報を取得する",
@@ -1385,10 +1440,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/definitions/domain.RecipesForGet"
-                                            }
+                                            "$ref": "#/definitions/product.RecipeResponse"
                                         }
                                     }
                                 }
@@ -2560,6 +2612,20 @@ const docTemplate = `{
                 },
                 "status": {
                     "type": "string"
+                }
+            }
+        },
+        "product.RecipeResponse": {
+            "type": "object",
+            "properties": {
+                "lists": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/domain.RecipesForGet"
+                    }
+                },
+                "page_info": {
+                    "$ref": "#/definitions/usecase.PageInfo"
                 }
             }
         },
