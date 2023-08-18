@@ -234,6 +234,15 @@ definitions:
       login_url:
         type: string
     type: object
+  product.ChefFollowResponse:
+    properties:
+      lists:
+        items:
+          $ref: '#/definitions/domain.ChefFollowsForGet'
+        type: array
+      page_info:
+        $ref: '#/definitions/usecase.PageInfo'
+    type: object
   product.ChefList:
     properties:
       lists:
@@ -397,9 +406,14 @@ paths:
       - application/x-json-stream
       description: ユーザーがフォロー中のシェフの一覧を取得する
       parameters:
-      - description: User ID
+      - description: 取得した最後のカーソル
         in: query
-        name: user_id
+        name: cursor
+        required: true
+        type: integer
+      - description: 取得件数(デフォルト１０件)
+        in: query
+        name: limit
         required: true
         type: integer
       responses:
@@ -410,9 +424,7 @@ paths:
             - $ref: '#/definitions/controllers.H'
             - properties:
                 data:
-                  items:
-                    $ref: '#/definitions/domain.ChefFollowsForGet'
-                  type: array
+                  $ref: '#/definitions/product.ChefFollowResponse'
               type: object
         "404":
           description: Not Found

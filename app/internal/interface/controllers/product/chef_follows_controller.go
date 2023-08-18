@@ -33,8 +33,9 @@ func NewChefFollowsController(db gateways.DB) *ChefFollowsController {
 // @description	ユーザーがフォロー中のシェフの一覧を取得する
 // @tags			chefFollows
 // @accept			application/x-json-stream
-// @param			user_id	query		int	true	"User ID"
-// @Success		200		{object}	controllers.H{data=[]domain.ChefFollowsForGet}
+// @param			cursor	query		int	true	"取得した最後のカーソル"
+// @param			limit query	int	true	"取得件数(デフォルト１０件)"
+// @Success		200		{object}	controllers.H{data=product.ChefFollowResponse}
 // @Failure		404		{object}	controllers.H{data=usecase.ResultStatus}
 // @router			/chefFollows [get]
 func (cc *ChefFollowsController) GetList(ctx controllers.Context) {
