@@ -19,18 +19,39 @@ type ChefFollowInteractor struct {
 	User       repository.UserRepository
 }
 
-func (ci *ChefFollowInteractor) GetList(userID int) ([]*domain.ChefFollowsForGet, *usecase.ResultStatus) {
+type ChefFollowResponse struct {
+	Lists    []*domain.ChefFollowsForGet `json:"lists"`
+	PageInfo usecase.PageInfo            `json:"page_info"`
+}
+
+func (ci *ChefFollowInteractor) GetList(userID, cursor, limit int) (ChefFollowResponse, *usecase.ResultStatus) {
 
 	db := ci.DB.Connect()
 
-	chefFollows, err := ci.ChefFollow.FindByUserID(db, userID)
-	if err != nil {
-		return []*domain.ChefFollowsForGet{}, usecase.NewResultStatus(http.StatusNotFound, err)
+	if limit <= 0 {
+		limit = 10
 	}
 
-	builtChefFollows, _ := ci.buildList(db, chefFollows)
+	chefFollows, err := ci.ChefFollow.FindByUserID(db, userID, cursor, limit+1)
+	if err != nil {
+		return ChefFollowResponse{}, usecase.NewResultStatus(http.StatusNotFound, err)
+	}
 
-	return builtChefFollows, usecase.NewResultStatus(http.StatusOK, nil)
+	arr := []*domain.ChefFollows{}
+
+	for i, c := range chefFollows {
+		if limit == i {
+			break
+		}
+		arr = append(arr, c)
+	}
+
+	builtChefFollows, _ := ci.buildList(db, arr)
+
+	return ChefFollowResponse{
+		Lists:    builtChefFollows,
+		PageInfo: usecase.NewPageInfo(limit, len(chefFollows), cursor, builtChefFollows[len(builtChefFollows)-1].ID, builtChefFollows[0].ID),
+	}, usecase.NewResultStatus(http.StatusOK, nil)
 }
 
 func (ci *ChefFollowInteractor) Create(chefFollow *domain.ChefFollows) (*domain.ChefFollowsForGet, *usecase.ResultStatus) {

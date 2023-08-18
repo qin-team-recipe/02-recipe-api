@@ -73,7 +73,7 @@ func (ci *ChefInteractor) Get(userID int, screenName string) (*domain.ChefsForGe
 
 	builtChef, _ := ci.build(db, chef)
 
-	if _, err := ci.ChefFollow.FindByUserID(db, userID); err == nil {
+	if _, err := ci.ChefFollow.FindByUserID(db, userID, 0, -1); err == nil {
 		builtChef.IsFollowing = true
 	}
 

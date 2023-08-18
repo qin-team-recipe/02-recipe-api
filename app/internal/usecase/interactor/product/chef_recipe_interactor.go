@@ -68,6 +68,7 @@ func (ri *ChefRecipeInteractor) getRecipesLatest(db *gorm.DB, chefID, cursor int
 	return ChefRecipeResponse{
 		Lists: builtRecipes,
 		PageInfo: usecase.NewPageInfo(
+			10,
 			len(recipes),
 			cursor,
 			recipes[len(recipes)-1].ID,
@@ -107,6 +108,7 @@ func (ri *ChefRecipeInteractor) getRecipesByFavorites(db *gorm.DB, chefID, curso
 	return ChefRecipeResponse{
 		Lists: builtRecipes,
 		PageInfo: usecase.NewPageInfo(
+			10,
 			len(recipes),
 			cursor,
 			recipes[len(recipes)-1].ID,

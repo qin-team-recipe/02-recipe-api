@@ -133,8 +133,15 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "User ID",
-                        "name": "user_id",
+                        "description": "取得した最後のカーソル",
+                        "name": "cursor",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "取得件数(デフォルト１０件)",
+                        "name": "limit",
                         "in": "query",
                         "required": true
                     }
@@ -151,10 +158,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/definitions/domain.ChefFollowsForGet"
-                                            }
+                                            "$ref": "#/definitions/product.ChefFollowResponse"
                                         }
                                     }
                                 }
@@ -2553,6 +2557,20 @@ const docTemplate = `{
             "properties": {
                 "login_url": {
                     "type": "string"
+                }
+            }
+        },
+        "product.ChefFollowResponse": {
+            "type": "object",
+            "properties": {
+                "lists": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/domain.ChefFollowsForGet"
+                    }
+                },
+                "page_info": {
+                    "$ref": "#/definitions/usecase.PageInfo"
                 }
             }
         },
