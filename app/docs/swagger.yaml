@@ -476,13 +476,27 @@ paths:
       consumes:
       - application/x-json-stream
       description: シェフのレシピのリストを取得する
+      parameters:
+      - description: latest:新着レシピ|favorites:人気レシピ
+        in: query
+        name: type
+        required: true
+        type: string
+      - description: シェフID
+        in: query
+        name: chef_id
+        required: true
+        type: integer
+      - description: ページネーションのカーソル
+        in: query
+        name: cursor
+        required: true
+        type: integer
       responses:
         "200":
           description: OK
           schema:
-            items:
-              $ref: '#/definitions/product.ChefRecipeResponse'
-            type: array
+            $ref: '#/definitions/product.ChefRecipeResponse'
         "404":
           description: Not Found
           schema:
@@ -1061,7 +1075,7 @@ paths:
       summary: レシピ情報の取得
       tags:
       - recipes
-  /recommend/chefs:
+  /recommends/chefs:
     get:
       consumes:
       - application/x-json-stream
@@ -1090,7 +1104,7 @@ paths:
       summary: 注目のシェフ
       tags:
       - recommend
-  /recommend/recipes:
+  /recommends/recipes:
     get:
       consumes:
       - application/x-json-stream

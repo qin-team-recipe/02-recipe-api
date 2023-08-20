@@ -314,14 +314,34 @@ const docTemplate = `{
                     "chefRecipes"
                 ],
                 "summary": "シェフのレシピのリストを取得.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "latest:新着レシピ|favorites:人気レシピ",
+                        "name": "type",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "シェフID",
+                        "name": "chef_id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "ページネーションのカーソル",
+                        "name": "cursor",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/product.ChefRecipeResponse"
-                            }
+                            "$ref": "#/definitions/product.ChefRecipeResponse"
                         }
                     },
                     "404": {
@@ -1349,7 +1369,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/recommend/chefs": {
+        "/recommends/chefs": {
             "get": {
                 "description": "直近3日間の獲得フォロワー数の上位10人を取得",
                 "consumes": [
@@ -1402,7 +1422,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/recommend/recipes": {
+        "/recommends/recipes": {
             "get": {
                 "description": "過去3日間でお気に入り登録の多かったレシピを取得",
                 "consumes": [

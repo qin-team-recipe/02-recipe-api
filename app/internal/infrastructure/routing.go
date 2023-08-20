@@ -160,7 +160,7 @@ func (r *Routing) setRouting() {
 		// })
 
 		/*
-		 * recommend chefs or recipes
+		 * recommends chefs or recipes
 		 *
 		 */
 		v1.GET("/recommends/chefs", func(ctx *gin.Context) {
