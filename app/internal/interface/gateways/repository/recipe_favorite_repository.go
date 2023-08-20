@@ -27,7 +27,7 @@ func (rr *RecipeFavoriteRepository) FindByUserID(db *gorm.DB, userID, cursor, li
 	return recipeFavorites, nil
 }
 
-func (rr *RecipeFavoriteRepository) FindByChefRecipeIDsAndNumberOfFavoriteSubscriptions(db *gorm.DB, chefID, cursor int) (map[int]int64, error) {
+func (rr *RecipeFavoriteRepository) FindByChefRecipeIDsAndNumberOfFavoriteSubscriptions(db *gorm.DB, chefID, cursor, limit int) (map[int]int64, error) {
 	recipeFavorites := []*domain.RecipeFavorites{}
 
 	type Result struct {
@@ -41,7 +41,7 @@ func (rr *RecipeFavoriteRepository) FindByChefRecipeIDsAndNumberOfFavoriteSubscr
 		Select("recipe_favorites.recipe_id, count(recipe_favorites.recipe_id) as count").
 		Joins("left outer join chef_recipes on chef_recipes.recipe_id = recipe_favorites.recipe_id").
 		Where("chef_recipes.chef_id = ?", chefID).
-		Group("recipe_favorites.recipe_id").Limit(5)
+		Group("recipe_favorites.recipe_id").Limit(limit)
 
 	if 0 < cursor {
 		query.Where("recipe_favorites.recipe_id > ?", cursor)

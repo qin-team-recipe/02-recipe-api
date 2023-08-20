@@ -3,7 +3,7 @@ package usecase
 import "strconv"
 
 type PageInfo struct {
-	Length          int    `json:"length"`
+	Length          int    `json:"length,omitempty"`
 	HasNextPage     bool   `json:"has_next_page"`
 	HasPreviousPage bool   `json:"has_previous_page"`
 	StartCursor     string `json:"start_cursor"`

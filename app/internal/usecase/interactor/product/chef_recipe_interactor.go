@@ -42,7 +42,7 @@ func (ri *ChefRecipeInteractor) GetList(t string, chefID, cursor int) (ChefRecip
 }
 
 func (ri *ChefRecipeInteractor) getRecipesLatest(db *gorm.DB, chefID, cursor int) (ChefRecipeResponse, *usecase.ResultStatus) {
-	chefRecipes, err := ri.ChefRecipe.FindByChefID(db, chefID, cursor)
+	chefRecipes, err := ri.ChefRecipe.FindByChefID(db, chefID, cursor, 10)
 	if err != nil {
 		return ChefRecipeResponse{
 			Lists:    []*domain.ChefRecipesForGet{},
@@ -81,7 +81,7 @@ func (ri *ChefRecipeInteractor) getRecipesByFavorites(db *gorm.DB, chefID, curso
 	// ChefIDを元にお気に入り上位を取得する
 	// chef_recipes, recipe_favoritesを[chef_recipe.recipe_id == recipe_favorites.recipe_id]でjoinする
 	// chef_idに紐付くものをカウント計算する
-	recipeFavorites, err := ri.RecipeFavorite.FindByChefRecipeIDsAndNumberOfFavoriteSubscriptions(db, chefID, cursor)
+	recipeFavorites, err := ri.RecipeFavorite.FindByChefRecipeIDsAndNumberOfFavoriteSubscriptions(db, chefID, cursor, 10)
 	if err != nil {
 		return ChefRecipeResponse{
 			Lists:    []*domain.ChefRecipesForGet{},

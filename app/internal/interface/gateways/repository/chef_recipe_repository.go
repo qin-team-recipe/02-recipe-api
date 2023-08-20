@@ -18,9 +18,9 @@ func (cr *ChefRecipeRepository) FirstByRecipeID(db *gorm.DB, recipeID int) (*dom
 	return chefRecipe, nil
 }
 
-func (cr *ChefRecipeRepository) FindByChefID(db *gorm.DB, chefID, cursor int) ([]*domain.ChefRecipes, error) {
+func (cr *ChefRecipeRepository) FindByChefID(db *gorm.DB, chefID, cursor, limit int) ([]*domain.ChefRecipes, error) {
 	chefRecipes := []*domain.ChefRecipes{}
-	query := db.Where("chef_id = ?", chefID)
+	query := db.Where("chef_id = ?", chefID).Limit(limit)
 	if 0 < cursor {
 		query = query.Where("? < id", cursor).Order("created_at desc")
 	}
