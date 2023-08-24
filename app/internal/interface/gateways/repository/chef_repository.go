@@ -23,7 +23,7 @@ func (cr *ChefRepository) FindByQuery(db *gorm.DB, q string, cursor int) ([]*dom
 	query := db.Where("? < id", cursor).Limit(11).Order("created_at desc")
 
 	if q != "" {
-		q = "%_" + q + "_%"
+		q = "%" + q + "%"
 
 		query = query.Where("display_name like ? or description like ?", q, q)
 	}
