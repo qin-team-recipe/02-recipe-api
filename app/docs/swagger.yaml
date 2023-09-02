@@ -519,6 +519,10 @@ paths:
         name: cursor
         required: true
         type: integer
+      - description: シェフの取得件数
+        in: query
+        name: limit
+        type: string
       responses:
         "200":
           description: OK
@@ -1022,6 +1026,14 @@ paths:
         in: query
         name: type
         type: string
+      - description: 取得し返している最後のレシピリストのの識別子
+        in: query
+        name: cursor
+        type: string
+      - description: レシピの取得件数
+        in: query
+        name: limit
+        type: string
       responses:
         "200":
           description: OK
@@ -1103,7 +1115,7 @@ paths:
               type: object
       summary: 注目のシェフ
       tags:
-      - recommend
+      - recommends
   /recommends/recipes:
     get:
       consumes:
@@ -1117,7 +1129,9 @@ paths:
             - $ref: '#/definitions/controllers.H'
             - properties:
                 data:
-                  $ref: '#/definitions/product.RecipeResponse'
+                  items:
+                    $ref: '#/definitions/domain.RecipesForGet'
+                  type: array
               type: object
         "404":
           description: Not Found
@@ -1130,7 +1144,7 @@ paths:
               type: object
       summary: 話題のレシピ
       tags:
-      - recommend
+      - recommends
   /register:
     post:
       description: ユーザー新規登録のエンドポイント

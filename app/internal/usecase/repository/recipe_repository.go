@@ -8,7 +8,7 @@ import (
 type RecipeRepository interface {
 	FirstByWatchID(db *gorm.DB, watchID string) (*domain.Recipes, error)
 	Find(db *gorm.DB) ([]*domain.Recipes, error)
-	FindByQuery(db *gorm.DB, userID, cursor int, q string) ([]*domain.Recipes, error)
+	FindByQuery(db *gorm.DB, userID, cursor, limit int, q string) ([]*domain.Recipes, error)
 	// FindByChefID(db *gorm.DB, chefID int) ([]*domain.Recipes, error)
 	FindByUserID(db *gorm.DB, userID int) ([]*domain.Recipes, error)
 	FindInRecipeIDs(db *gorm.DB, ids []int) ([]*domain.Recipes, error)

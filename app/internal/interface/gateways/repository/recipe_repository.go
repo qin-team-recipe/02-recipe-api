@@ -27,12 +27,13 @@ func (rr *RecipeRepository) Find(db *gorm.DB) ([]*domain.Recipes, error) {
 	return recipes, nil
 }
 
-func (rr *RecipeRepository) FindByQuery(db *gorm.DB, userID, cursor int, q string) ([]*domain.Recipes, error) {
+func (rr *RecipeRepository) FindByQuery(db *gorm.DB, userID, cursor, limit int, q string) ([]*domain.Recipes, error) {
 	recipes := []*domain.Recipes{}
 
 	query := db.
 		Joins("left outer join chef_recipes as cr on recipes.id = cr.recipe_id").
-		Where("0 < cr.chef_id and recipes.published_status = ?", "public")
+		Where("0 < cr.chef_id and recipes.published_status = ?", "public").
+		Limit(limit)
 
 	if q != "" {
 		q = "%" + q + "%"
