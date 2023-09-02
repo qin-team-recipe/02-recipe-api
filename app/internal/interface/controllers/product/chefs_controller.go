@@ -33,20 +33,21 @@ func NewChefsController(p ChefsControllerProvider) *ChefsController {
 	}
 }
 
-//	@summary		シェフ一覧取得
-//	@description	シェフ一覧を取得する
-//	@tags			chef
-//	@accept			application/x-json-stream
-//	@param			q		query		string	false	"任意のWHERE文"
-//	@param			cursor	query		int		true	"現在取得中の末尾カーソル"
-//	@Success		200		{object}	controllers.H{data=[]product.ChefList}
-//	@Failure		404		{object}	controllers.H{data=usecase.ResultStatus}
-//	@router			/chefs [get]
+// @summary		シェフ一覧取得
+// @description	シェフ一覧を取得する
+// @tags			chef
+// @accept			application/x-json-stream
+// @param			q		query		string	false	"任意のWHERE文"
+// @param			cursor	query		int		true	"現在取得中の末尾カーソル"
+// @Success		200		{object}	controllers.H{data=[]product.ChefList}
+// @Failure		404		{object}	controllers.H{data=usecase.ResultStatus}
+// @router			/chefs [get]
 func (cc *ChefsController) GetList(ctx controllers.Context) {
 	q := ctx.Query("q")
 	cursor, _ := strconv.Atoi(ctx.Query("cursor"))
+	limit, _ := strconv.Atoi(ctx.Query("limit"))
 
-	chefs, res := cc.Interactor.GetList(q, cursor)
+	chefs, res := cc.Interactor.GetList(q, cursor, limit)
 	if res.Error != nil {
 		ctx.JSON(res.Code, controllers.NewH(res.Error.Error(), nil))
 		return
@@ -54,14 +55,14 @@ func (cc *ChefsController) GetList(ctx controllers.Context) {
 	ctx.JSON(res.Code, controllers.NewH("success", chefs))
 }
 
-//	@summary		シェフ取得
-//	@description	screenNameで指定されたシェフの情報を取得する
-//	@tags			chef
-//	@accept			application/x-json-stream
-//	@param			screenName	path		string	true	"screenName"
-//	@Success		200			{object}	controllers.H{data=domain.ChefsForGet}
-//	@Failure		404			{object}	controllers.H{data=usecase.ResultStatus}
-//	@router			/chefs/{screenName} [get]
+// @summary		シェフ取得
+// @description	screenNameで指定されたシェフの情報を取得する
+// @tags			chef
+// @accept			application/x-json-stream
+// @param			screenName	path		string	true	"screenName"
+// @Success		200			{object}	controllers.H{data=domain.ChefsForGet}
+// @Failure		404			{object}	controllers.H{data=usecase.ResultStatus}
+// @router			/chefs/{screenName} [get]
 func (cc *ChefsController) Get(ctx controllers.Context) {
 
 	token := ctx.GetHeader(constants.AuthorizationHeaderKey)

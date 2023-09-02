@@ -29,10 +29,10 @@ type RecipeResponse struct {
 }
 
 // 単なるレシピのリストの取得
-func (ri *RecipeInteractor) GetList(userID int, q string, cursor int) (RecipeResponse, *usecase.ResultStatus) {
+func (ri *RecipeInteractor) GetList(userID int, q string, cursor, limit int) (RecipeResponse, *usecase.ResultStatus) {
 	db := ri.DB.Connect()
 
-	recipes, err := ri.Recipe.FindByQuery(db, userID, cursor, q)
+	recipes, err := ri.Recipe.FindByQuery(db, userID, cursor, limit+1, q)
 	if err != nil {
 		return RecipeResponse{}, usecase.NewResultStatus(http.StatusBadRequest, err)
 	}

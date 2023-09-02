@@ -62,8 +62,9 @@ func (rc *RecipesController) GetList(ctx controllers.Context, jwt token.Maker) {
 
 	q := ctx.Query("q")
 	cursor, _ := strconv.Atoi(ctx.Query("cursor"))
+	limit, _ := strconv.Atoi(ctx.Query("limit"))
 
-	recipes, res := rc.Interactor.GetList(userID, q, cursor)
+	recipes, res := rc.Interactor.GetList(userID, q, cursor, limit)
 	if res.Error != nil {
 		ctx.JSON(res.Code, controllers.NewH(res.Error.Error(), nil))
 		return
