@@ -36,6 +36,8 @@ func NewRecipesController(db gateways.DB) *RecipesController {
 // @description	レシピリストを取得する
 // @tags			recipes
 // @Param			type	query		string	false	"type=chefFollowとすることでフォローしているシェフの情報を取得する"
+// @Param			cursor	query		string	false	"取得し返している最後のレシピリストのの識別子"
+// @Param			limit	query		string	false	"レシピの取得件数"
 // @Success		200		{object}	controllers.H{data=product.RecipeResponse}
 // @Failure		400		{object}	controllers.H{data=usecase.ResultStatus}
 // @router			/recipes [get]

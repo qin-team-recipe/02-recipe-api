@@ -39,6 +39,7 @@ func NewChefsController(p ChefsControllerProvider) *ChefsController {
 // @accept			application/x-json-stream
 // @param			q		query		string	false	"任意のWHERE文"
 // @param			cursor	query		int		true	"現在取得中の末尾カーソル"
+// @Param			limit	query		string	false	"シェフの取得件数"
 // @Success		200		{object}	controllers.H{data=[]product.ChefList}
 // @Failure		404		{object}	controllers.H{data=usecase.ResultStatus}
 // @router			/chefs [get]

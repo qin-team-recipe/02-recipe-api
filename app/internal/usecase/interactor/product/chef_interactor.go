@@ -39,6 +39,9 @@ func (ci *ChefInteractor) GetList(q string, cursor, limit int) (ChefList, *useca
 	// 	chefs = foundChefs
 	// } else {
 	// 	q = "%_" + q + "_%"
+	if limit <= 0 {
+		limit = 10
+	}
 	foundChefs, err := ci.Chef.FindByQuery(db, q, cursor, limit+1)
 	if err != nil {
 		return ChefList{}, usecase.NewResultStatus(http.StatusBadRequest, err)

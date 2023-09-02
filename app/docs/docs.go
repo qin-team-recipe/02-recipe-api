@@ -376,6 +376,12 @@ const docTemplate = `{
                         "name": "cursor",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "シェフの取得件数",
+                        "name": "limit",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -1271,6 +1277,18 @@ const docTemplate = `{
                         "description": "type=chefFollowとすることでフォローしているシェフの情報を取得する",
                         "name": "type",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "取得し返している最後のレシピリストのの識別子",
+                        "name": "cursor",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "レシピの取得件数",
+                        "name": "limit",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -1376,7 +1394,7 @@ const docTemplate = `{
                     "application/x-json-stream"
                 ],
                 "tags": [
-                    "recommend"
+                    "recommends"
                 ],
                 "summary": "注目のシェフ",
                 "responses": {
@@ -1429,7 +1447,7 @@ const docTemplate = `{
                     "application/x-json-stream"
                 ],
                 "tags": [
-                    "recommend"
+                    "recommends"
                 ],
                 "summary": "話題のレシピ",
                 "responses": {
@@ -1444,7 +1462,10 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/product.RecipeResponse"
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/domain.RecipesForGet"
+                                            }
                                         }
                                     }
                                 }

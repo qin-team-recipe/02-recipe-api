@@ -32,6 +32,10 @@ type RecipeResponse struct {
 func (ri *RecipeInteractor) GetList(userID int, q string, cursor, limit int) (RecipeResponse, *usecase.ResultStatus) {
 	db := ri.DB.Connect()
 
+	if limit <= 0 {
+		limit = 10
+	}
+
 	recipes, err := ri.Recipe.FindByQuery(db, userID, cursor, limit+1, q)
 	if err != nil {
 		return RecipeResponse{}, usecase.NewResultStatus(http.StatusBadRequest, err)
