@@ -45,7 +45,7 @@ func (ri *RecipeInteractor) GetList(userID int, q string, cursor, limit int) (Re
 
 	return RecipeResponse{
 		Lists:    builtRecipes,
-		PageInfo: usecase.NewPageInfo(10, len(builtRecipes), cursor, builtRecipes[len(builtRecipes)-1].ID, builtRecipes[0].ID),
+		PageInfo: usecase.NewPageInfo(limit, len(builtRecipes), cursor, builtRecipes[len(builtRecipes)-1].ID, builtRecipes[0].ID),
 	}, usecase.NewResultStatus(http.StatusOK, nil)
 }
 
@@ -117,7 +117,7 @@ func (ri *RecipeInteractor) GetRecommendRecipeList(cursor int) (RecipeResponse, 
 	}, usecase.NewResultStatus(http.StatusOK, nil)
 }
 
-func (ri *RecipeInteractor) Get(watchID string) (*domain.RecipesForGet, *usecase.ResultStatus) {
+func (ri *RecipeInteractor) Get(userID int, watchID string) (*domain.RecipesForGet, *usecase.ResultStatus) {
 	db := ri.DB.Connect()
 
 	recipe, err := ri.Recipe.FirstByWatchID(db, watchID)
@@ -128,6 +128,12 @@ func (ri *RecipeInteractor) Get(watchID string) (*domain.RecipesForGet, *usecase
 	builtRecipe, err := ri.build(db, recipe)
 	if err != nil {
 		return &domain.RecipesForGet{}, usecase.NewResultStatus(http.StatusBadRequest, err)
+	}
+
+	if builtRecipe.User != nil {
+		if userID != builtRecipe.User.ID {
+			return &domain.RecipesForGet{}, usecase.NewResultStatus(http.StatusBadRequest, errors.New("非公開レシピです"))
+		}
 	}
 
 	return builtRecipe, usecase.NewResultStatus(http.StatusOK, nil)
@@ -151,14 +157,15 @@ func (ri *RecipeInteractor) buildList(db *gorm.DB, recipes []*domain.Recipes) ([
 func (ri *RecipeInteractor) build(db *gorm.DB, recipe *domain.Recipes) (*domain.RecipesForGet, error) {
 	builtRecipe := recipe.BuildForGet()
 
-	if builtRecipe.IsDraft {
-		return &domain.RecipesForGet{}, errors.New("下書き状態のレシピです")
-	}
-
 	builtRecipe.FavoritesCount = ri.RecipeFavorite.CountByRecipeID(db, builtRecipe.ID)
 
 	chefRecipe, err := ri.ChefRecipe.FirstByRecipeID(db, builtRecipe.ID)
 	if err == nil {
+		// シェフは一旦全て非公開のものはエラーを返す
+		if builtRecipe.IsDraft {
+			return &domain.RecipesForGet{}, errors.New("下書き状態のレシピです")
+		}
+
 		chef, _ := ri.Chef.FirstByID(db, chefRecipe.ChefID)
 
 		builtRecipe.Chef = chef.BuildForGet()

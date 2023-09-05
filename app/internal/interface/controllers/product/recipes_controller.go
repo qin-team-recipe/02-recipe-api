@@ -115,12 +115,25 @@ func (rc *RecipesController) getLatestRecipesFromChefsFollows(ctx controllers.Co
 // @Success		200			{object}	controllers.H{data=domain.RecipesForGet}
 // @Failure		400			{object}	controllers.H{data=usecase.ResultStatus}
 // @router			/recipes/{id} [get]
-func (rc *RecipesController) Get(ctx controllers.Context) {
+func (rc *RecipesController) Get(ctx controllers.Context, jwt token.Maker) {
 
 	// id, _ := strconv.Atoi(ctx.Param("id"))
+	authToken := ctx.GetHeader(constants.AuthorizationHeaderKey)
+
+	userID := 0
+
+	if authToken != "" {
+		payload, _ := jwt.VerifyJwtToken(authToken)
+		// if err != nil {
+		// 	ctx.JSON(http.StatusBadRequest, controllers.NewH(fmt.Sprintf("failed verify jwt: %s", err.Error()), nil))
+		// 	return
+		// }
+		userID = payload.Audience
+	}
+
 	watchID := ctx.Param("watchID")
 
-	recipe, res := rc.Interactor.Get(watchID)
+	recipe, res := rc.Interactor.Get(userID, watchID)
 	if res.Error != nil {
 		ctx.JSON(res.Code, controllers.NewH(res.Error.Error(), nil))
 		return
