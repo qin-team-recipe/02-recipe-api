@@ -91,8 +91,8 @@ func (ri *ChefRecipeInteractor) getRecipesByFavorites(db *gorm.DB, chefID, curso
 
 	recipeIDs := []int{}
 
-	for _, recipeFavorite := range recipeFavorites {
-		recipeIDs = append(recipeIDs, int(recipeFavorite))
+	for recipeID := range recipeFavorites {
+		recipeIDs = append(recipeIDs, int(recipeID))
 	}
 
 	recipes, err := ri.Recipe.FindInRecipeIDs(db, recipeIDs)
@@ -104,6 +104,10 @@ func (ri *ChefRecipeInteractor) getRecipesByFavorites(db *gorm.DB, chefID, curso
 	}
 
 	builtRecipes, _ := ri.buildList(db, recipes)
+
+	for i, recipe := range builtRecipes {
+		builtRecipes[i].Recipe.FavoritesCount = int(recipeFavorites[recipe.RecipeID])
+	}
 
 	return ChefRecipeResponse{
 		Lists: builtRecipes,

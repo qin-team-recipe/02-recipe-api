@@ -36,6 +36,8 @@ func NewRecipesController(db gateways.DB) *RecipesController {
 // @description	レシピリストを取得する
 // @tags			recipes
 // @Param			type	query		string	false	"type=chefFollowとすることでフォローしているシェフの情報を取得する"
+// @Param			cursor	query		string	false	"取得し返している最後のレシピリストのの識別子"
+// @Param			limit	query		string	false	"レシピの取得件数"
 // @Success		200		{object}	controllers.H{data=product.RecipeResponse}
 // @Failure		400		{object}	controllers.H{data=usecase.ResultStatus}
 // @router			/recipes [get]
@@ -62,8 +64,9 @@ func (rc *RecipesController) GetList(ctx controllers.Context, jwt token.Maker) {
 
 	q := ctx.Query("q")
 	cursor, _ := strconv.Atoi(ctx.Query("cursor"))
+	limit, _ := strconv.Atoi(ctx.Query("limit"))
 
-	recipes, res := rc.Interactor.GetList(userID, q, cursor)
+	recipes, res := rc.Interactor.GetList(userID, q, cursor, limit)
 	if res.Error != nil {
 		ctx.JSON(res.Code, controllers.NewH(res.Error.Error(), nil))
 		return
@@ -112,12 +115,25 @@ func (rc *RecipesController) getLatestRecipesFromChefsFollows(ctx controllers.Co
 // @Success		200			{object}	controllers.H{data=domain.RecipesForGet}
 // @Failure		400			{object}	controllers.H{data=usecase.ResultStatus}
 // @router			/recipes/{id} [get]
-func (rc *RecipesController) Get(ctx controllers.Context) {
+func (rc *RecipesController) Get(ctx controllers.Context, jwt token.Maker) {
 
 	// id, _ := strconv.Atoi(ctx.Param("id"))
+	authToken := ctx.GetHeader(constants.AuthorizationHeaderKey)
+
+	userID := 0
+
+	if authToken != "" {
+		payload, _ := jwt.VerifyJwtToken(authToken)
+		// if err != nil {
+		// 	ctx.JSON(http.StatusBadRequest, controllers.NewH(fmt.Sprintf("failed verify jwt: %s", err.Error()), nil))
+		// 	return
+		// }
+		userID = payload.Audience
+	}
+
 	watchID := ctx.Param("watchID")
 
-	recipe, res := rc.Interactor.Get(watchID)
+	recipe, res := rc.Interactor.Get(userID, watchID)
 	if res.Error != nil {
 		ctx.JSON(res.Code, controllers.NewH(res.Error.Error(), nil))
 		return

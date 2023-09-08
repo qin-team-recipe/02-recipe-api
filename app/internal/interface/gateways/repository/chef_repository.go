@@ -18,12 +18,12 @@ func (cr *ChefRepository) Find(db *gorm.DB) ([]*domain.Chefs, error) {
 	return chefs, nil
 }
 
-func (cr *ChefRepository) FindByQuery(db *gorm.DB, q string, cursor int) ([]*domain.Chefs, error) {
+func (cr *ChefRepository) FindByQuery(db *gorm.DB, q string, cursor, limit int) ([]*domain.Chefs, error) {
 	chefs := []*domain.Chefs{}
-	query := db.Where("? < id", cursor).Limit(11).Order("created_at desc")
+	query := db.Where("? < id", cursor).Limit(limit).Order("created_at desc")
 
 	if q != "" {
-		q = "%_" + q + "_%"
+		q = "%" + q + "%"
 
 		query = query.Where("display_name like ? or description like ?", q, q)
 	}

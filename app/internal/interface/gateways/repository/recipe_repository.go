@@ -27,15 +27,16 @@ func (rr *RecipeRepository) Find(db *gorm.DB) ([]*domain.Recipes, error) {
 	return recipes, nil
 }
 
-func (rr *RecipeRepository) FindByQuery(db *gorm.DB, userID, cursor int, q string) ([]*domain.Recipes, error) {
+func (rr *RecipeRepository) FindByQuery(db *gorm.DB, userID, cursor, limit int, q string) ([]*domain.Recipes, error) {
 	recipes := []*domain.Recipes{}
 
 	query := db.
 		Joins("left outer join chef_recipes as cr on recipes.id = cr.recipe_id").
-		Where("0 < cr.chef_id and recipes.published_status = ?", "public")
+		Limit(limit)
 
 	if q != "" {
-		query = query.Where("recipe.title like ? or recipe.description like ?", q, q)
+		q = "%" + q + "%"
+		query = query.Where("recipes.title like ? or recipes.description like ?", q, q)
 	}
 	if 0 < userID {
 		query = query.
@@ -44,10 +45,13 @@ func (rr *RecipeRepository) FindByQuery(db *gorm.DB, userID, cursor int, q strin
 	}
 
 	if 0 < cursor {
-		query = query.Where("recipes.id < ?", cursor)
+		query = query.Where("recipes.published_status = ? and 0 < cr.chef_id and recipes.id < ?", "public", cursor)
+		// query = query.Where("recipes.id < ?", cursor)
+	} else {
+		query = query.Where("recipes.published_status = ? and 0 < cr.chef_id", "public")
 	}
 
-	query.Order("created_at desc").Find(&recipes)
+	query.Order("recipes.created_at desc").Find(&recipes)
 	if len(recipes) <= 0 {
 		return []*domain.Recipes{}, fmt.Errorf("Not found: %w", errors.New("recipes is not found"))
 	}

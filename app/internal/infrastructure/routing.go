@@ -50,8 +50,8 @@ func (r *Routing) setCors(cors *middleware.Cors) {
 //	@description	This is a Team02's API Docs at Qin.
 //	@termsOfService	http://swagger.io/terms/
 
-//	@host		localhost:8080
-//	@BasePath	/api/v1
+// @host		localhost:8080
+// @BasePath	/api/v1
 func (r *Routing) setRouting() {
 
 	authenticatesController := product.NewAuthenticatesController(r.Google)
@@ -160,7 +160,7 @@ func (r *Routing) setRouting() {
 		// })
 
 		/*
-		 * recommend chefs or recipes
+		 * recommends chefs or recipes
 		 *
 		 */
 		v1.GET("/recommends/chefs", func(ctx *gin.Context) {
@@ -179,7 +179,7 @@ func (r *Routing) setRouting() {
 		})
 
 		v1.GET("/recipes/:watchID", func(ctx *gin.Context) {
-			recipesController.Get(ctx)
+			recipesController.Get(ctx, r.Jwt)
 		})
 
 		// /*

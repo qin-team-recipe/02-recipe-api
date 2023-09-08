@@ -476,13 +476,27 @@ paths:
       consumes:
       - application/x-json-stream
       description: シェフのレシピのリストを取得する
+      parameters:
+      - description: latest:新着レシピ|favorites:人気レシピ
+        in: query
+        name: type
+        required: true
+        type: string
+      - description: シェフID
+        in: query
+        name: chef_id
+        required: true
+        type: integer
+      - description: ページネーションのカーソル
+        in: query
+        name: cursor
+        required: true
+        type: integer
       responses:
         "200":
           description: OK
           schema:
-            items:
-              $ref: '#/definitions/product.ChefRecipeResponse'
-            type: array
+            $ref: '#/definitions/product.ChefRecipeResponse'
         "404":
           description: Not Found
           schema:
@@ -505,6 +519,10 @@ paths:
         name: cursor
         required: true
         type: integer
+      - description: シェフの取得件数
+        in: query
+        name: limit
+        type: string
       responses:
         "200":
           description: OK
@@ -1008,6 +1026,14 @@ paths:
         in: query
         name: type
         type: string
+      - description: 取得し返している最後のレシピリストのの識別子
+        in: query
+        name: cursor
+        type: string
+      - description: レシピの取得件数
+        in: query
+        name: limit
+        type: string
       responses:
         "200":
           description: OK
@@ -1061,7 +1087,7 @@ paths:
       summary: レシピ情報の取得
       tags:
       - recipes
-  /recommend/chefs:
+  /recommends/chefs:
     get:
       consumes:
       - application/x-json-stream
@@ -1089,8 +1115,8 @@ paths:
               type: object
       summary: 注目のシェフ
       tags:
-      - recommend
-  /recommend/recipes:
+      - recommends
+  /recommends/recipes:
     get:
       consumes:
       - application/x-json-stream
@@ -1103,7 +1129,9 @@ paths:
             - $ref: '#/definitions/controllers.H'
             - properties:
                 data:
-                  $ref: '#/definitions/product.RecipeResponse'
+                  items:
+                    $ref: '#/definitions/domain.RecipesForGet'
+                  type: array
               type: object
         "404":
           description: Not Found
@@ -1116,7 +1144,7 @@ paths:
               type: object
       summary: 話題のレシピ
       tags:
-      - recommend
+      - recommends
   /register:
     post:
       description: ユーザー新規登録のエンドポイント
