@@ -111,21 +111,6 @@ func (r *Routing) setRouting() {
 			chefsController.Get(ctx)
 		})
 
-		// /*
-		//  * chefs　follows
-		//  *
-		//  */
-		// v1.GET("/chefFollows", func(ctx *gin.Context) {
-		// 	chefFollowsController.GetList(ctx)
-		// })
-
-		// v1.POST("/chefFollows", func(ctx *gin.Context) {
-		// 	chefFollowsController.Post(ctx)
-		// })
-		// v1.DELETE("/chefFollows", func(ctx *gin.Context) {
-		// 	chefFollowsController.Delete(ctx)
-		// })
-
 		/*
 		 * chef recipes
 		 *
@@ -142,22 +127,12 @@ func (r *Routing) setRouting() {
 		//  * me
 		//  *
 		//  */
-		// v1.GET("/me", func(ctx *gin.Context) {
-		// 	meController.Get(ctx)
-		// })
 		v1.GET("/login", func(ctx *gin.Context) {
 			meController.LoginUser(ctx)
 		})
 		v1.POST("/register", func(ctx *gin.Context) {
 			meController.Post(ctx)
 		})
-
-		// v1.PATCH("/me", func(ctx *gin.Context) {
-		// 	meController.Patch(ctx)
-		// })
-		// v1.DELETE("/me", func(ctx *gin.Context) {
-		// 	meController.Delete(ctx)
-		// })
 
 		/*
 		 * recommends chefs or recipes
@@ -182,21 +157,6 @@ func (r *Routing) setRouting() {
 			recipesController.Get(ctx, r.Jwt)
 		})
 
-		// /*
-		//  * recipes favorites
-		//  *
-		//  */
-		// v1.GET("/recipeFavorites", func(ctx *gin.Context) {
-		// 	recipeFavoritesController.GetList(ctx)
-		// })
-
-		// v1.POST("/recipeFavorites", func(ctx *gin.Context) {
-		// 	recipeFavoritesController.Post(ctx)
-		// })
-		// v1.DELETE("/recipeFavorites", func(ctx *gin.Context) {
-		// 	recipeFavoritesController.Delete(ctx)
-		// })
-
 		/*
 		 * users
 		 *
@@ -215,17 +175,6 @@ func (r *Routing) setRouting() {
 		v1.GET("/recipeIngredients", func(ctx *gin.Context) {
 			recipeIngredientsController.GetList(ctx)
 		})
-		// v1.POST("/recipeIngredients", func(ctx *gin.Context) {
-		// 	recipeIngredientsController.Post(ctx)
-		// })
-
-		// /*
-		//  * recipes links
-		//  *
-		//  */
-		// v1.POST("/recipeLinks", func(ctx *gin.Context) {
-		// 	recipeLinksController.Post(ctx)
-		// })
 
 		/*
 		 * recipes steps
@@ -233,56 +182,6 @@ func (r *Routing) setRouting() {
 		 */
 		v1.GET("/recipeSteps", func(ctx *gin.Context) {
 			recipeStepsController.GetList(ctx)
-		})
-		// v1.POST("/recipeSteps", func(ctx *gin.Context) {
-		// 	recipeStepsController.Post(ctx)
-		// })
-
-		/*
-		 * shopping items
-		 *
-		 */
-		v1.GET("/shoppingItems", func(ctx *gin.Context) {
-			shoppingItemsController.GetList(ctx)
-		})
-		v1.POST("/shoppingItems", func(ctx *gin.Context) {
-			shoppingItemsController.Post(ctx)
-		})
-
-		v1.PATCH("/shoppingItems/:id", func(ctx *gin.Context) {
-			shoppingItemsController.Patch(ctx)
-		})
-		v1.DELETE("/shoppingItems/:id", func(ctx *gin.Context) {
-			shoppingItemsController.Delete(ctx)
-		})
-
-		// /*
-		//  * user recipes
-		//  *
-		//  */
-		// v1.GET("/userRecipes", func(ctx *gin.Context) {
-		// 	userRecipesController.GetList(ctx)
-		// })
-		// v1.POST("/userRecipes", func(ctx *gin.Context) {
-		// 	userRecipesController.Post(ctx)
-		// })
-
-		/*
-		 * user shopping Items
-		 *
-		 */
-		v1.GET("/userShoppingItems", func(ctx *gin.Context) {
-			userShoppingItemsController.GetList(ctx)
-		})
-		v1.POST("/userShoppingItems", func(ctx *gin.Context) {
-			userShoppingItemsController.Post(ctx)
-		})
-
-		v1.PATCH("/userShoppingItems/:id", func(ctx *gin.Context) {
-			userShoppingItemsController.Patch(ctx)
-		})
-		v1.DELETE("/userShoppingItems/:id", func(ctx *gin.Context) {
-			userShoppingItemsController.Delete(ctx)
 		})
 
 		/*
@@ -383,6 +282,42 @@ func (r *Routing) setRouting() {
 
 		v1Auth.GET("/userRecipes/:id", func(ctx *gin.Context) {
 			userRecipesController.Get(ctx)
+		})
+
+		/*
+		 * shopping items
+		 *
+		 */
+		v1Auth.GET("/shoppingItems", func(ctx *gin.Context) {
+			shoppingItemsController.GetList(ctx)
+		})
+		v1Auth.POST("/shoppingItems", func(ctx *gin.Context) {
+			shoppingItemsController.Post(ctx)
+		})
+
+		v1Auth.PATCH("/shoppingItems/:id", func(ctx *gin.Context) {
+			shoppingItemsController.Patch(ctx)
+		})
+		v1Auth.DELETE("/shoppingItems/:id", func(ctx *gin.Context) {
+			shoppingItemsController.Delete(ctx)
+		})
+
+		/*
+		 * user shopping Items
+		 *
+		 */
+		v1Auth.GET("/userShoppingItems", func(ctx *gin.Context) {
+			userShoppingItemsController.GetList(ctx)
+		})
+		v1Auth.POST("/userShoppingItems", func(ctx *gin.Context) {
+			userShoppingItemsController.Post(ctx)
+		})
+
+		v1Auth.PATCH("/userShoppingItems/:id", func(ctx *gin.Context) {
+			userShoppingItemsController.Patch(ctx)
+		})
+		v1Auth.DELETE("/userShoppingItems/:id", func(ctx *gin.Context) {
+			userShoppingItemsController.Delete(ctx)
 		})
 	}
 
