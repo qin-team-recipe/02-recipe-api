@@ -64,25 +64,25 @@ func (ri *UserRecipeInteractor) Create(
 	}
 
 	// create recipe ingredient
-	_, err = ri.createRecipeIngredients(db, newRecipe.ID, ingredients, currentTime)
-	if err != nil {
-		db.Rollback()
-		return &domain.UserRecipesForGet{}, usecase.NewResultStatus(http.StatusBadRequest, err)
-	}
+	_, _ = ri.createRecipeIngredients(db, newRecipe.ID, ingredients, currentTime)
+	// if err != nil {
+	// 	db.Rollback()
+	// 	return &domain.UserRecipesForGet{}, usecase.NewResultStatus(http.StatusBadRequest, err)
+	// }
 
 	// create recipe link
-	_, err = ri.createRecipeLinks(db, newRecipe.ID, links, currentTime)
-	if err != nil {
-		db.Rollback()
-		return &domain.UserRecipesForGet{}, usecase.NewResultStatus(http.StatusBadRequest, err)
-	}
+	_, _ = ri.createRecipeLinks(db, newRecipe.ID, links, currentTime)
+	// if err != nil {
+	// 	db.Rollback()
+	// 	return &domain.UserRecipesForGet{}, usecase.NewResultStatus(http.StatusBadRequest, err)
+	// }
 
 	// create recipe step
-	_, err = ri.createRecipeSteps(db, newRecipe.ID, steps, currentTime)
-	if err != nil {
-		db.Rollback()
-		return &domain.UserRecipesForGet{}, usecase.NewResultStatus(http.StatusBadRequest, err)
-	}
+	_, _ = ri.createRecipeSteps(db, newRecipe.ID, steps, currentTime)
+	// if err != nil {
+	// 	db.Rollback()
+	// 	return &domain.UserRecipesForGet{}, usecase.NewResultStatus(http.StatusBadRequest, err)
+	// }
 
 	builtUserRecipe, err := ri.build(userRecipe, newRecipe)
 	if err != nil {
