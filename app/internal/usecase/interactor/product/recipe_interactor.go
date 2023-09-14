@@ -36,10 +36,10 @@ func (ri *RecipeInteractor) GetList(userID int, q string, cursor, limit int) (Re
 		limit = 10
 	}
 
-	recipes, err := ri.Recipe.FindByQuery(db, userID, cursor, limit+1, q)
-	if err != nil {
-		return RecipeResponse{}, usecase.NewResultStatus(http.StatusBadRequest, err)
-	}
+	recipes, _ := ri.Recipe.FindByQuery(db, userID, cursor, limit+1, q)
+	// if err != nil {
+	// 	return RecipeResponse{}, usecase.NewResultStatus(http.StatusBadRequest, err)
+	// }
 
 	builtRecipes, _ := ri.buildList(db, recipes)
 
