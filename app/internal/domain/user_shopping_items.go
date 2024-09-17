@@ -2,7 +2,7 @@ package domain
 
 type UserShoppingItems struct {
 	ID          int     `json:"id"`
-	UserID      int     `json:"user_id" binding:"required"`
+	UserID      int     `json:"user_id"`
 	Title       string  `json:"title" binding:"required"`
 	Description *string `json:"description"`
 	IsDone      bool    `json:"is_done"`
